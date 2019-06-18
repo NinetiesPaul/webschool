@@ -57,6 +57,7 @@ if (isset($_SESSION['tipo'])){
 						</select><br/>
 					<input type="submit" value="Login" class="btn btn-lg btn-primary btn-block" ><br/>
 				</form>
+				Branch
 			</div>
 		</div>
 		
