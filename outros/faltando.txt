@@ -47,6 +47,6 @@ Lógica de código
     - Verificação de login na alteração deve desconsiderar o login do usuario sendo alterado (FEITO 17/06)
     - Verificação de login para cadastro/alteração deve ser feito dentro do tipo de usuário sendo cadastrado/alterado (FEITO 17/06)
 - Auto-geração de notas 0 para alunos
-    - Na criação de alunos
+    - Na criação de alunos (FEITO 12/06)
     - Na alteração de turma do aluno
     - No cadastro de discipina por turma
