@@ -1,0 +1,48 @@
+Requisitos gerais
+---
+- Cadastro de Alunos
+    OK
+- Cadastros de Professores
+    OK
+- Cadastro de Responsáveis
+    OK
+- Lançamento de Notas
+    OK
+- Diário de Classe com Faltas e Presença
+    FALTANDO Presença
+    Sugestão:
+        Na tela da turma, botão "Adicionar diário de classe" redireciona para
+        pagina onde professor especifica o dia, marca falta ou presença de alunos;
+        adiciona comentários diversos; upload de arquivos
+- Cadastro de Séries/Turmas/Disciplinas
+    OK
+- Emissão de Boletins
+    FALTANDO
+- Emissão de Histórico Escolar
+    FALTANDO
+- Emissão de Declarações
+    FALTANDO
+- Relatórios de Transferência de alunos
+    FALTANDO
+
+
+
+Requisitos adicionais
+---
+- Professor realizar upload de arquivos de alunos (declarações, notas, bilhetes)
+- Professor cadastrar comentários por aluno
+- Sistema de anuncios e mensagens do professor para turma
+- Admin capaz de alterar endereço e avatar de usuarios
+- Professor capaz de alterar dados de turmas e alunos
+
+
+
+Lógica de código
+---
+- Adição de sistema de salt na encriptação de senha do usuario (FEITO 14/06)
+    - Adição do sistema de salt na alteração de senha do usuário
+- Campo is_deleted na tabela de usuários (FEITO 13/06)
+    - ON DELETE setar para true (influencia na listagem e acesso posterior)
+- Verificação de login unico pra cadastro e alteração de registro (FEITO 14/06)
+    - Verificação de login na alteração deve desconsiderar o login do usuario sendo alterado (FEITO 17/06)
+    - Verificação de login para cadastro/alteração deve ser feito dentro do tipo de usuário sendo cadastrado/alterado (FEITO 17/06)
