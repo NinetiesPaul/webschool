@@ -49,4 +49,4 @@ Lógica de código
 - Auto-geração de notas 0 para alunos
     - Na criação de alunos (FEITO 12/06)
     - Na alteração de turma do aluno
-    - No cadastro de discipina por turma
+    - No cadastro de discipina por turma (FEITO 18/06)
