@@ -39,10 +39,14 @@ Requisitos adicionais
 
 Lógica de código
 ---
-- Adição de sistema de salt na encriptação de senha do usuario (FEITO 14/06)
-    - Adição do sistema de salt na alteração de senha do usuário
+- Adição de sistema de salt na encriptação de senha do usuario (FEITO 13/06)
+    - Adição do sistema de salt na alteração de senha do usuário (FEITO 14/06)
 - Campo is_deleted na tabela de usuários (FEITO 13/06)
     - ON DELETE setar para true (influencia na listagem e acesso posterior)
 - Verificação de login unico pra cadastro e alteração de registro (FEITO 14/06)
     - Verificação de login na alteração deve desconsiderar o login do usuario sendo alterado (FEITO 17/06)
     - Verificação de login para cadastro/alteração deve ser feito dentro do tipo de usuário sendo cadastrado/alterado (FEITO 17/06)
+- Auto-geração de notas 0 para alunos
+    - Na criação de alunos
+    - Na alteração de turma do aluno
+    - No cadastro de discipina por turma
