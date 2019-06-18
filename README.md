@@ -1,1 +1,1 @@
-webschool
+#Simple web system in pure PHP for small school management
