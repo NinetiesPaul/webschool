@@ -70,9 +70,9 @@ if (isset($_SESSION['tipo'])) {
                     select * from faltaPorAluno where idTurma=$turma and idAluno=$idAluno and idDisciplina=$disciplina
                 ");
 
-                $count = $faltaQuery->rowCount();
+            $count = $faltaQuery->rowCount();
 
-                $faltaQuery = $faltaQuery->fetchAll(PDO::FETCH_OBJ); ?>
+            $faltaQuery = $faltaQuery->fetchAll(PDO::FETCH_OBJ); ?>
 
                 <?php echo pegarNomeDoAluno($idAluno); ?>
                 <?php echo '<br/>'.pegarDisciplina($disciplina).', '.pegarTurma($turma).'<p/>'; ?>
@@ -86,8 +86,7 @@ if (isset($_SESSION['tipo'])) {
                     endforeach;
                 } else {
                     echo 'Atualmente este aluno não possui faltas.<p/>';
-                }
-                ?>
+                } ?>
 
             </div>
         </div>

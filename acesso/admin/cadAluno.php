@@ -101,11 +101,9 @@ if (isset($_SESSION['tipo'])) {
 
                     include '../../data/conn.php';
 
-                    $turmaQuery = $db->query("select * from turma order by serie");
+        $turmaQuery = $db->query("select * from turma order by serie");
 
-                    $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
-
-                    ?>
+        $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ); ?>
 
                     <div class="form-group row justify-content-center ">
                             <label for="turma" class="col-form-label col-md-2 col-form-label-sm ">Turma:</label>
@@ -129,11 +127,9 @@ if (isset($_SESSION['tipo'])) {
 
                 include '../../data/conn.php';
 
-                $usersQuery = $db->query("select usuario.* from usuario, aluno where usuario.idUsuario=aluno.idUsuario");
+        $usersQuery = $db->query("select usuario.* from usuario, aluno where usuario.idUsuario=aluno.idUsuario");
 
-                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
-                
-                ?>
+        $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ); ?>
 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13;">
                     
@@ -144,9 +140,7 @@ if (isset($_SESSION['tipo'])) {
                     echo '<td>'.pegarTurmaDoAluno($user->idUsuario).'</td>';
                     echo "<td><a href='_editAluno.php?user=$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
                     echo "<td><a href='_deleteAluno.php?user=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></a></td></tr>";
-                }
-                
-                ?>	
+                } ?>	
                 </table>
 
             </div>

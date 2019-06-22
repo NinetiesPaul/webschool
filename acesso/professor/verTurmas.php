@@ -54,13 +54,13 @@ if (isset($_SESSION['tipo'])) {
                 <?php
 
                 $disciplinaQuery = $db->query("select * from disciplinaporprofessor where idProfessor=$professorQuery->idProfessor");
-                $disciplinaQuery = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
+        $disciplinaQuery = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
 
-                foreach ($disciplinaQuery as $disciplina):
+        foreach ($disciplinaQuery as $disciplina):
                     echo pegarDisciplina($disciplina->idDisciplina).', '.pegarTurma($disciplina->idTurma);
-                    echo "(<a href='detalhesDaTurma.php?turma=$disciplina->idTurma&disc=$disciplina->idDisciplina'>Ver detalhes dessa turma</a>)";
+        echo "(<a href='detalhesDaTurma.php?turma=$disciplina->idTurma&disc=$disciplina->idDisciplina'>Ver detalhes dessa turma</a>)";
 
-                    $alunosQuery = $db->query("
+        $alunosQuery = $db->query("
                         select distinct usuario.* from usuario, aluno, turma, disciplinaporprofessor
                         where usuario.idUsuario=aluno.idUsuario
                         and aluno.idTurma=disciplinaporprofessor.idTurma
@@ -69,16 +69,14 @@ if (isset($_SESSION['tipo'])) {
                         and disciplinaporprofessor.idProfessor=$professorQuery->idProfessor
                         order by usuario.nome
                     ");
-                    $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+        $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
 
-                    foreach ($alunosQuery as $aluno):
+        foreach ($alunosQuery as $aluno):
                         echo '<br/>'.$aluno->nome;
-                    endforeach;
+        endforeach;
 
-                    echo '<p/>';
-                endforeach;
-                
-                ?>
+        echo '<p/>';
+        endforeach; ?>
             </div>
         </div>
 

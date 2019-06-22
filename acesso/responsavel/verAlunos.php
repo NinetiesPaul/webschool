@@ -58,13 +58,11 @@ if (isset($_SESSION['tipo'])) {
                 <?php
 
                 $meusAlunosQuery = $db->query("select * from responsavelporaluno where idresponsavel=$responsavelQuery->idResponsavel");
-                $meusAlunosQuery = $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);
+        $meusAlunosQuery = $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);
 
-                foreach ($meusAlunosQuery as $alunos):
+        foreach ($meusAlunosQuery as $alunos):
                     echo "<a href='infoAluno.php?aluno=$alunos->idAluno'>".pegarNomeDoAluno($alunos->idAluno)."</a><br/>";
-                endforeach;
-
-                ?>
+        endforeach; ?>
             </div>
         </div>
 

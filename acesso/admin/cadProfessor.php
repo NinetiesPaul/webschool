@@ -104,11 +104,9 @@ if (isset($_SESSION['tipo'])) {
 
                 include '../../data/conn.php';
 
-                $usersQuery = $db->query("select usuario.* from usuario, professor where usuario.idUsuario=professor.idUsuario");
+        $usersQuery = $db->query("select usuario.* from usuario, professor where usuario.idUsuario=professor.idUsuario");
 
-                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
-    
-                ?>
+        $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ); ?>
 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13;">
                 <?php
@@ -116,8 +114,7 @@ if (isset($_SESSION['tipo'])) {
                     echo '<tr><td>'.$user->nome.'</td>';
                     echo "<td><a href='_editProfessor.php?user=$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
                     echo "<td><a href='_deleteProfessor.php?user=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr></a> ";
-                }
-                ?>	
+                } ?>	
                 </table>
 
                 <p><strong>Cadastrar Professor por Disciplina de Turma</strong></p>
@@ -126,11 +123,11 @@ if (isset($_SESSION['tipo'])) {
 
                 include '../../data/conn.php';
 
-                $disciplinaQuery = $db->query("select * from disciplina order by nomeDisciplina");
-                $disciplinaQuery = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
+        $disciplinaQuery = $db->query("select * from disciplina order by nomeDisciplina");
+        $disciplinaQuery = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
 
-                $turmaQuery = $db->query("select * from turma order by serie");
-                $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ); ?>
+        $turmaQuery = $db->query("select * from turma order by serie");
+        $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ); ?>
 
                 <form action="_addProfessorPorDisciplinaDeTurma.php" method="post" role="form" class="form-horizontal " >
                     <div class="form-group row justify-content-center ">
@@ -177,11 +174,9 @@ if (isset($_SESSION['tipo'])) {
 
                 include '../../data/conn.php';
 
-                $profDiscQuery = $db->query("select * from disciplinaporprofessor");
+        $profDiscQuery = $db->query("select * from disciplinaporprofessor");
 
-                $profDiscQuery = $profDiscQuery->fetchAll(PDO::FETCH_OBJ);
-                
-                ?>
+        $profDiscQuery = $profDiscQuery->fetchAll(PDO::FETCH_OBJ); ?>
 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13;">
                     <?php
@@ -190,8 +185,7 @@ if (isset($_SESSION['tipo'])) {
                         echo "<td>".pegarDisciplina($profDisc->idDisciplina)."</td>";
                         echo "<td>".pegarTurma($profDisc->idTurma)."</td>";
                         echo "<td><a href='_deleteDisciplinaPorProfessor.php?disc=$profDisc->idDisciplinaPorProfessor' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
-                    }
-                    ?>
+                    } ?>
                 </table>
 
             </div>

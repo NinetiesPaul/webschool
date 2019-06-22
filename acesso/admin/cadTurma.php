@@ -78,11 +78,9 @@ if (isset($_SESSION['tipo'])) {
 
                 include '../../data/conn.php';
 
-                $turmaQuery = $db->query("select * from turma order by serie");
+        $turmaQuery = $db->query("select * from turma order by serie");
 
-                $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
-                
-                ?>
+        $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ); ?>
 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13;">
                     <?php foreach ($turmaQuery as $turma) : ?>

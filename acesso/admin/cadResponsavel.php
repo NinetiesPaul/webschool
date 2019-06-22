@@ -105,11 +105,9 @@ if (isset($_SESSION['tipo'])) {
 
                 include '../../data/conn.php';
 
-                $usersQuery = $db->query("select usuario.* from usuario, responsavel where usuario.idUsuario=responsavel.idUsuario");
+        $usersQuery = $db->query("select usuario.* from usuario, responsavel where usuario.idUsuario=responsavel.idUsuario");
 
-                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
-
-                ?>
+        $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ); ?>
 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13;">
                     <?php foreach ($usersQuery as $user) : ?>

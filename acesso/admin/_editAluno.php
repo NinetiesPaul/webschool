@@ -116,11 +116,9 @@ if (isset($_SESSION['tipo'])) {
 
                     include '../../data/conn.php';
 
-                    $turmaQuery = $db->query("select * from turma order by serie");
+            $turmaQuery = $db->query("select * from turma order by serie");
 
-                    $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
-                    
-                    ?>
+            $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ); ?>
                     <div class="form-group row justify-content-center ">
                         <label for="password" class="col-form-label col-md-2 col-form-label-sm">Turma:</label>
                         <div class="col-md-3">
@@ -220,5 +218,3 @@ if (isset($_SESSION['tipo'])) {
 } else {
     header('Location: ../../index.php');
 }
-
-
