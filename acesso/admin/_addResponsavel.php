@@ -42,13 +42,11 @@ if (isset($_SESSION['tipo'])){
 		$userId = (int) $db->lastInsertId();
 
 		$responsavel = $db->prepare("INSERT INTO responsavel (idUsuario) VALUES (:idUusuario)");
-		
 		$responsavel->execute([
 			'idUusuario' => $userId,
 		]);
 
 		$avatar = $db->prepare("INSERT INTO fotosdeavatar (idUsuario) VALUES (:idUusuario)");
-		
 		$avatar->execute([
 			'idUusuario' => $userId,
 		]);
@@ -59,4 +57,3 @@ if (isset($_SESSION['tipo'])){
 } else {
 header('Location: ../../index.php');
 }	
-?>
