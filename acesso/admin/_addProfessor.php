@@ -16,7 +16,7 @@ if (isset($_SESSION['tipo'])){
 		
 		$endereco->execute([
 			'estado' => 1,
-		]);
+		]); 
 		
 		$idEndereco = (int) $db->lastInsertId();
 	
@@ -42,13 +42,11 @@ if (isset($_SESSION['tipo'])){
 		$userId = (int) $db->lastInsertId();
 
 		$professor = $db->prepare("INSERT INTO professor (idUsuario) VALUES (:idUusuario)");
-		
 		$professor->execute([
 			'idUusuario' => $userId,
 		]);
 
 		$avatar = $db->prepare("INSERT INTO fotosdeavatar (idUsuario) VALUES (:idUusuario)");
-		
 		$avatar->execute([
 			'idUusuario' => $userId,
 		]);
@@ -59,4 +57,3 @@ if (isset($_SESSION['tipo'])){
 } else {
 header('Location: ../../index.php');
 }	
-?>

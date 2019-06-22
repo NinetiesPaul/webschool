@@ -19,7 +19,7 @@ if (isset($_SESSION['tipo'])){
 		include '../../data/conn.php';
 		
 		$usersQuery = $db->query("
-		select usuario.* from usuario, aluno where usuario.idUsuario=aluno.idUsuario and usuario.idUsuario=$id
+		select usuario.*,aluno.idAluno from usuario, aluno where usuario.idUsuario=aluno.idUsuario and usuario.idUsuario=$id
 		");
 		
 		$usersQuery = $usersQuery->fetchObject();
@@ -94,6 +94,7 @@ if (isset($_SESSION['tipo'])){
 				<strong>Alteração de Aluno</strong><p/>
 				<form action="_editAluno.php" method="post" role="form" class="form-horizontal " >
 					<input type="hidden" name="id" value="<?php echo $id ?>" />
+					<input type="hidden" name="idAluno" value="<?php echo $usersQuery->idAluno ?>" />
 					<input type="hidden" name="salt" value="<?php echo $usersQuery->salt ?>" />
 					<div class="form-group row justify-content-center ">
 						<label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
@@ -156,6 +157,7 @@ if (isset($_SESSION['tipo'])){
 
 	if (!empty($_POST)){
 		$userId = $_POST['id'];
+		$idAluno = $_POST['idAluno'];
 		$nome = $_POST['nome'];
 		$email = $_POST['email'];
 		$password = $_POST['password'];
@@ -191,6 +193,35 @@ if (isset($_SESSION['tipo'])){
                         'idTurma' => $turma,
                         'idUusuario' => $userId,
                 ]);
+                
+                $disciplinasQuery = $db->query("SELECT * FROM disciplinaporprofessor where idTurma = $turma");
+                $disciplinas = $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
+                
+                foreach ($disciplinas as $disciplina) {
+                    
+                    $checkDisciplinaQuery = $db->query("SELECT idNotaPorAluno FROM notaporaluno WHERE idTurma = $turma and idAluno = $idAluno and idDisciplina = $disciplina->idDisciplina");
+                    $checkDisciplina = $checkDisciplinaQuery->fetchAll(PDO::FETCH_OBJ);
+                    
+                    if (empty($checkDisciplina)) {
+                        $nota = $db->prepare("INSERT INTO notaporaluno (idAluno, idDisciplina, idTurma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, :nota1, :nota2, :nota3, :nota4, :rec1, :rec2, :rec3, :rec4)");
+
+                        $nota->execute([
+                                'idAluno' => $idAluno,
+                                'idDisciplina' => $disciplina->idDisciplina,
+                                'idTurma' => $turma,
+                                'nota1' => 0,
+                                'nota2' => 0,
+                                'nota3' => 0,
+                                'nota4' => 0,
+                                'rec1' => 0,
+                                'rec2' => 0,
+                                'rec3' => 0,
+                                'rec4' => 0,
+                        ]);
+                    }
+                }
+                
+                print_r($disciplinas);
 		
 		header('Location: cadAluno.php');
 	}	

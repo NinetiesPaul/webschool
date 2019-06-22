@@ -27,8 +27,6 @@ if (isset($_SESSION['tipo'])){
                 $salt = time() + rand(100,1000);
                 $password = md5($password . $salt);
 		$turma = $_POST['turma'];
-                
-                $usuario = 
 		
 		$user = $db->prepare("INSERT INTO usuario (nome, email, pass, idEndereco, salt)
 		VALUES (:name, :email, :password, :endereco, :salt)");
@@ -48,16 +46,16 @@ if (isset($_SESSION['tipo'])){
 			'idTurma' => $turma,
 		]);
                 
-                $lastid = $db->query("SELECT last_insert_id() as id");
-                $lastid = $lastid->fetch()['id'];
+                $lastidQuery = $db->query("SELECT last_insert_id() as id");
+                $lastid = $lastidQuery->fetch()['id'];
 
 		$avatar = $db->prepare("INSERT INTO fotosdeavatar (idUsuario) VALUES (:idUusuario)");
 		$avatar->execute([
 			'idUusuario' => $userId,
 		]);
                 
-                $disciplinas = $db->query("SELECT * FROM disciplinaporprofessor where idTurma = $turma");
-                $disciplinas = $disciplinas->fetchAll(PDO::FETCH_ASSOC);
+                $disciplinasQuery = $db->query("SELECT * FROM disciplinaporprofessor where idTurma = $turma");
+                $disciplinas = $disciplinasQuery->fetchAll(PDO::FETCH_ASSOC);
                 
                 foreach ($disciplinas as $disciplina) {
                     $nota = $db->prepare("INSERT INTO notaporaluno (idAluno, idDisciplina, idTurma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, :nota1, :nota2, :nota3, :nota4, :rec1, :rec2, :rec3, :rec4)");
@@ -83,4 +81,3 @@ if (isset($_SESSION['tipo'])){
 } else {
 header('Location: ../../index.php');
 }	
-?>
