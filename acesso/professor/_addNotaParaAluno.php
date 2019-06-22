@@ -67,17 +67,15 @@ if (isset($_SESSION['tipo'])) {
 
                 $idAluno = pegarIdDoAluno($idAluno);
 
-                $notaQuery = $db->query("
+            $notaQuery = $db->query("
                     select * from notaPorAluno where idTurma=$turma and idAluno=$idAluno and idDisciplina=$disciplina
                 ");
 
-                $count = $notaQuery->rowCount();
+            $count = $notaQuery->rowCount();
 
-                $notaQuery = $notaQuery->fetchObject();
+            $notaQuery = $notaQuery->fetchObject();
 
-                $nota = ($count == 0) ? 0 : $notaQuery->$notaNum;
-
-                ?>
+            $nota = ($count == 0) ? 0 : $notaQuery->$notaNum; ?>
 
                 <?php echo pegarNomeDoAluno($idAluno); ?>
                 <?php echo '<br/>'.pegarDisciplina($disciplina).', '.pegarTurma($turma).'<p/>'; ?>

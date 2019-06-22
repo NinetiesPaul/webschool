@@ -118,11 +118,9 @@ if (isset($_SESSION['tipo'])) {
 
                 include '../../data/conn.php';
 
-                $usersQuery = $db->query("select usuario.* from usuario, aluno where usuario.idUsuario=aluno.idUsuario");
+            $usersQuery = $db->query("select usuario.* from usuario, aluno where usuario.idUsuario=aluno.idUsuario");
 
-                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
-
-                ?>
+            $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ); ?>
 
                 Selecione quais alunos pertencem a este Responsável:<p/>
                 <form action="_addResponsavelPorAluno.php" method="post" role="form" class="form-horizontal " >
@@ -144,33 +142,31 @@ if (isset($_SESSION['tipo'])) {
 
                 include '../../data/conn.php';
 
-                $responsavelQuery = $db->query("select idresponsavel from responsavel where idUsuario=$id");
+            $responsavelQuery = $db->query("select idresponsavel from responsavel where idUsuario=$id");
 
-                $responsavelQuery = $responsavelQuery->fetchObject();
+            $responsavelQuery = $responsavelQuery->fetchObject();
 
-                $usersQuery = $db->query("
+            $usersQuery = $db->query("
                 select distinct usuario.* from usuario, aluno, responsavelporaluno
                 where aluno.idUsuario = usuario.idUsuario
                 and aluno.idaluno = responsavelporaluno.idaluno
                 and responsavelporaluno.idresponsavel=$responsavelQuery->idresponsavel
                 ");
 
-                $count = $usersQuery->rowCount();
+            $count = $usersQuery->rowCount();
 
-                if ($count > 0) {
-                    $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
+            if ($count > 0) {
+                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
 
-                    echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;">';
-                    foreach ($usersQuery as $user) {
-                        echo '<tr><td>'.$user->nome.'</td><td>'.pegarTurmaDoAluno($user->idUsuario).'</td>';
-                        echo "<td><a href='_deleteAlunoDoResponsavel.php?resp=$id&aluno=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
-                    }
-                    echo '</table>';
-                
-                } else {
-                    echo 'Atualmente este responsável não possui responsabilizados cadastrados.<p/>';
+                echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;">';
+                foreach ($usersQuery as $user) {
+                    echo '<tr><td>'.$user->nome.'</td><td>'.pegarTurmaDoAluno($user->idUsuario).'</td>';
+                    echo "<td><a href='_deleteAlunoDoResponsavel.php?resp=$id&aluno=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
                 }
-                ?>
+                echo '</table>';
+            } else {
+                echo 'Atualmente este responsável não possui responsabilizados cadastrados.<p/>';
+            } ?>
 
             </div>
         </div>
@@ -224,5 +220,3 @@ if (isset($_SESSION['tipo'])) {
 } else {
     header('Location: ../../index.php');
 }
-
-

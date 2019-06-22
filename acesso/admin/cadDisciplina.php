@@ -63,11 +63,9 @@ if (isset($_SESSION['tipo'])) {
 
                 include '../../data/conn.php';
 
-                $usersQuery = $db->query("select * from disciplina");
+        $usersQuery = $db->query("select * from disciplina");
 
-                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
-                
-                ?>
+        $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ); ?>
 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13;">
                 <?php
@@ -76,9 +74,7 @@ if (isset($_SESSION['tipo'])) {
                     echo '<tr><td>'.$user->nomeDisciplina.'</td>';
                     echo "<td><a href='_editDisciplina.php?disc=$user->idDisciplina' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
                     echo "<td><a href='_deleteDisciplina.php?disc=$user->idDisciplina' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
-                }
-                
-                ?>	
+                } ?>	
                 </table>
             </div>
         </div>

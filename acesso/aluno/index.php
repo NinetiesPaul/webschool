@@ -67,7 +67,3 @@ if (isset($_SESSION['tipo'])) {
 } else {
     header('Location: ../../index.php');
 }
-
-
-
-	

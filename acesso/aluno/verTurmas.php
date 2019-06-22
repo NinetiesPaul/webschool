@@ -54,34 +54,32 @@ if (isset($_SESSION['tipo'])) {
             <?php
 
             $turmasQuery = $db->query("select idTurma from notaporaluno where idAluno=$alunoQuery->idAluno group by idTurma");
-            $turmas = $turmasQuery->fetchAll(PDO::FETCH_OBJ);
+        $turmas = $turmasQuery->fetchAll(PDO::FETCH_OBJ);
 
 
-            foreach ($turmas as $turma):
+        foreach ($turmas as $turma):
                 $turma = $turma->idTurma;
-                echo pegarTurma($turma).'<br/>';
-                $notasQuery = $db->query("select * from notaporaluno where idAluno=$alunoQuery->idAluno and idTurma=$turma");
-                $notas = $notasQuery->fetchAll(PDO::FETCH_OBJ);
-                echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;">';
-                foreach ($notas as $nota):
+        echo pegarTurma($turma).'<br/>';
+        $notasQuery = $db->query("select * from notaporaluno where idAluno=$alunoQuery->idAluno and idTurma=$turma");
+        $notas = $notasQuery->fetchAll(PDO::FETCH_OBJ);
+        echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;">';
+        foreach ($notas as $nota):
                     echo '<tr><td>'.pegarDisciplina($nota->idDisciplina).'</td>';
-                echo '<td>Nota 1: '.$nota->nota1.'</td>';
-                echo '<td>Nota 2: '.$nota->nota2.'</td>';
-                echo '<td>Nota 3: '.$nota->nota3.'</td>';
-                echo '<td>Nota 4: '.$nota->nota4.'</td>';
-                echo '<td>Rec 1: '.$nota->rec1.'</td>';
-                echo '<td>Rec 2: '.$nota->rec2.'</td>';
-                echo '<td>Rec 3: '.$nota->rec3.'</td>';
-                echo '<td>Rec 4: '.$nota->rec4.'</td>';
-                echo "<td>Faltas: <a href='verFaltas.php?a[]=$alunoQuery->idAluno&a[]=$nota->idDisciplina&a[]=$nota->idTurma'>".pegarFaltasDoAluno($userId, $nota->idDisciplina, $nota->idTurma)."</a></td>";
-                echo '</tr>';
-            endforeach;
+        echo '<td>Nota 1: '.$nota->nota1.'</td>';
+        echo '<td>Nota 2: '.$nota->nota2.'</td>';
+        echo '<td>Nota 3: '.$nota->nota3.'</td>';
+        echo '<td>Nota 4: '.$nota->nota4.'</td>';
+        echo '<td>Rec 1: '.$nota->rec1.'</td>';
+        echo '<td>Rec 2: '.$nota->rec2.'</td>';
+        echo '<td>Rec 3: '.$nota->rec3.'</td>';
+        echo '<td>Rec 4: '.$nota->rec4.'</td>';
+        echo "<td>Faltas: <a href='verFaltas.php?a[]=$alunoQuery->idAluno&a[]=$nota->idDisciplina&a[]=$nota->idTurma'>".pegarFaltasDoAluno($userId, $nota->idDisciplina, $nota->idTurma)."</a></td>";
+        echo '</tr>';
+        endforeach;
 
-            echo '</table>';
+        echo '</table>';
 
-            endforeach;
-            
-            ?>	
+        endforeach; ?>	
 
             </div>
         </div>
@@ -97,7 +95,3 @@ if (isset($_SESSION['tipo'])) {
 } else {
     header('Location: ../../index.php');
 }
-
-
-
-	
