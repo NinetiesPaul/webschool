@@ -57,14 +57,14 @@ if (isset($_SESSION['tipo'])) {
                 <strong>Detalhes da turma</strong> <p/>
                 <?php
 
-                echo pegarDisciplina($disciplina).', '.pegarTurma($turma).'<p/>';
+                echo pegarDisciplina($disciplina).', '.pegarTurma($turma).'<br/>';
+                echo "<a href='diarioDeClasse.php?turma=$turma&disciplina=$disciplina'>Diário de classe</a><p/>";
 
             $alunosQuery = $db->query("
-                    select usuario.idUsuario, usuario.nome, notaporaluno.nota1, notaporaluno.nota2, notaporaluno.nota3, notaporaluno.nota4, notaporaluno.rec1, notaporaluno.rec2, notaporaluno.rec3, notaporaluno.rec4, count(faltaporaluno.idFaltaPorAluno) as faltas
+                    select usuario.idUsuario, usuario.nome, notaporaluno.nota1, notaporaluno.nota2, notaporaluno.nota3, notaporaluno.nota4, notaporaluno.rec1, notaporaluno.rec2, notaporaluno.rec3, notaporaluno.rec4
                     from usuario
                     inner join aluno on aluno.idUsuario = usuario.idUsuario
                     inner join notaporaluno on notaporaluno.idAluno = aluno.idAluno and notaporaluno.idDisciplina=$disciplina and notaporaluno.idTurma=$turma
-                    left join faltaporaluno on faltaporaluno.idAluno = aluno.idAluno and faltaporaluno.idDisciplina=$disciplina and faltaporaluno.idTurma=$turma
                     group by usuario.nome
                     order by usuario.nome
                 ");
@@ -81,7 +81,6 @@ if (isset($_SESSION['tipo'])) {
             echo "<td>Recuperação 3: <a href='_addNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec3'>$aluno->rec3</a> </td>";
             echo "<td>Nota 4: <a href='_addNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota4'>$aluno->nota4</a> </td>";
             echo "<td>Recuperação 4: <a href='_addNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec4'>$aluno->rec4</a> </td>";
-            echo "<td>Faltas: <a href='_addFaltaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma'>$aluno->faltas </a></td></tr>";
             endforeach;
             echo '</table>'; ?>	
 
