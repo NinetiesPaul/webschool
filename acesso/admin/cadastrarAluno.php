@@ -4,7 +4,7 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "admin") {
-        header('Location: ../../index.php');
+        header('Location: index.php');
     } else {
         $userId = $_SESSION['user_id'];
         include '../../data/functions.php'; ?>
@@ -74,7 +74,7 @@ if (isset($_SESSION['tipo'])) {
             <div class="jumbotron text-center">
 
                 <strong>Cadastro de Aluno</strong> <p/>
-                <form action="_addAluno.php" method="post" role="form" class="form-horizontal " >
+                <form action="src/adicionarAluno.php" method="post" role="form" class="form-horizontal " >
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm ">Nome:</label>
                         <div class="col-md-3">
@@ -138,8 +138,8 @@ if (isset($_SESSION['tipo'])) {
                 foreach ($usersQuery as $user) {
                     echo '<tr><td>'.$user->nome.'</td>';
                     echo '<td>'.pegarTurmaDoAluno($user->idUsuario).'</td>';
-                    echo "<td><a href='_editAluno.php?user=$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
-                    echo "<td><a href='_deleteAluno.php?user=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></a></td></tr>";
+                    echo "<td><a href='alterarAluno.php?user=$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
+                    echo "<td><a href='src/deletarAluno.php?user=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></a></td></tr>";
                 } ?>	
                 </table>
 

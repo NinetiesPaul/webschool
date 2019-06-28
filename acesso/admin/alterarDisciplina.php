@@ -1,15 +1,28 @@
 <?php
+
+ini_set('display_errors', true);
+
 session_start();
 
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "admin") {
-        header('Location: ../../index.php');
+        header('Location: index.php');
     } else {
         $userId = $_SESSION['user_id'];
-        include '../../data/functions.php'; ?>
 
-<html>
+        if (!empty($_GET)) {
+            $id = $_GET['disc'];
+        
+            include '../../data/conn.php';
+        
+            $usersQuery = $db->query("
+		select * from disciplina where idDisciplina=$id
+		");
+        
+            $usersQuery = $usersQuery->fetchObject(); ?>
+
+<html lang="en">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
@@ -18,7 +31,7 @@ if (isset($_SESSION['tipo'])) {
         <link href="../../res/navbar.css" rel="stylesheet">
         <script src="../../res/jquery.js">
         </script>
-        <title>webSchool :: Cadastro de Disciplina</title>
+        <title>webSchool :: Alteração de Disciplina</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -43,39 +56,17 @@ if (isset($_SESSION['tipo'])) {
 
         <div class="container">
             <div class="jumbotron text-center">
-
-                <strong>Cadastro de Disciplina</strong><p/>
-                <form action="_addDisciplina.php" method="post" role="form" class="form-horizontal " >
-                        <div class="form-group row justify-content-center ">
-                                <label for="nome" class="col-form-label col-md-2 col-form-label-sm ">Nome da disciplina:</label>
-                                <div class="col-md-3">
-                                        <input type="text" name="nome" class="form-control form-control-sm">
-                                </div>
+                <strong>Alteração de Disciplina</strong><p/>
+                <form action="_editDisciplina.php" method="post" role="form" class="form-horizontal " >
+                    <input type="hidden" name="id" value="<?php echo $id ?>" />
+                    <div class="form-group row justify-content-center ">
+                        <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome da Disciplina:</label>
+                        <div class="col-md-3">
+                            <input type="text" name="nome" value="<?php echo $usersQuery->nomeDisciplina; ?>" class="form-control form-control-sm" required>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-sm"><span class='glyphicon glyphicon-plus' required></span> Cadastrar</button>
+                    </div>
+                    <button type="submit" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
                 </form>
-
-                <hr/>
-
-                <p><strong>Lista de Disciplina</strong></p>
-
-                <?php
-
-                include '../../data/conn.php';
-
-        $usersQuery = $db->query("select * from disciplina");
-
-        $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ); ?>
-
-                <table style="margin-left: auto; margin-right: auto; font-size: 13;">
-                <?php
-                
-                foreach ($usersQuery as $user) {
-                    echo '<tr><td>'.$user->nomeDisciplina.'</td>';
-                    echo "<td><a href='_editDisciplina.php?disc=$user->idDisciplina' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
-                    echo "<td><a href='_deleteDisciplina.php?disc=$user->idDisciplina' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
-                } ?>	
-                </table>
             </div>
         </div>
 
@@ -84,10 +75,30 @@ if (isset($_SESSION['tipo'])) {
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>	
     </body>
 </html>
-	
 
 <?php
+        }
+
+        if (!empty($_POST)) {
+            $idDisciplina = $_POST['id'];
+            $nome = $_POST['nome'];
+
+            include '../../data/conn.php';
+        
+            $user = $db->prepare("
+		UPDATE disciplina
+		SET nomeDisciplina=:nome
+		where idDisciplina=:idDisciplina
+		");
+        
+            $user->execute([
+            'nome' => $nome,
+            'idDisciplina' => $idDisciplina,
+        ]);
+        
+            header('Location: cadastrarDisciplina.php');
+        }
     }
 } else {
-    header('Location: ../../index.php');
+    header('Location: index.php');
 }

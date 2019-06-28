@@ -5,11 +5,11 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "admin") {
-        header('Location: ../../index.php');
+        header('Location: ../index.php');
     } else {
         ini_set('display_errors', true);
 
-        include '../../data/conn.php';
+        include '../../../data/conn.php';
 
         if (!empty($_GET)) {
             $id = $_GET['resp'];
@@ -26,11 +26,11 @@ if (isset($_SESSION['tipo'])) {
                 'idaluno' => $aluno,
             ]);
             
-            header("Location: _editResponsavel.php?user=$id");
+            header("Location: ../alterarResponsavel.php?user=$id");
         } else {
             echo "Error! <br/><a href='cadResponsavel.php'>Voltar</a>";
         }
     }
 } else {
-    header('Location: ../../index.php');
+    header('Location: ../index.php');
 }
