@@ -174,9 +174,9 @@ if (isset($_SESSION['tipo'])) {
 
                 include '../../data/conn.php';
 
-        $profDiscQuery = $db->query("select * from disciplinaporprofessor");
+                $profDiscQuery = $db->query("select * from disciplinaporprofessor order by idTurma");
 
-        $profDiscQuery = $profDiscQuery->fetchAll(PDO::FETCH_OBJ); ?>
+                $profDiscQuery = $profDiscQuery->fetchAll(PDO::FETCH_OBJ); ?>
 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13;">
                     <?php
