@@ -61,33 +61,35 @@ if (isset($_SESSION['tipo'])) {
                 <?php
 
                 $alunoQuery = $db->query("select * from aluno where idAluno=$aluno");
-        $alunoQuery = $alunoQuery->fetchObject();
+                $alunoQuery = $alunoQuery->fetchObject();
 
-        $turmasQuery = $db->query("select idTurma from notaporaluno where idAluno=$aluno group by idTurma");
-        $turmas = $turmasQuery->fetchAll(PDO::FETCH_OBJ);
-                
-        foreach ($turmas as $turma):
+                $turmasQuery = $db->query("select idTurma from notaporaluno where idAluno=$aluno group by idTurma");
+                $turmas = $turmasQuery->fetchAll(PDO::FETCH_OBJ);
+
+                foreach ($turmas as $turma) {
                     $turma = $turma->idTurma;
-        echo pegarTurma($turma).'<br/>';
-        $notasQuery = $db->query("select * from notaporaluno where idAluno=$aluno and idTurma=$turma");
-        $notas = $notasQuery->fetchAll(PDO::FETCH_OBJ);
-        echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;">';
-        foreach ($notas as $nota):
+                    echo pegarTurma($turma).'<br/>';
+                    $notasQuery = $db->query("select * from notaporaluno where idAluno=$aluno and idTurma=$turma");
+                    $notas = $notasQuery->fetchAll(PDO::FETCH_OBJ);
+                    
+                    echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;" class="table">';
+                    foreach ($notas as $nota) {
                         echo '<tr><td>'.pegarDisciplina($nota->idDisciplina).'</td>';
-        echo '<td>Nota 1: '.$nota->nota1.'</td>';
-        echo '<td>Nota 2: '.$nota->nota2.'</td>';
-        echo '<td>Nota 3: '.$nota->nota3.'</td>';
-        echo '<td>Nota 4: '.$nota->nota4.'</td>';
-        echo '<td>Rec 1: '.$nota->rec1.'</td>';
-        echo '<td>Rec 2: '.$nota->rec2.'</td>';
-        echo '<td>Rec 3: '.$nota->rec3.'</td>';
-        echo '<td>Rec 4: '.$nota->rec4.'</td>';
-        echo "<td>Faltas: <a href='faltasDoAluno.php?a[]=$aluno&a[]=$nota->idDisciplina&a[]=$nota->idTurma'>".pegarFaltasDoAluno($alunoQuery->idUsuario, $nota->idDisciplina, $nota->idTurma)."</a></td>";
-        echo '</tr>';
-        endforeach;
-        echo '</table>';
-
-        endforeach; ?>	
+                        echo '<td>Nota 1: '.$nota->nota1.'</td>';
+                        echo '<td>Nota 2: '.$nota->nota2.'</td>';
+                        echo '<td>Nota 3: '.$nota->nota3.'</td>';
+                        echo '<td>Nota 4: '.$nota->nota4.'</td>';
+                        echo '<td>Rec 1: '.$nota->rec1.'</td>';
+                        echo '<td>Rec 2: '.$nota->rec2.'</td>';
+                        echo '<td>Rec 3: '.$nota->rec3.'</td>';
+                        echo '<td>Rec 4: '.$nota->rec4.'</td>';
+                        //echo "<td>Faltas: <a href='faltasDoAluno.php?a[]=$aluno&a[]=$nota->idDisciplina&a[]=$nota->idTurma'>".pegarFaltasDoAluno($alunoQuery->idUsuario, $nota->idDisciplina, $nota->idTurma)."</a></td>";
+                        echo '</tr>';
+                    }
+                    echo '</table>';
+                }
+                
+                ?>	
 
             </div>
         </div>
