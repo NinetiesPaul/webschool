@@ -4,7 +4,7 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "admin") {
-        header('Location: ../../index.php');
+        header('Location: index.php');
     } else {
         $userId = $_SESSION['user_id'];
         include '../../data/functions.php'; ?>
@@ -73,7 +73,7 @@ if (isset($_SESSION['tipo'])) {
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Cadastro de Professor</strong><p/>
-                <form action="_addProfessor.php" method="post" role="form" class="form-horizontal " >
+                <form action="src/adicionarProfessor.php" method="post" role="form" class="form-horizontal " >
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm ">Nome:</label>
                         <div class="col-md-3">
@@ -112,8 +112,8 @@ if (isset($_SESSION['tipo'])) {
                 <?php
                 foreach ($usersQuery as $user) {
                     echo '<tr><td>'.$user->nome.'</td>';
-                    echo "<td><a href='_editProfessor.php?user=$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
-                    echo "<td><a href='_deleteProfessor.php?user=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr></a> ";
+                    echo "<td><a href='alterarProfessor.php?user=$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
+                    echo "<td><a href='src/deletarProfessor.php?user=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr></a> ";
                 } ?>	
                 </table>
 
@@ -129,7 +129,7 @@ if (isset($_SESSION['tipo'])) {
         $turmaQuery = $db->query("select * from turma order by serie");
         $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ); ?>
 
-                <form action="_addProfessorPorDisciplinaDeTurma.php" method="post" role="form" class="form-horizontal " >
+                <form action="src/adicionarProfessorPorDisciplinaDeTurma.php" method="post" role="form" class="form-horizontal " >
                     <div class="form-group row justify-content-center ">
                         <label for="professor" class="col-form-label col-md-2 col-form-label-sm ">Professor:</label>
                         <div class="col-md-3">
@@ -184,7 +184,7 @@ if (isset($_SESSION['tipo'])) {
                         echo "<tr><td>".pegarNomeProfessor($profDisc->idProfessor)."</td>";
                         echo "<td>".pegarDisciplina($profDisc->idDisciplina)."</td>";
                         echo "<td>".pegarTurma($profDisc->idTurma)."</td>";
-                        echo "<td><a href='_deleteDisciplinaPorProfessor.php?disc=$profDisc->idDisciplinaPorProfessor' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
+                        echo "<td><a href='src/deletarDisciplinaPorProfessor.php?disc=$profDisc->idDisciplinaPorProfessor' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
                     } ?>
                 </table>
 
@@ -201,5 +201,5 @@ if (isset($_SESSION['tipo'])) {
 <?php
     }
 } else {
-    header('Location: ../../index.php');
+    header('Location: index.php');
 }

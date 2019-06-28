@@ -74,11 +74,11 @@ $(document).ready(function(){
 
         <div class="container">
             <div class="jumbotron text-center">
-                <a href="cadTurma.php" class="btn btn-light btn btn-block">Turmas</a>
-                <a href="cadDisciplina.php" class="btn btn-light btn btn-block">Disciplinas</a>
-                <a href="cadProfessor.php" class="btn btn-light btn btn-block">Professores</a>
-                <a href="cadAluno.php" class="btn btn-light btn btn-block">Alunos</a>
-                <a href="cadResponsavel.php" class="btn btn-light btn btn-block">Responsáveis</a>
+                <a href="cadastrarTurma.php" class="btn btn-light btn btn-block">Turmas</a>
+                <a href="cadastrarDisciplina.php" class="btn btn-light btn btn-block">Disciplinas</a>
+                <a href="cadastrarProfessor.php" class="btn btn-light btn btn-block">Professores</a>
+                <a href="cadastrarAluno.php" class="btn btn-light btn btn-block">Alunos</a>
+                <a href="cadastrarResponsavel.php" class="btn btn-light btn btn-block">Responsáveis</a>
                 <a href="../../logout.php" class="mobile btn btn-danger btn btn-block" >Sair</a>
             </div>
         </div>

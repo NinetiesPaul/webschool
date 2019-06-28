@@ -8,7 +8,7 @@ include '../../data/conn.php';
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "admin") {
-        header('Location: ../../index.php');
+        header('Location: ../index.php');
     } else {
         $disciplina = $_POST['disciplina'];
         $turma = $_POST['turma'];
@@ -44,8 +44,8 @@ if (isset($_SESSION['tipo'])) {
             ]);
         }
                 
-        header("Location: cadProfessor.php");
+        header("Location: ../cadastrarProfessor.php");
     }
 } else {
-    header('Location: ../../index.php');
+    header('Location: ../index.php');
 }

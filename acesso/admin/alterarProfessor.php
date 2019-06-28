@@ -7,10 +7,9 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "admin") {
-        header('Location: ../../index.php');
+        header('Location: index.php');
     } else {
         $userId = $_SESSION['user_id'];
-        include '../../data/functions.php';
 
         if (!empty($_GET)) {
             $id = $_GET['user'];
@@ -18,12 +17,12 @@ if (isset($_SESSION['tipo'])) {
             include '../../data/conn.php';
         
             $usersQuery = $db->query("
-		select usuario.* from usuario, responsavel where usuario.idUsuario=responsavel.idUsuario and responsavel.idUsuario=$id
+		select usuario.* from usuario, professor where usuario.idUsuario=professor.idUsuario and usuario.idUsuario=$id
 		");
         
             $usersQuery = $usersQuery->fetchObject(); ?>
 
-<html>
+<html lang="en">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
@@ -37,7 +36,7 @@ if (isset($_SESSION['tipo'])) {
             $.ajax({
                 type: "POST",
                 url: "../../data/verificarLoginEmAlteracao.php",
-                data:'login='+val+'&tipo=responsavel&id='+<?php echo $id; ?>,
+                data:'login='+val+'&tipo=professor&id='+<?php echo $id; ?>,
                 success: function(data ){
                     if (data == 1){
                         $("#disponibilidade").show();
@@ -61,7 +60,7 @@ if (isset($_SESSION['tipo'])) {
 
 
         </script>
-        <title>webSchool :: Alteração de Responsável</title>
+        <title>webSchool :: Alteração de Professor</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -86,14 +85,14 @@ if (isset($_SESSION['tipo'])) {
 
         <div class="container">
             <div class="jumbotron text-center">
-                <strong>Alteração de Responsável</strong> <p/>
-                <form action="_editResponsavel.php" method="post" role="form" class="form-horizontal " >
+                <strong>Alteração de professor</strong><p/>
+                <form action="alterarProfessor.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id ?>" />
                     <input type="hidden" name="salt" value="<?php echo $usersQuery->salt ?>" />
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
                         <div class="col-md-3">
-                                <input type="text" name="nome" id="nome" placeholder="Nome" aria-describedby="disponibilidade" value="<?php echo $usersQuery->nome; ?>" class="form-control form-control-sm" required >
+                                <input type="text" name="nome" id="nome" value="<?php echo $usersQuery->nome; ?>" class="form-control form-control-sm" required>
                         </div>
                     </div>
                     <div class="form-group row justify-content-center ">
@@ -108,66 +107,11 @@ if (isset($_SESSION['tipo'])) {
                     <div class="form-group row justify-content-center ">
                         <label for="password" class="col-form-label col-md-2 col-form-label-sm">Senha:</label>
                         <div class="col-md-3">
-                                <input type="password" name="password" class="form-control form-control-sm" >
+                                <input type="password" name="password" class="form-control form-control-sm">
                         </div>
                     </div>
                     <button type="submit" id="btn" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
                 </form>
-
-                <?php
-
-                include '../../data/conn.php';
-
-            $usersQuery = $db->query("select usuario.* from usuario, aluno where usuario.idUsuario=aluno.idUsuario");
-
-            $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ); ?>
-
-                Selecione quais alunos pertencem a este Responsável:<p/>
-                <form action="_addResponsavelPorAluno.php" method="post" role="form" class="form-horizontal " >
-                    <input type="hidden" name="id" value="<?php echo $id; ?>" />
-                        <div class="form-group row justify-content-center ">
-                            <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
-                            <div class="col-md-3" >
-                                <select name="aluno" class="form-control form-control-sm">
-                                <?php foreach ($usersQuery as $user) : ?>
-                                <option value="<?php echo $user->idUsuario; ?>"><?php echo $user->nome; ?> (<?php echo pegarTurmaDoAluno($user->idUsuario); ?>)</option>
-                                <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                    <button type="submit" class="btn btn-primary btn-sm"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button>
-                </form>
-
-                <?php
-
-                include '../../data/conn.php';
-
-            $responsavelQuery = $db->query("select idresponsavel from responsavel where idUsuario=$id");
-
-            $responsavelQuery = $responsavelQuery->fetchObject();
-
-            $usersQuery = $db->query("
-                select distinct usuario.* from usuario, aluno, responsavelporaluno
-                where aluno.idUsuario = usuario.idUsuario
-                and aluno.idaluno = responsavelporaluno.idaluno
-                and responsavelporaluno.idresponsavel=$responsavelQuery->idresponsavel
-                ");
-
-            $count = $usersQuery->rowCount();
-
-            if ($count > 0) {
-                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
-
-                echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;">';
-                foreach ($usersQuery as $user) {
-                    echo '<tr><td>'.$user->nome.'</td><td>'.pegarTurmaDoAluno($user->idUsuario).'</td>';
-                    echo "<td><a href='_deleteAlunoDoResponsavel.php?resp=$id&aluno=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
-                }
-                echo '</table>';
-            } else {
-                echo 'Atualmente este responsável não possui responsabilizados cadastrados.<p/>';
-            } ?>
-
             </div>
         </div>
 
@@ -191,15 +135,14 @@ if (isset($_SESSION['tipo'])) {
             include '../../data/conn.php';
                 
             $sql = "
-                UPDATE usuario
-                SET nome=:nome, email=:email
-                ";
-            
-            $fields = [
-                'nome' => $nome,
-                'email' => $email,
-            ];
+                    UPDATE usuario
+                    SET nome=:nome, email=:email";
         
+            $fields = [
+                    'nome' => $nome,
+                    'email' => $email,
+                ];
+                
             if (strlen($password) > 0) {
                 $password = $_POST['password'];
                 $password = md5($password . $salt);
@@ -207,16 +150,16 @@ if (isset($_SESSION['tipo'])) {
                 $sql .= ' ,pass=:pass';
                 $fields['pass'] = $password;
             }
-                
+        
             $fields['userId'] = $userId;
             $sql .= ' where idUsuario=:userId';
-                    
-            $user = $db->prepare($sql);
-            $user->execute($fields);
+                
+            $professorQuery = $db->prepare($sql);
+            $professorQuery->execute($fields);
         
-            header('Location: cadResponsavel.php');
+            header('Location: cadastrarProfessor.php');
         }
     }
 } else {
-    header('Location: ../../index.php');
+    header('Location: index.php');
 }
