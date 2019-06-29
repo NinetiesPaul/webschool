@@ -203,18 +203,18 @@ if (isset($_SESSION['tipo'])) {
                     $nota = $db->prepare("INSERT INTO notaporaluno (idAluno, idDisciplina, idTurma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, :nota1, :nota2, :nota3, :nota4, :rec1, :rec2, :rec3, :rec4)");
 
                     $nota->execute([
-                                'idAluno' => $idAluno,
-                                'idDisciplina' => $disciplina->idDisciplina,
-                                'idTurma' => $turma,
-                                'nota1' => 0,
-                                'nota2' => 0,
-                                'nota3' => 0,
-                                'nota4' => 0,
-                                'rec1' => 0,
-                                'rec2' => 0,
-                                'rec3' => 0,
-                                'rec4' => 0,
-                        ]);
+                        'idAluno' => $idAluno,
+                        'idDisciplina' => $disciplina->idDisciplina,
+                        'idTurma' => $turma,
+                        'nota1' => 0,
+                        'nota2' => 0,
+                        'nota3' => 0,
+                        'nota4' => 0,
+                        'rec1' => 0,
+                        'rec2' => 0,
+                        'rec3' => 0,
+                        'rec4' => 0,
+                    ]);
                 }
             }
         
