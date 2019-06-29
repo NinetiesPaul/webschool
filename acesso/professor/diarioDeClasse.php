@@ -4,7 +4,7 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "professor") {
-        header('Location: ../../index.php');
+        header('Location: index.php');
     } else {
         $userId = $_SESSION['user_id'];
         include '../../data/functions.php';
@@ -14,8 +14,9 @@ if (isset($_SESSION['tipo'])) {
         $professorQuery = $db->query("select * from professor where idUsuario=$userId");
         $professorQuery = $professorQuery->fetchObject();
         
-        $turma = $_GET['turma'];
-        $disciplina = $_GET['disciplina']; 
+        if (!empty($_GET)) {
+            $turma = $_GET['turma'];
+            $disciplina = $_GET['disciplina']; 
         
         ?>
 
@@ -65,6 +66,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como <?php echo pegarNomeProfessor($professorQuery->idProfessor); ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="index.php">Home</a>
                             <a class="dropdown-item" href="../perfil.php">Meu perfil</a>
                             <a class="dropdown-item" href="../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
@@ -110,7 +112,6 @@ if (isset($_SESSION['tipo'])) {
                     Resultado aqui.
                 </div>
                 
-                
             </div>
         </div>
 
@@ -121,9 +122,12 @@ if (isset($_SESSION['tipo'])) {
 </html>
 
 <?php
+        } else {
+            header('Location: visualizarTurmas.php');
+        }
     }
 } else {
-    header('Location: ../../index.php');
+    header('Location: index.php');
 }
 
 

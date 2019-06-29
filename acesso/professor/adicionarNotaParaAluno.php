@@ -7,7 +7,7 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "professor") {
-        header('Location: ../../index.php');
+        header('Location: index.php');
     } else {
         $userId = $_SESSION['user_id'];
         include '../../data/functions.php';
@@ -62,25 +62,27 @@ if (isset($_SESSION['tipo'])) {
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Alteração de Nota</strong> <p/>
-
                 <?php
 
                 $idAluno = pegarIdDoAluno($idAluno);
 
-            $notaQuery = $db->query("
+                $notaQuery = $db->query("
                     select * from notaPorAluno where idTurma=$turma and idAluno=$idAluno and idDisciplina=$disciplina
                 ");
 
-            $count = $notaQuery->rowCount();
+                $count = $notaQuery->rowCount();
 
-            $notaQuery = $notaQuery->fetchObject();
+                $notaQuery = $notaQuery->fetchObject();
 
-            $nota = ($count == 0) ? 0 : $notaQuery->$notaNum; ?>
+                $nota = ($count == 0) ? 0 : $notaQuery->$notaNum;
+                
+                pegarNomeDoAluno($idAluno);
+                
+                echo '<br/>'.pegarDisciplina($disciplina).', '.pegarTurma($turma).'<p/>';
+                
+                ?>
 
-                <?php echo pegarNomeDoAluno($idAluno); ?>
-                <?php echo '<br/>'.pegarDisciplina($disciplina).', '.pegarTurma($turma).'<p/>'; ?>
-
-                <form action="_addNotaParaAluno.php" method="post" role="form" class="form-horizontal ">
+                <form action="adicionarNotaParaAluno.php" method="post" role="form" class="form-horizontal ">
                     <input type="hidden" name="aluno" value="<?php echo $idAluno; ?>" />
                     <input type="hidden" name="disciplina" value="<?php echo $disciplina; ?>" />
                     <input type="hidden" name="turma" value="<?php echo $turma; ?>" />
@@ -88,7 +90,7 @@ if (isset($_SESSION['tipo'])) {
                     <div class="form-group row justify-content-center ">
                         <label for="nota" class="col-form-label col-md-2 col-form-label-sm ">Nota:</label>
                         <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="nota" value="<?php echo $nota; ?>"/>
+                            <input type="text" class="form-control form-control-sm" name="nota" value="<?php echo $nota; ?>"/>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-sm btn-sm"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button>
@@ -103,6 +105,8 @@ if (isset($_SESSION['tipo'])) {
 </html>
 
 <?php
+        } else {
+            header('Location: visualizarTurmas.php');
         }
 
         if (!empty($_POST)) {
@@ -112,27 +116,24 @@ if (isset($_SESSION['tipo'])) {
             $nota = $_POST['nota'];
             $notaNum = $_POST['notaNum'];
         
-    
             $user = $db->prepare("
                 UPDATE notaPorAluno
                 SET ".$notaNum."=:nota
                 where idAluno=:idAluno and idDisciplina=:idDisciplina and idTurma=:idTurma
-                ");
+            ");
 
             $user->execute([
-                        'nota' => $nota,
-                        'idAluno' => $aluno,
-                        'idDisciplina' => $disciplina,
-                        'idTurma' => $turma,
-                ]);
-        
-        
+                'nota' => $nota,
+                'idAluno' => $aluno,
+                'idDisciplina' => $disciplina,
+                'idTurma' => $turma,
+            ]);
         
             header("Location: detalhesDaTurma.php?turma=$turma&disc=$disciplina");
         }
     }
 } else {
-    header('Location: ../../index.php');
+    header('Location: index.php');
 }
 ?>
 

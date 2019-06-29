@@ -4,11 +4,10 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "professor") {
-        header('Location: ../../index.php');
+        header('Location: index.php');
     } else {
         $userId = $_SESSION['user_id'];
         include '../../data/functions.php';
-        
         include '../../data/conn.php';
 
         $professorQuery = $db->query("select * from professor where idUsuario=$userId");
@@ -60,7 +59,7 @@ if (isset($_SESSION['tipo'])) {
                 echo pegarDisciplina($disciplina).', '.pegarTurma($turma).'<br/>';
                 echo "<a href='diarioDeClasse.php?turma=$turma&disciplina=$disciplina'>Diário de classe</a><p/>";
 
-            $alunosQuery = $db->query("
+                $alunosQuery = $db->query("
                     select usuario.idUsuario, usuario.nome, notaporaluno.nota1, notaporaluno.nota2, notaporaluno.nota3, notaporaluno.nota4, notaporaluno.rec1, notaporaluno.rec2, notaporaluno.rec3, notaporaluno.rec4
                     from usuario
                     inner join aluno on aluno.idUsuario = usuario.idUsuario
@@ -68,21 +67,24 @@ if (isset($_SESSION['tipo'])) {
                     group by usuario.nome
                     order by usuario.nome
                 ");
-            $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+                $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
 
-            echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;">';
-            foreach ($alunosQuery as $aluno):
-                echo '<tr><td>'.$aluno->nome.'</td>';
-            echo "<td>Nota 1: <a href='_addNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota1'>$aluno->nota1</a> </td>";
-            echo "<td>Recuperação 1: <a href='_addNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec1'>$aluno->rec1</a> </td>";
-            echo "<td>Nota 2: <a href='_addNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota2'>$aluno->nota2</a> </td>";
-            echo "<td>Recuperação 2: <a href='_addNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec2'>$aluno->rec2</a> </td>";
-            echo "<td>Nota 3: <a href='_addNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota3'>$aluno->nota3</a> </td>";
-            echo "<td>Recuperação 3: <a href='_addNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec3'>$aluno->rec3</a> </td>";
-            echo "<td>Nota 4: <a href='_addNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota4'>$aluno->nota4</a> </td>";
-            echo "<td>Recuperação 4: <a href='_addNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec4'>$aluno->rec4</a> </td>";
-            endforeach;
-            echo '</table>'; ?>	
+                echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;" class="table">';
+                echo '<tr><td></td><td>Nota 1</td><td>Recuperação 1</td><td>Nota 2:</td><td>Recuperação 2</td><td>Nota 3</td><td>Recuperação 3</td><td>Nota 4</td><td>Recuperação 4</td>';
+                foreach ($alunosQuery as $aluno){
+                    echo '<tr><td>'.$aluno->nome.'</td>';
+                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota1'>$aluno->nota1</a> </td>";
+                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec1'>$aluno->rec1</a> </td>";
+                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota2'>$aluno->nota2</a> </td>";
+                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec2'>$aluno->rec2</a> </td>";
+                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota3'>$aluno->nota3</a> </td>";
+                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec3'>$aluno->rec3</a> </td>";
+                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota4'>$aluno->nota4</a> </td>";
+                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec4'>$aluno->rec4</a> </td>";
+                }
+                echo '</table>';
+                
+                ?>	
 
             </div>
         </div>
@@ -97,11 +99,11 @@ if (isset($_SESSION['tipo'])) {
 
 <?php
         } else {
-            header('Location: verTurmas.php');
+            header('Location: visualizarTurmas.php');
         }
     }
 } else {
-    header('Location: ../../index.php');
+    header('Location: index.php');
 }
 ?>
 

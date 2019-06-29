@@ -1,28 +1,18 @@
 <?php
-
-ini_set('display_errors', true);
-
 session_start();
 
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
-    if ($tipo != "aluno") {
-        header('Location: ../../index.php');
+    if ($tipo != "professor") {
+        header('Location: index.php');
     } else {
         $userId = $_SESSION['user_id'];
         include '../../data/functions.php';
         
         include '../../data/conn.php';
 
-        $alunoQuery = $db->query("select * from aluno where idUsuario=$userId");
-        $alunoQuery = $alunoQuery->fetchObject();
-
-        if (!empty($_GET)) {
-            $data = $_GET['a'];
-        
-            $idAluno=$data[0];
-            $disciplina=$data[1];
-            $turma=$data[2]; ?>
+        $professorQuery = $db->query("select * from professor where idUsuario=$userId");
+        $professorQuery = $professorQuery->fetchObject(); ?>
 
 <html>
     <head>
@@ -33,7 +23,7 @@ if (isset($_SESSION['tipo'])) {
         <link href="../../res/navbar.css" rel="stylesheet">
         <script src="../../res/jquery.js">
         </script>
-        <title>Aluno :: Visualização de Faltas</title>
+        <title>Professor :: Minhas Turmas</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -42,7 +32,7 @@ if (isset($_SESSION['tipo'])) {
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Logado como <?php echo pegarNomeDoAluno($alunoQuery->idAluno); ?>
+                            Logado como <?php echo pegarNomeProfessor($professorQuery->idProfessor); ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="index.php">Home</a>
@@ -52,69 +42,63 @@ if (isset($_SESSION['tipo'])) {
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Something else here</a> -->
                         </div>
-                  </li>
+                    </li>
                 </ul>
             </div>
         </nav>
 
         <div class="container">
             <div class="jumbotron text-center">
-                <strong>Visualização de Falta</strong> <p/>
-                <?php echo pegarDisciplina($disciplina).'<br/>'.pegarTurma($turma).'<p/>'; ?>
+                <strong>Minhas turmas</strong><p/>
 
                 <?php
 
-                $faltaQuery = $db->query("
-                    select * from faltaPorAluno where idTurma=$turma and idAluno=$idAluno and idDisciplina=$disciplina
-                ");
+                $disciplinaQuery = $db->query("select * from disciplinaporprofessor where idProfessor=$professorQuery->idProfessor");
+                $disciplinaQuery = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
 
-            $count = $faltaQuery->rowCount();
+                foreach ($disciplinaQuery as $disciplina){
+                    echo pegarDisciplina($disciplina->idDisciplina).', '.pegarTurma($disciplina->idTurma);
+                    echo "(<a href='detalhesDaTurma.php?turma=$disciplina->idTurma&disc=$disciplina->idDisciplina'>Ver detalhes dessa turma</a>)";
 
-            $faltaQuery = $faltaQuery->fetchAll(PDO::FETCH_OBJ); ?>
+                    $alunosQuery = $db->query("
+                        select distinct usuario.* from usuario, aluno, turma, disciplinaporprofessor
+                        where usuario.idUsuario=aluno.idUsuario
+                        and aluno.idTurma=disciplinaporprofessor.idTurma
+                        and disciplinaporprofessor.idTurma=$disciplina->idTurma
+                        and disciplinaporprofessor.idDisciplina=$disciplina->idDisciplina
+                        and disciplinaporprofessor.idProfessor=$professorQuery->idProfessor
+                        order by usuario.nome
+                    ");
+                    $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
 
-                <strong>Faltas nesta matéria</strong><br/>
-                <?php
-                
-                if ($count > 0) {
-                    foreach ($faltaQuery as $falta):
-                        echo date('d/m/Y', strtotime($falta->dataDaFalta)).'<br/>';
-                    endforeach;
-                } else {
-                    echo 'Atualmente este aluno não possui faltas.<p/>';
-                } ?>
+                    if (!empty($alunosQuery)) {
+                        foreach ($alunosQuery as $aluno) {
+                            echo '<br/>'.$aluno->nome;
+                        }
+                    } else {
+                        echo '<br/>Sem alunos cadastrados nessa turma';
+                    }
+
+                    echo '<p/>';
+                }
+
+                ?>
             </div>
         </div>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>	
+
     </body>
 </html>
 
 <?php
-        }
-
-        if (!empty($_POST)) {
-            $aluno = $_POST['aluno'];
-            $turma = $_POST['turma'];
-            $disciplina = $_POST['disciplina'];
-            $data = $_POST['data'];
-        
-            $user = $db->prepare("
-		INSERT INTO faltaPorAluno (idAluno, idDisciplina, idTurma, datadafalta) 
-		values (:idAluno, :idDisciplina, :idTurma, :data)
-		");
-        
-            $user->execute([
-            'idAluno' => $aluno,
-            'idDisciplina' => $disciplina,
-            'idTurma' => $turma,
-            'data' => $data,
-        ]);
-        
-            header("Location: detalhesDaTurma.php?turma=$turma&disc=$disciplina");
-        }
     }
 } else {
-    header('Location: ../../index.php');
+    header('Location: index.php');
 }
+?>
+
+
+	
