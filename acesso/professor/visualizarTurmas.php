@@ -4,7 +4,7 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "professor") {
-        header('Location: ../../index.php');
+        header('Location: index.php');
     } else {
         $userId = $_SESSION['user_id'];
         include '../../data/functions.php';
@@ -96,7 +96,7 @@ if (isset($_SESSION['tipo'])) {
 <?php
     }
 } else {
-    header('Location: ../../index.php');
+    header('Location: index.php');
 }
 ?>
 
