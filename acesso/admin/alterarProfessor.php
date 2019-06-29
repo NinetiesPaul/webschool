@@ -20,7 +20,13 @@ if (isset($_SESSION['tipo'])) {
 		select usuario.* from usuario, professor where usuario.idUsuario=professor.idUsuario and usuario.idUsuario=$id
 		");
         
-            $usersQuery = $usersQuery->fetchObject(); ?>
+            $usersQuery = $usersQuery->fetchObject();
+            
+            if (empty ($usersQuery)) {
+                header('Location: cadastrarProfessor.php');
+            }
+            
+            ?>
 
 <html lang="en">
     <head>
@@ -122,6 +128,8 @@ if (isset($_SESSION['tipo'])) {
 </html>
 
 <?php
+        } else {
+            header('Location: cadastrarProfessor.php');
         }
 
         if (!empty($_POST)) {

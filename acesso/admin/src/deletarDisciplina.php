@@ -10,20 +10,16 @@ if (isset($_SESSION['tipo'])) {
         ini_set('display_errors', true);
 
         include '../../../data/conn.php';
+        
+        $id = $_GET['disc'];
 
-        if (!empty($_GET)) {
-            $id = $_GET['disc'];
-            
-            $user = $db->prepare("DELETE FROM disciplina WHERE idDisciplina=:id");
-            
-            $user->execute([
-                'id' => $id,
-            ]);
-            
-            header('Location: ../cadastrarDisciplina.php');
-        } else {
-            echo "Error! <br/><a href='cadDisciplina.php'>Voltar</a>";
-        }
+        $user = $db->prepare("DELETE FROM disciplina WHERE idDisciplina=:id");
+
+        $user->execute([
+            'id' => $id,
+        ]);
+
+        header('Location: ../cadastrarDisciplina.php');
     }
 } else {
     header('Location: ../index.php');

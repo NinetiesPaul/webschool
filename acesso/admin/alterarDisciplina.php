@@ -20,7 +20,13 @@ if (isset($_SESSION['tipo'])) {
 		select * from disciplina where idDisciplina=$id
 		");
         
-            $usersQuery = $usersQuery->fetchObject(); ?>
+            $usersQuery = $usersQuery->fetchObject();
+            
+            if (empty ($usersQuery)) {
+                header('Location: cadastrarDisciplina.php');
+            }
+            
+            ?>
 
 <html lang="en">
     <head>
@@ -57,7 +63,7 @@ if (isset($_SESSION['tipo'])) {
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Alteração de Disciplina</strong><p/>
-                <form action="_editDisciplina.php" method="post" role="form" class="form-horizontal " >
+                <form action="alterarDisciplina.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id ?>" />
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome da Disciplina:</label>
@@ -77,6 +83,8 @@ if (isset($_SESSION['tipo'])) {
 </html>
 
 <?php
+        } else {
+            header('Location: cadastrarDisciplina.php');
         }
 
         if (!empty($_POST)) {
