@@ -20,7 +20,13 @@ if (isset($_SESSION['tipo'])) {
 		select * from turma where idTurma=$id
             ");
         
-            $usersQuery = $usersQuery->fetchObject(); ?>
+            $usersQuery = $usersQuery->fetchObject();
+            
+            if (empty ($usersQuery)) {
+                header('Location: cadastrarTurma.php');
+            }
+            
+            ?>
 
 <html>
     <head>
@@ -57,7 +63,7 @@ if (isset($_SESSION['tipo'])) {
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Alteração de Turma</strong><p/>
-                <form action="_editTurma.php" method="post" role="form" class="form-horizontal " >
+                <form action="alterarTurma.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id ?>" />
                     <div class="form-group row justify-content-center ">
                         <label for="serie" class="col-form-label col-md-2 col-form-label-sm">Série:</label>
@@ -96,7 +102,7 @@ if (isset($_SESSION['tipo'])) {
 
 <?php
         } else {
-            header('Location: cadTurma.php');
+            header('Location: cadastrarTurma.php');
         }
 
         if (!empty($_POST)) {
@@ -118,7 +124,7 @@ if (isset($_SESSION['tipo'])) {
             'turmaId' => $turmaId,
         ]);
         
-            header('Location: cadTurma.php');
+            header('Location: cadastrarTurma.php');
         }
     }
 } else {

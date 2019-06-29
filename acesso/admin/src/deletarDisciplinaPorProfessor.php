@@ -11,19 +11,15 @@ if (isset($_SESSION['tipo'])) {
 
         include '../../../data/conn.php';
 
-        if (!empty($_GET)) {
-            $id = $_GET['disc'];
-            
-            $user = $db->prepare("DELETE FROM disciplinaporprofessor WHERE idDisciplinaPorProfessor=:id");
-            
-            $user->execute([
-                'id' => $id,
-            ]);
-            
-            header('Location: ../cadProfessor.php');
-        } else {
-            echo "Error! <br/><a href='../cadastrarProfessor.php'>Voltar</a>";
-        }
+        $id = $_GET['disc'];
+
+        $user = $db->prepare("DELETE FROM disciplinaporprofessor WHERE idDisciplinaPorProfessor=:id");
+
+        $user->execute([
+            'id' => $id,
+        ]);
+
+        header('Location: ../cadastrarProfessor.php');
     }
 } else {
     header('Location: ../index.php');

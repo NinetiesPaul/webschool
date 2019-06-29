@@ -72,7 +72,7 @@ if (isset($_SESSION['tipo'])) {
         <div class="container">
             <div class="jumbotron text-center">		
                 <strong>Cadastro de Responsável</strong> <p/>
-                <form action="_addResponsavel.php" method="post" role="form" class="form-horizontal " >
+                <form action="src/adicionarResponsavel.php" method="post" role="form" class="form-horizontal " >
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm ">Nome:</label>
                         <div class="col-md-3">
@@ -97,24 +97,28 @@ if (isset($_SESSION['tipo'])) {
                     <button type="submit" id="btn" class="btn btn-primary btn-sm"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button>
                 </form>
 
-                <hr/>
-
                 <p><strong>Lista de Responsaveis</strong></p>
 
                 <?php
 
                 include '../../data/conn.php';
 
-        $usersQuery = $db->query("select usuario.* from usuario, responsavel where usuario.idUsuario=responsavel.idUsuario");
+                $usersQuery = $db->query("select usuario.* from usuario, responsavel where usuario.idUsuario=responsavel.idUsuario");
+                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
 
-        $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ); ?>
+                ?>
 
-                <table style="margin-left: auto; margin-right: auto; font-size: 13;">
-                    <?php foreach ($usersQuery as $user) : ?>
-                        <?php echo '<tr><td>'.$user->nome.'</td>'; ?> 
-                        <?php echo "<td><a href='_editResponsavel.php?user=$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>"; ?> 
-                        <?php echo "<td><a href='_deleteResponsavel.php?user=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>"; ?>
-                    <?php endforeach; ?>
+                
+                <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
+                    <?php
+                    
+                    foreach ($usersQuery as $user) {
+                        echo '<tr><td>'.$user->nome.'</td>'; 
+                        echo "<td><a href='alterarResponsavel.php?user=$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>"; 
+                        echo "<td><a href='src/deletarResponsavel.php?user=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
+                    }
+                    
+                    ?>
                 </table>
             </div>
         </div>

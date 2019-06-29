@@ -10,20 +10,16 @@ if (isset($_SESSION['tipo'])) {
         ini_set('display_errors', true);
 
         include '../../../data/conn.php';
+        
+        $id = $_GET['user'];
 
-        if (!empty($_GET)) {
-            $id = $_GET['user'];
-            
-            $user = $db->prepare("DELETE FROM turma WHERE idTurma=:user_id");
-            
-            $user->execute([
-                'user_id' => $id,
-            ]);
-            
-            header('Location: ../cadastrarTurma.php');
-        } else {
-            echo "Error! <br/><a href='cadProfessor.php'>Voltar</a>";
-        }
+        $user = $db->prepare("DELETE FROM turma WHERE idTurma=:user_id");
+
+        $user->execute([
+            'user_id' => $id,
+        ]);
+
+        header('Location: ../cadastrarTurma.php');
     }
 } else {
     header('Location: ../index.php');

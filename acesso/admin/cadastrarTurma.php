@@ -44,7 +44,7 @@ if (isset($_SESSION['tipo'])) {
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Cadastro de Turmas</strong> <p/>
-                <form action="_addTurma.php" method="post" role="form" class="form-horizontal " >
+                <form action="src/adicionarTurma.php" method="post" role="form" class="form-horizontal " >
                     <div class="form-group row justify-content-center ">
                         <label for="serie" class="col-form-label col-md-2 col-form-label-sm ">Série:</label>
                         <div class="col-md-3">
@@ -70,24 +70,27 @@ if (isset($_SESSION['tipo'])) {
                     <button type="submit" class="btn btn-primary btn-sm btn-sm"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button>
                 </form>
 
-                <hr/>
-
                 <p><strong>Lista de Turmas</strong></p>
 
                 <?php
 
                 include '../../data/conn.php';
 
-        $turmaQuery = $db->query("select * from turma order by serie");
+                $turmaQuery = $db->query("select * from turma order by serie");
+                $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
 
-        $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ); ?>
+                ?>
 
-                <table style="margin-left: auto; margin-right: auto; font-size: 13;">
-                    <?php foreach ($turmaQuery as $turma) : ?>
-                    <?php echo "<tr><td>".pegarTurma($turma->idTurma)."</td>"; ?> 
-                    <?php echo "<td><a href='_editTurma.php?user=$turma->idTurma' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>"; ?> 
-                    <?php echo "<td><a href='_deleteTurma.php?user=$turma->idTurma' class='btn btn-danger btn-sm btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>"; ?>
-                    <?php endforeach; ?>
+                <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
+                    <?php
+                    
+                    foreach ($turmaQuery as $turma) {
+                        echo "<tr><td>".pegarTurma($turma->idTurma)."</td>";
+                        echo "<td><a href='alterarTurma.php?user=$turma->idTurma' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
+                        echo "<td><a href='src/deletarTurma.php?user=$turma->idTurma' class='btn btn-danger btn-sm btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
+                    }
+                    
+                    ?>
                 </table>
 
             </div>

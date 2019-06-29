@@ -11,40 +11,36 @@ if (isset($_SESSION['tipo'])) {
 
         include '../../../data/conn.php';
 
-        if (!empty($_GET)) {
-            $id = $_GET['user'];
-            
-            $aluno = $db->prepare("DELETE FROM aluno WHERE idUsuario=:user_id");
-            
-            $aluno->execute([
-                'user_id' => $id,
-            ]);
+        $id = $_GET['user'];
 
-            $avatarQuery = $db->query("select * from fotosdeavatar where idUsuario=$id");
-            $avatar = $avatarQuery->rowCount();
-            $avatarQuery = $avatarQuery->fetchObject();
-            
-            if ($avatar > 0) {
-                /*$res = unlink('../../'.$avatarQuery->imagemThumbUrl);
-                $res2 = unlink('../../'.$avatarQuery->imagemUrl);*/
-            }
-            
-            $avatar = $db->prepare("DELETE FROM fotosdeavatar WHERE idUsuario=:user_id");
-            
-            $avatar->execute([
-                'user_id' => $id,
-            ]);
-            
-            $user = $db->prepare("DELETE FROM usuario WHERE idUsuario=:user_id");
-            
-            $user->execute([
-                'user_id' => $id,
-            ]);
-            
-            header('Location: ../cadastrarAluno.php');
-        } else {
-            header('Location: ../cadastrarAluno.php');
+        $aluno = $db->prepare("DELETE FROM aluno WHERE idUsuario=:user_id");
+
+        $aluno->execute([
+            'user_id' => $id,
+        ]);
+
+        $avatarQuery = $db->query("select * from fotosdeavatar where idUsuario=$id");
+        $avatar = $avatarQuery->rowCount();
+        $avatarQuery = $avatarQuery->fetchObject();
+
+        if ($avatar > 0) {
+            /*$res = unlink('../../'.$avatarQuery->imagemThumbUrl);
+            $res2 = unlink('../../'.$avatarQuery->imagemUrl);*/
         }
+
+        $avatar = $db->prepare("DELETE FROM fotosdeavatar WHERE idUsuario=:user_id");
+
+        $avatar->execute([
+            'user_id' => $id,
+        ]);
+
+        $user = $db->prepare("DELETE FROM usuario WHERE idUsuario=:user_id");
+
+        $user->execute([
+            'user_id' => $id,
+        ]);
+
+        header('Location: ../cadastrarAluno.php');
     }
 } else {
     header('Location: ../../../index.php');
