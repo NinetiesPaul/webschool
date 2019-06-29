@@ -4,17 +4,18 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "responsavel") {
-        header('Location: ../../index.php');
+        header('Location: index.php');
     } else {
         $userId = $_SESSION['user_id'];
-        $aluno = $_GET['aluno'];
-    
-        include '../../data/functions.php';
         
-        include '../../data/conn.php';
+        if (!empty($_GET)) {
+            $aluno = $_GET['aluno'];
+    
+            include '../../data/functions.php';
+            include '../../data/conn.php';
 
-        $responsavelQuery = $db->query("select * from responsavel where idUsuario=$userId");
-        $responsavelQuery = $responsavelQuery->fetchObject(); ?>
+            $responsavelQuery = $db->query("select * from responsavel where idUsuario=$userId");
+            $responsavelQuery = $responsavelQuery->fetchObject(); ?>
 
 <html>
     <head>
@@ -60,11 +61,15 @@ if (isset($_SESSION['tipo'])) {
 
                 <?php
 
-                $alunoQuery = $db->query("select * from aluno where idAluno=$aluno");
-                $alunoQuery = $alunoQuery->fetchObject();
+                //$alunoQuery = $db->query("select * from aluno where idAluno=$aluno");
+                //$alunoQuery = $alunoQuery->fetchObject();
 
                 $turmasQuery = $db->query("select idTurma from notaporaluno where idAluno=$aluno group by idTurma");
                 $turmas = $turmasQuery->fetchAll(PDO::FETCH_OBJ);
+                
+                if (empty($turmas)) {
+                    header('Location: visualizarAlunos.php');
+                }
 
                 foreach ($turmas as $turma) {
                     $turma = $turma->idTurma;
@@ -101,9 +106,12 @@ if (isset($_SESSION['tipo'])) {
 </html>
 
 <?php
+        } else {
+            header('Location: visualizarAlunos.php');
+        }
     }
 } else {
-    header('Location: ../../index.php');
+    header('Location: index.php');
 }
 ?>
 

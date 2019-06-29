@@ -4,7 +4,7 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "responsavel") {
-        header('Location: ../../index.php');
+        header('Location: index.php');
     } else {
         $userId = $_SESSION['user_id'];
         include '../../data/functions.php';
@@ -58,11 +58,13 @@ if (isset($_SESSION['tipo'])) {
                 <?php
 
                 $meusAlunosQuery = $db->query("select * from responsavelporaluno where idresponsavel=$responsavelQuery->idResponsavel");
-        $meusAlunosQuery = $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);
+                $meusAlunosQuery = $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);
 
-        foreach ($meusAlunosQuery as $alunos):
-                    echo "<a href='infoAluno.php?aluno=$alunos->idAluno'>".pegarNomeDoAluno($alunos->idAluno)."</a><br/>";
-        endforeach; ?>
+                foreach ($meusAlunosQuery as $alunos) {
+                    echo "<a href='visualizarAluno.php?aluno=$alunos->idAluno'>".pegarNomeDoAluno($alunos->idAluno)."</a><br/>";
+                }
+                
+                ?>
             </div>
         </div>
 
@@ -75,7 +77,7 @@ if (isset($_SESSION['tipo'])) {
 <?php
     }
 } else {
-    header('Location: ../../index.php');
+    header('Location: index.php');
 }
 ?>
 

@@ -63,31 +63,33 @@ if (isset($_SESSION['tipo'])) {
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Visualização de Faltas</strong><p/>
-
                 <?php
 
                 $faltaQuery = $db->query("
                     select * from faltaPorAluno where idTurma=$turma and idAluno=$idAluno and idDisciplina=$disciplina
                 ");
 
-            $count = $faltaQuery->rowCount();
+                $count = $faltaQuery->rowCount();
 
-            $faltaQuery = $faltaQuery->fetchAll(PDO::FETCH_OBJ); ?>
+                $faltaQuery = $faltaQuery->fetchAll(PDO::FETCH_OBJ);
 
-                <?php echo pegarNomeDoAluno($idAluno); ?>
-                <?php echo '<br/>'.pegarDisciplina($disciplina).', '.pegarTurma($turma).'<p/>'; ?>
-
+                echo pegarNomeDoAluno($idAluno);
+                echo '<br/>'.pegarDisciplina($disciplina).', '.pegarTurma($turma).'<p/>';
+                
+                ?>
 
                 <strong>Faltas desse aluno</strong><br/>
                 <?php
+                
                 if ($count > 0) {
                     foreach ($faltaQuery as $falta):
                         echo date('d/m/Y', strtotime($falta->dataDaFalta)).'<br/>';
                     endforeach;
                 } else {
                     echo 'Atualmente este aluno não possui faltas.<p/>';
-                } ?>
-
+                }
+                
+                ?>
             </div>
         </div>
 
