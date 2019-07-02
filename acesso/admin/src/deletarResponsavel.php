@@ -5,14 +5,13 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "admin") {
-        header('Location: ../index.php');
+        header('Location: index.php');
     } else {
         ini_set('display_errors', true);
 
         include '../../../data/conn.php';
-
         
-        $id = $_GET['user'];
+        $id = $_GET['id'];
 
         $resp = $db->prepare("DELETE FROM responsavel WHERE idUsuario=:user_id");
 
@@ -39,8 +38,8 @@ if (isset($_SESSION['tipo'])) {
             'user_id' => $id,
         ]);
 
-        header('Location: ../cadastrarResponsavel.php');
+        header('Location: ../responsavel.php');
     }
 } else {
-    header('Location: ../index.php');
+    header('Location: index.php');
 }

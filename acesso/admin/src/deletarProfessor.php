@@ -5,14 +5,13 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "admin") {
-        header('Location: ../index.php');
+        header('Location: index.php');
     } else {
         ini_set('display_errors', true);
 
         include '../../../data/conn.php';
-
         
-        $id = $_GET['user'];
+        $id = $_GET['id'];
 
         $prof = $db->prepare("DELETE FROM professor WHERE idUsuario=:user_id");
 
@@ -41,8 +40,8 @@ if (isset($_SESSION['tipo'])) {
             'user_id' => $id,
         ]);
 
-        header('Location: ../cadastrarProfessor.php');
+        header('Location: ../professor.php');
     }
 } else {
-    header('Location: ../index.php');
+    header('Location: index.php');
 }

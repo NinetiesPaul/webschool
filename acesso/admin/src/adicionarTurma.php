@@ -8,7 +8,7 @@ include '../../../data/conn.php';
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "admin") {
-        header('Location: ../index.php');
+        header('Location: index.php');
     } else {
         $serie = $_POST['serie'];
         $nome = $_POST['nome'];
@@ -23,8 +23,8 @@ if (isset($_SESSION['tipo'])) {
         
         $userId = (int) $db->lastInsertId();
     
-        header('Location: ../cadastrarTurma.php');
+        header('Location: ../turma.php');
     }
 } else {
-    header('Location: ../index.php');
+    header('Location: index.php');
 }
