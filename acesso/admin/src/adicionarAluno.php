@@ -8,7 +8,7 @@ include '../../../data/conn.php';
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "admin") {
-        header('Location: ../index.php');
+        header('Location: index.php');
     } else {
         $endereco = $db->prepare("INSERT INTO endereco (idEstado)
 		VALUES (:estado)");
@@ -77,8 +77,8 @@ if (isset($_SESSION['tipo'])) {
             ]);
         }
     
-        header('Location: ../cadastrarAluno.php');
+        header('Location: ../aluno.php');
     }
 } else {
-    header('Location: ../index.php');
+    header('Location: index.php');
 }

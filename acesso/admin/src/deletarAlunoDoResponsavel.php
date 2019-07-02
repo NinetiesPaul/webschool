@@ -5,7 +5,7 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "admin") {
-        header('Location: ../index.php');
+        header('Location: index.php');
     } else {
         ini_set('display_errors', true);
 
@@ -25,8 +25,8 @@ if (isset($_SESSION['tipo'])) {
             'idaluno' => $aluno,
         ]);
 
-        header("Location: ../alterarResponsavel.php?user=$id");
+        header("Location: ../responsavel.php?user=$id");
     }
 } else {
-    header('Location: ../index.php');
+    header('Location: index.php');
 }

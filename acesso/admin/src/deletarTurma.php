@@ -5,13 +5,13 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "admin") {
-        header('Location: ../index.php');
+        header('Location: index.php');
     } else {
         ini_set('display_errors', true);
 
         include '../../../data/conn.php';
         
-        $id = $_GET['user'];
+        $id = $_GET['id'];
 
         $user = $db->prepare("DELETE FROM turma WHERE idTurma=:user_id");
 
@@ -19,8 +19,8 @@ if (isset($_SESSION['tipo'])) {
             'user_id' => $id,
         ]);
 
-        header('Location: ../cadastrarTurma.php');
+        header('Location: ../turma.php');
     }
 } else {
-    header('Location: ../index.php');
+    header('Location: index.php');
 }

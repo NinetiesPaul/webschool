@@ -74,11 +74,11 @@ $(document).ready(function(){
 
         <div class="container">
             <div class="jumbotron text-center">
-                <a href="cadastrarTurma.php" class="btn btn-light btn btn-block">Turmas</a>
-                <a href="cadastrarDisciplina.php" class="btn btn-light btn btn-block">Disciplinas</a>
-                <a href="cadastrarProfessor.php" class="btn btn-light btn btn-block">Professores</a>
-                <a href="cadastrarAluno.php" class="btn btn-light btn btn-block">Alunos</a>
-                <a href="cadastrarResponsavel.php" class="btn btn-light btn btn-block">Responsáveis</a>
+                <a href="turma.php" class="btn btn-light btn btn-block">Turmas</a>
+                <a href="disciplina.php" class="btn btn-light btn btn-block">Disciplinas</a>
+                <a href="professor.php" class="btn btn-light btn btn-block">Professores</a>
+                <a href="aluno.php" class="btn btn-light btn btn-block">Alunos</a>
+                <a href="responsavel.php" class="btn btn-light btn btn-block">Responsáveis</a>
                 <a href="../../logout.php" class="mobile btn btn-danger btn btn-block" >Sair</a>
             </div>
         </div>
@@ -94,7 +94,3 @@ $(document).ready(function(){
 } else {
     header('Location: ../../index.php');
 }
-?>
-
-
-	
