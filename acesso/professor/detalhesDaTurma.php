@@ -14,14 +14,15 @@ if (isset($_SESSION['tipo'])) {
         $professorQuery = $professorQuery->fetchObject();
     
         if (!empty($_GET)) {
-            $turma = $_GET['turma'];
-            $disciplina = $_GET['disc']; ?>
+            $iddisciplina = $_GET['id'];
+            ?>
 
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link href="../../css/glyphicons.css" rel="stylesheet">
         <link href="../../res/navbar.css" rel="stylesheet">
         <link href="../../res/css.css" rel="stylesheet">
         <script src="../../res/jquery.js">
@@ -56,9 +57,15 @@ if (isset($_SESSION['tipo'])) {
                 <strong>Detalhes da turma</strong> <p/>
                 <?php
 
-                echo pegarDisciplina($disciplina).', '.pegarTurma($turma).'<br/>';
-                echo "<a href='diarioDeClasse.php?turma=$turma&disciplina=$disciplina'>Diário de classe</a><p/>";
+                $disciplinaQuery = $db->query("select * from disciplinaporprofessor where idDisciplinaPorProfessor=$iddisciplina");
+                $result = $disciplinaQuery->fetchObject();
+                
+                $disciplina = $result->idDisciplina;
+                $turma = $result->idTurma;
 
+                echo pegarDisciplina($disciplina).', '.pegarTurma($turma).'<br/>';
+                echo "<a href='diarioDeClasse.php?t=$turma&d=$disciplina' class='btn-sm btn-info'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a><p/>";
+                
                 $alunosQuery = $db->query("
                     select usuario.idUsuario, usuario.nome, notaporaluno.nota1, notaporaluno.nota2, notaporaluno.nota3, notaporaluno.nota4, notaporaluno.rec1, notaporaluno.rec2, notaporaluno.rec3, notaporaluno.rec4
                     from usuario
@@ -70,17 +77,17 @@ if (isset($_SESSION['tipo'])) {
                 $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
 
                 echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;" class="table">';
-                echo '<tr><td></td><td>Nota 1</td><td>Recuperação 1</td><td>Nota 2:</td><td>Recuperação 2</td><td>Nota 3</td><td>Recuperação 3</td><td>Nota 4</td><td>Recuperação 4</td>';
+                echo '<tr><td></td><td>Nota 1</td><td>Rec. 1</td><td>Nota 2:</td><td>Rec. 2</td><td>Nota 3</td><td>Rec. 3</td><td>Nota 4</td><td>Rec. 4</td><td></td><td></td>';
                 foreach ($alunosQuery as $aluno){
                     echo '<tr><td>'.$aluno->nome.'</td>';
-                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota1'>$aluno->nota1</a> </td>";
-                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec1'>$aluno->rec1</a> </td>";
-                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota2'>$aluno->nota2</a> </td>";
-                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec2'>$aluno->rec2</a> </td>";
-                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota3'>$aluno->nota3</a> </td>";
-                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec3'>$aluno->rec3</a> </td>";
-                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota4'>$aluno->nota4</a> </td>";
-                    echo "<td><a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec4'>$aluno->rec4</a> </td>";
+                    echo "<td> <a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota1'>$aluno->nota1</a> </td>";
+                    echo "<td> <a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec1'>$aluno->rec1</a> </td>";
+                    echo "<td> <a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota2'>$aluno->nota2</a> </td>";
+                    echo "<td> <a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec2'>$aluno->rec2</a> </td>";
+                    echo "<td> <a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota3'>$aluno->nota3</a> </td>";
+                    echo "<td> <a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec3'>$aluno->rec3</a> </td>";
+                    echo "<td> <a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=nota4'>$aluno->nota4</a> </td>";
+                    echo "<td> <a href='adicionarNotaParaAluno.php?a[]=$aluno->idUsuario&a[]=$disciplina&a[]=$turma&a[]=rec4'>$aluno->rec4</a> </td>";
                 }
                 echo '</table>';
                 

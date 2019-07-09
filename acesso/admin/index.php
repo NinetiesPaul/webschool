@@ -54,7 +54,7 @@ $(document).ready(function(){
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">webSchool</a>
+            <a class="navbar-brand" href="home">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -74,11 +74,11 @@ $(document).ready(function(){
 
         <div class="container">
             <div class="jumbotron text-center">
-                <a href="turma.php" class="btn btn-light btn btn-block">Turmas</a>
-                <a href="disciplina.php" class="btn btn-light btn btn-block">Disciplinas</a>
-                <a href="professor.php" class="btn btn-light btn btn-block">Professores</a>
-                <a href="aluno.php" class="btn btn-light btn btn-block">Alunos</a>
-                <a href="responsavel.php" class="btn btn-light btn btn-block">Responsáveis</a>
+                <a href="turma" class="btn btn-light btn btn-block">Turmas</a>
+                <a href="disciplina" class="btn btn-light btn btn-block">Disciplinas</a>
+                <a href="professor" class="btn btn-light btn btn-block">Professores</a>
+                <a href="aluno" class="btn btn-light btn btn-block">Alunos</a>
+                <a href="responsavel" class="btn btn-light btn btn-block">Responsáveis</a>
                 <a href="../../logout.php" class="mobile btn btn-danger btn btn-block" >Sair</a>
             </div>
         </div>

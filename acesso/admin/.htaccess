@@ -1,0 +1,18 @@
+RewriteEngine On
+
+RewriteRule ^home?$ index.php
+
+RewriteRule ^responsavel?$ responsavel.php
+RewriteRule ^responsavel/([0-9]+) responsavel.php?id=$1
+
+RewriteRule ^aluno?$ aluno.php
+RewriteRule ^aluno/([0-9]+) aluno.php?id=$1
+
+RewriteRule ^turma?$ turma.php
+RewriteRule ^turma/([0-9]+) turma.php?id=$1
+
+RewriteRule ^disciplina?$ disciplina.php
+RewriteRule ^disciplina/([0-9]+) disciplina.php?id=$1
+
+RewriteRule ^professor?$ professor.php
+RewriteRule ^professor/([0-9]+) professor.php?id=$1

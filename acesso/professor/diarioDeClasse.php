@@ -15,8 +15,8 @@ if (isset($_SESSION['tipo'])) {
         $professorQuery = $professorQuery->fetchObject();
         
         if (!empty($_GET)) {
-            $turma = $_GET['turma'];
-            $disciplina = $_GET['disciplina']; 
+            $turma = $_GET['t'];
+            $disciplina = $_GET['d']; 
         
         ?>
 
@@ -122,6 +122,11 @@ if (isset($_SESSION['tipo'])) {
 </html>
 
 <?php
+
+
+        //echo "<td> <a href='faltas.php' class='btn btn-info'><span class='glyphicon glyphicon-remove'></span> Faltas</a> </td>";
+        //echo "<td> <a href='comentarios.php' class='btn btn-info'><span class='glyphicon glyphicon-comment'></span> Comentários</a> </td>";
+
         } else {
             header('Location: visualizarTurmas.php');
         }

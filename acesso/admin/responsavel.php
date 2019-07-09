@@ -54,7 +54,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">webSchool</a>
+            <a class="navbar-brand" href="home">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -62,7 +62,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="index.php">Home</a>
+                            <a class="dropdown-item" href="home">Home</a>
                             <a class="dropdown-item" href="../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
@@ -116,7 +116,7 @@ if (isset($_SESSION['tipo'])) {
                     
                     foreach ($usersQuery as $user) {
                         echo '<tr><td>'.$user->nome.'</td>'; 
-                        echo "<td><a href='responsavel.php?id=$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>"; 
+                        echo "<td><a href='responsavel/$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>"; 
                         echo "<td><a href='src/deletarResponsavel.php?id=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
                     }
                     
@@ -135,10 +135,6 @@ if (isset($_SESSION['tipo'])) {
 <?php
     } else {
         $id = $_GET['id'];
-        
-        if (empty($id)) {
-            header('Location: responsavel.php');
-        }
 
         $usersQuery = $db->query("
             select usuario.* from usuario, responsavel where usuario.idUsuario=responsavel.idUsuario and responsavel.idUsuario=$id
@@ -147,7 +143,7 @@ if (isset($_SESSION['tipo'])) {
         $usersQuery = $usersQuery->fetchObject();
 
         if (empty ($usersQuery)) {
-            header('Location: responsavel.php');
+            header('Location: ../home');
         }
         ?>
 <html>
@@ -155,9 +151,9 @@ if (isset($_SESSION['tipo'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link href="../../css/glyphicons.css" rel="stylesheet">
-        <link href="../../res/navbar.css" rel="stylesheet">
-        <script src="../../res/jquery.js">
+        <link href="../../../css/glyphicons.css" rel="stylesheet">
+        <link href="../../../res/navbar.css" rel="stylesheet">
+        <script src="../../../res/jquery.js">
         </script>
         <script>
         function verificarLogin(val) {
@@ -192,7 +188,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">webSchool</a>
+            <a class="navbar-brand" href="../home">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -200,8 +196,8 @@ if (isset($_SESSION['tipo'])) {
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="index.php">Home</a>
-                            <a class="dropdown-item" href="../../logout.php">Sair</a>
+                            <a class="dropdown-item" href="../home">Home</a>
+                            <a class="dropdown-item" href="../../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Something else here</a> -->
@@ -282,7 +278,7 @@ if (isset($_SESSION['tipo'])) {
                 if ($count > 0) {
                     $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
 
-                    echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;">';
+                    echo '<table style="margin-left: auto; margin-right: auto; font-size: 13; width: 50%;" class="table">';
                     foreach ($usersQuery as $user) {
                         echo '<tr><td>'.$user->nome.'</td><td>'.pegarTurmaDoAluno($user->idUsuario).'</td>';
                         echo "<td><a href='src/deletarAlunoDoResponsavel.php?resp=$id&aluno=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
