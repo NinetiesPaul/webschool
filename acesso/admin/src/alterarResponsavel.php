@@ -45,7 +45,7 @@ if (isset($_SESSION['tipo'])) {
             $user = $db->prepare($sql);
             $user->execute($fields);
         
-            header('Location: ../responsavel.php');
+            header('Location: ../responsavel');
         }
     }
 } else {

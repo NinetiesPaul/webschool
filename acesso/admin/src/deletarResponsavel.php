@@ -38,7 +38,7 @@ if (isset($_SESSION['tipo'])) {
             'user_id' => $id,
         ]);
 
-        header('Location: ../responsavel.php');
+        header('Location: ../responsavel');
     }
 } else {
     header('Location: index.php');

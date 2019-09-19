@@ -77,7 +77,7 @@ if (isset($_SESSION['tipo'])) {
             ]);
         }
     
-        header('Location: ../aluno.php');
+        header('Location: ../aluno');
     }
 } else {
     header('Location: index.php');

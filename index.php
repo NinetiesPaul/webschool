@@ -5,7 +5,7 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo == "admin") {
-        header('Location: acesso/admin/index.php');
+        header('Location: acesso/admin/');
     }
     if ($tipo == "responsavel") {
         header('Location: acesso/responsavel/index.php');

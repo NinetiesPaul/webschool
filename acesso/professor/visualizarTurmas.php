@@ -19,6 +19,7 @@ if (isset($_SESSION['tipo'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link href="../../css/glyphicons.css" rel="stylesheet">
         <link href="../../res/css.css" rel="stylesheet">
         <link href="../../res/navbar.css" rel="stylesheet">
         <script src="../../res/jquery.js">
@@ -58,7 +59,7 @@ if (isset($_SESSION['tipo'])) {
 
                 foreach ($disciplinaQuery as $disciplina){
                     echo pegarDisciplina($disciplina->idDisciplina).', '.pegarTurma($disciplina->idTurma);
-                    echo "(<a href='detalhesDaTurma.php?turma=$disciplina->idTurma&disc=$disciplina->idDisciplina'>Ver detalhes dessa turma</a>)";
+                    echo "<a href='detalhesDaTurma.php?id=$disciplina->idDisciplinaPorProfessor' class='btn-sm btn-info'><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a>";
 
                     $alunosQuery = $db->query("
                         select distinct usuario.* from usuario, aluno, turma, disciplinaporprofessor

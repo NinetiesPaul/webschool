@@ -50,7 +50,7 @@ if (isset($_SESSION['tipo'])) {
             'idUusuario' => $userId,
         ]);
     
-        header('Location: ../professor.php');
+        header('Location: ../professor');
     }
 } else {
     header('Location: index.php');

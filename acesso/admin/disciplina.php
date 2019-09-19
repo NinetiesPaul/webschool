@@ -25,7 +25,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">webSchool</a>
+            <a class="navbar-brand" href="..">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -33,7 +33,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="index.php">Home</a>
+                            <a class="dropdown-item" href="..">Home</a>
                             <a class="dropdown-item" href="../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
@@ -72,8 +72,8 @@ if (isset($_SESSION['tipo'])) {
                 
                 foreach ($usersQuery as $user) {
                     echo '<tr><td>'.$user->nomeDisciplina.'</td>';
-                    echo "<td><a href='disciplina.php?id=$user->idDisciplina' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
-                    echo "<td><a href='src/deletarDisciplina.php?id=$user->idDisciplina' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
+                    echo "<td><a href='disciplina/$user->idDisciplina' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
+                    echo "<td><a href='deletar-disciplina/$user->idDisciplina' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
                 }
                 
                 ?>	
@@ -91,10 +91,6 @@ if (isset($_SESSION['tipo'])) {
 <?php
     } else {
         $id = $_GET['id'];
-        
-        if (empty($id)) {
-            header('Location: disciplina.php');
-        }
 
         $usersQuery = $db->query("
             select * from disciplina where idDisciplina=$id
@@ -103,7 +99,7 @@ if (isset($_SESSION['tipo'])) {
         $usersQuery = $usersQuery->fetchObject();
 
         if (empty ($usersQuery)) {
-            header('Location: disciplina.php');
+            header('Location: ../disciplina');
         }
         
         ?>
@@ -112,15 +108,15 @@ if (isset($_SESSION['tipo'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link href="../../css/glyphicons.css" rel="stylesheet">
-        <link href="../../res/navbar.css" rel="stylesheet">
-        <script src="../../res/jquery.js">
+        <link href="../../../css/glyphicons.css" rel="stylesheet">
+        <link href="../../../res/navbar.css" rel="stylesheet">
+        <script src="../../../res/jquery.js">
         </script>
         <title>webSchool :: Alteração de Disciplina</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">webSchool</a>
+            <a class="navbar-brand" href="..">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -128,8 +124,8 @@ if (isset($_SESSION['tipo'])) {
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="index.php">Home</a>
-                            <a class="dropdown-item" href="../../logout.php">Sair</a>
+                            <a class="dropdown-item" href="..">Home</a>
+                            <a class="dropdown-item" href="../../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Something else here</a> -->
@@ -142,7 +138,7 @@ if (isset($_SESSION['tipo'])) {
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Alteração de Disciplina</strong><p/>
-                <form action="src/alterarDisciplina.php" method="post" role="form" class="form-horizontal " >
+                <form action="../src/alterarDisciplina.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id ?>" />
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome da Disciplina:</label>

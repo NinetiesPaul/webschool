@@ -129,7 +129,7 @@ if (isset($_SESSION['tipo'])) {
                 'idTurma' => $turma,
             ]);
         
-            header("Location: detalhesDaTurma.php?turma=$turma&disc=$disciplina");
+            header("Location: visualizarTurmas.php");
         }
     }
 } else {

@@ -28,7 +28,7 @@ if (isset($_SESSION['tipo'])) {
             'responsavel' => $responsavelQuery->idresponsavel,
             'aluno' => $alunoQuery->idaluno,
         ]);
-        header("Location: ../responsavel.php?user=$responsavel");
+        header("Location: ../responsavel/$responsavel");
     }
 } else {
     header('Location: index.php');

@@ -19,7 +19,7 @@ if (isset($_SESSION['tipo'])) {
             'id' => $id,
         ]);
 
-        header('Location: ../disciplina.php');
+        header('Location: ../disciplina');
     }
 } else {
     header('Location: index.php');

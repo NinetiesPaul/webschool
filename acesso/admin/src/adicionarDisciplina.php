@@ -23,7 +23,7 @@ if (isset($_SESSION['tipo'])) {
         
         $userId = (int) $db->lastInsertId();
     
-        header('Location: ../disciplina.php');
+        header('Location: ../disciplina');
     }
 } else {
     header('Location: index.php');
