@@ -26,7 +26,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="home">webSchool</a>
+            <a class="navbar-brand" href="..">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -34,7 +34,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="home">Home</a>
+                            <a class="dropdown-item" href="..">Home</a>
                             <a class="dropdown-item" href="../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
@@ -89,7 +89,7 @@ if (isset($_SESSION['tipo'])) {
                     foreach ($turmaQuery as $turma) {
                         echo "<tr><td>".pegarTurma($turma->idTurma)."</td>";
                         echo "<td><a href='turma/$turma->idTurma' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
-                        echo "<td><a href='src/deletarTurma.php?id=$turma->idTurma' class='btn btn-danger btn-sm btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
+                        echo "<td><a href='deletar-turma/$turma->idTurma' class='btn btn-danger btn-sm btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
                     }
                     
                     ?>
@@ -133,7 +133,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="../home">webSchool</a>
+            <a class="navbar-brand" href="..">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -141,7 +141,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="../home">Home</a>
+                            <a class="dropdown-item" href="..">Home</a>
                             <a class="dropdown-item" href="../../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
@@ -155,7 +155,7 @@ if (isset($_SESSION['tipo'])) {
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Alteração de Turma</strong><p/>
-                <form action="src/alterarTurma.php" method="post" role="form" class="form-horizontal " >
+                <form action="../src/alterarTurma.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id ?>" />
                     <div class="form-group row justify-content-center ">
                         <label for="serie" class="col-form-label col-md-2 col-form-label-sm">Série:</label>

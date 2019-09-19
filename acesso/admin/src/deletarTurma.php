@@ -19,7 +19,7 @@ if (isset($_SESSION['tipo'])) {
             'user_id' => $id,
         ]);
 
-        header('Location: ../turma.php');
+        header('Location: ../turma');
     }
 } else {
     header('Location: index.php');

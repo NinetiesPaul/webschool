@@ -23,7 +23,7 @@ if (isset($_SESSION['tipo'])) {
         
         $userId = (int) $db->lastInsertId();
     
-        header('Location: ../turma.php');
+        header('Location: ../turma');
     }
 } else {
     header('Location: index.php');

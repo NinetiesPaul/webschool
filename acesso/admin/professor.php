@@ -25,7 +25,7 @@ if (isset($_SESSION['tipo'])) {
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "../../data/verificarLogin.php",
+                url: "../../../data/verificarLogin.php",
                 data:'login='+val+'&tipo=professor',
                 success: function(data ){
                     if (data == 1){
@@ -38,15 +38,15 @@ if (isset($_SESSION['tipo'])) {
                 }
             });
         }
-
-
+        
+        
         $(document).on('focusout', '#email', function(){
               verificarLogin($("#email").val());
         });
 
         $(document).ready(function(){
            $("#disponibilidade").hide();
-        });
+           });
 
 
         </script>
@@ -54,7 +54,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="home">webSchool</a>
+            <a class="navbar-brand" href="..">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -62,7 +62,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="home">Home</a>
+                            <a class="dropdown-item" href="..">Home</a>
                             <a class="dropdown-item" href="../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
@@ -116,7 +116,7 @@ if (isset($_SESSION['tipo'])) {
                 foreach ($usersQuery as $user) {
                     echo '<tr><td>'.$user->nome.'</td>';
                     echo "<td><a href='professor/$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
-                    echo "<td><a href='src/deletarProfessor.php?id=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr></a> ";
+                    echo "<td><a href='deletar-professor/$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr></a> ";
                 }
                 
                 ?>	
@@ -189,7 +189,7 @@ if (isset($_SESSION['tipo'])) {
                         echo "<tr><td>".pegarNomeProfessor($profDisc->idProfessor)."</td>";
                         echo "<td>".pegarDisciplina($profDisc->idDisciplina)."</td>";
                         echo "<td>".pegarTurma($profDisc->idTurma)."</td>";
-                        echo "<td><a href='src/deletarDisciplinaPorProfessor.php?id=$profDisc->idDisciplinaPorProfessor' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
+                        echo "<td><a href='deletar-disciplina-professor/$profDisc->idDisciplinaPorProfessor' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
                     }
                     
                     ?>
@@ -261,7 +261,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="../home">webSchool</a>
+            <a class="navbar-brand" href="..">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -269,7 +269,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="../home">Home</a>
+                            <a class="dropdown-item" href="../">Home</a>
                             <a class="dropdown-item" href="../../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
@@ -283,7 +283,7 @@ if (isset($_SESSION['tipo'])) {
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Alteração de professor</strong><p/>
-                <form action="src/alterarProfessor.php" method="post" role="form" class="form-horizontal " >
+                <form action="../src/alterarProfessor.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id ?>" />
                     <input type="hidden" name="salt" value="<?php echo $usersQuery->salt ?>" />
                     <div class="form-group row justify-content-center ">

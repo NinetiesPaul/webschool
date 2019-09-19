@@ -44,7 +44,7 @@ if (isset($_SESSION['tipo'])) {
             $professorQuery = $db->prepare($sql);
             $professorQuery->execute($fields);
         
-            header('Location: ../professor.php');
+            header('Location: ../professor');
         }
     }
 } else {

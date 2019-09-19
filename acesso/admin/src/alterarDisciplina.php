@@ -28,7 +28,7 @@ if (isset($_SESSION['tipo'])) {
                 'idDisciplina' => $idDisciplina,
             ]);
         
-            header('Location: ../disciplina.php');
+            header('Location: ../disciplina');
         }
     }
 } else {

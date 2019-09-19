@@ -40,7 +40,7 @@ if (isset($_SESSION['tipo'])) {
             'user_id' => $id,
         ]);
 
-        header('Location: ../aluno.php');
+        header('Location: ../aluno');
     }
 } else {
     header('Location: index.php');

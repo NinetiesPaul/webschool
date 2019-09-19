@@ -25,7 +25,7 @@ if (isset($_SESSION['tipo'])) {
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "../../data/verificarLogin.php",
+                url: "../../../data/verificarLogin.php",
                 data:'login='+val+'&tipo=responsavel',
                 success: function(data ){
                     if (data == 1){
@@ -54,7 +54,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="home">webSchool</a>
+            <a class="navbar-brand" href="..">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -62,7 +62,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="home">Home</a>
+                            <a class="dropdown-item" href="..">Home</a>
                             <a class="dropdown-item" href="../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
@@ -117,7 +117,7 @@ if (isset($_SESSION['tipo'])) {
                     foreach ($usersQuery as $user) {
                         echo '<tr><td>'.$user->nome.'</td>'; 
                         echo "<td><a href='responsavel/$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>"; 
-                        echo "<td><a href='src/deletarResponsavel.php?id=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
+                        echo "<td><a href='deletar-responsavel/$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
                     }
                     
                     ?>
@@ -159,7 +159,7 @@ if (isset($_SESSION['tipo'])) {
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "../../data/verificarLoginEmAlteracao.php",
+                url: "../../../data/verificarLoginEmAlteracao.php",
                 data:'login='+val+'&tipo=responsavel&id='+<?php echo $id; ?>,
                 success: function(data ){
                     if (data == 1){
@@ -188,7 +188,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="../home">webSchool</a>
+            <a class="navbar-brand" href="..">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -196,7 +196,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="../home">Home</a>
+                            <a class="dropdown-item" href="..">Home</a>
                             <a class="dropdown-item" href="../../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
@@ -210,7 +210,7 @@ if (isset($_SESSION['tipo'])) {
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Alteração de Responsável</strong> <p/>
-                <form action="src/alterarResponsavel.php" method="post" role="form" class="form-horizontal " >
+                <form action="../src/alterarResponsavel.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id ?>" />
                     <input type="hidden" name="salt" value="<?php echo $usersQuery->salt ?>" />
                     <div class="form-group row justify-content-center ">
@@ -245,7 +245,7 @@ if (isset($_SESSION['tipo'])) {
                 ?>
 
                 Selecione quais alunos pertencem a este Responsável:<p/>
-                <form action="src/adicionarResponsavelPorAluno.php" method="post" role="form" class="form-horizontal " >
+                <form action="../src/adicionarResponsavelPorAluno.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id; ?>" />
                         <div class="form-group row justify-content-center ">
                             <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
@@ -281,7 +281,7 @@ if (isset($_SESSION['tipo'])) {
                     echo '<table style="margin-left: auto; margin-right: auto; font-size: 13; width: 50%;" class="table">';
                     foreach ($usersQuery as $user) {
                         echo '<tr><td>'.$user->nome.'</td><td>'.pegarTurmaDoAluno($user->idUsuario).'</td>';
-                        echo "<td><a href='src/deletarAlunoDoResponsavel.php?resp=$id&aluno=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
+                        echo "<td><a href='../deletar-aluno-responsavel/$id/$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
                     }
                     echo '</table>';
                 } else {

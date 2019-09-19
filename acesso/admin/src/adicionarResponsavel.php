@@ -50,7 +50,7 @@ if (isset($_SESSION['tipo'])) {
             'idUusuario' => $userId,
         ]);
     
-        header('Location: ../responsavel.php');
+        header('Location: ../responsavel');
     }
 } else {
     header('Location: index.php');

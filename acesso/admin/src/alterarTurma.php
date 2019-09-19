@@ -30,7 +30,7 @@ if (isset($_SESSION['tipo'])) {
                 'turmaId' => $turmaId,
             ]);
         
-            header('Location: ../turma.php');
+            header('Location: ../turma');
         }
     }
 } else {

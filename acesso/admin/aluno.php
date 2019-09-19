@@ -55,7 +55,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="home">webSchool</a>
+            <a class="navbar-brand" href="..">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -63,7 +63,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="home">Home</a>
+                            <a class="dropdown-item" href="..">Home</a>
                             <a class="dropdown-item" href="../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
@@ -138,7 +138,7 @@ if (isset($_SESSION['tipo'])) {
                     echo '<tr><td>'.$user->nome.'</td>';
                     echo '<td>'.pegarTurmaDoAluno($user->idUsuario).'</td>';
                     echo "<td><a href='aluno/$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
-                    echo "<td><a href='src/deletarAluno.php?id=$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></a></td></tr>";
+                    echo "<td><a href='deletar-aluno/$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></a></td></tr>";
                 }
                 
                 ?>	
@@ -181,7 +181,7 @@ if (isset($_SESSION['tipo'])) {
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "../../data/verificarLoginEmAlteracao.php",
+                url: "../../../data/verificarLoginEmAlteracao.php",
                 data:'login='+val+'&tipo=aluno&id='+<?php echo $id; ?>,
                 success: function(data ){
                     if (data == 1){
@@ -210,7 +210,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="../home">webSchool</a>
+            <a class="navbar-brand" href="..">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -218,7 +218,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="../home">Home</a>
+                            <a class="dropdown-item" href="..">Home</a>
                             <a class="dropdown-item" href="../../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
@@ -232,7 +232,7 @@ if (isset($_SESSION['tipo'])) {
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Alteração de Aluno</strong><p/>
-                <form action="src/alterarAluno.php" method="post" role="form" class="form-horizontal " >
+                <form action="../src/alterarAluno.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id ?>" />
                     <input type="hidden" name="idAluno" value="<?php echo $usersQuery->idAluno ?>" />
                     <input type="hidden" name="salt" value="<?php echo $usersQuery->salt ?>" />
