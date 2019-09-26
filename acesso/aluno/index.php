@@ -49,7 +49,7 @@ if (isset($_SESSION['tipo'])) {
 
         <div class="container">
             <div class="jumbotron text-center">
-                <a href="visualizarTurmas.php" class="btn btn-light btn btn-block">Turmas</a>
+                <a href="turmas" class="btn btn-light btn btn-block">Turmas</a>
                 <a href="../perfil.php" class="mobile btn btn-dark btn btn-block" >Meu Perfil</a>
                 <a href="../../logout.php" class="mobile btn btn-danger btn btn-block" >Sair</a>
                 <!-- <a href="solicitacoes.php">Fazer solicitações ao administrador</a><br/> -->

@@ -1,0 +1,5 @@
+RewriteEngine On
+
+RewriteRule ^home?$ index.php
+
+RewriteRule ^turmas/?$ visualizarTurmas.php
