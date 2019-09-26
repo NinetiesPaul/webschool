@@ -45,7 +45,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como <?php echo pegarNomeDoAluno($alunoQuery->idAluno); ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/">Home</a>
+                            <a class="dropdown-item" href="index.php">Home</a>
                             <a class="dropdown-item" href="../perfil.php">Meu perfil</a>
                             <a class="dropdown-item" href="../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>

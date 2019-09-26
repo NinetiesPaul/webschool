@@ -27,7 +27,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="home">webSchool</a>
+            <a class="navbar-brand" href="index.php">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -35,7 +35,7 @@ if (isset($_SESSION['tipo'])) {
                         Logado como <?php echo pegarNomeDoAluno($alunoQuery->idAluno); ?>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="home">Home</a>
+                        <a class="dropdown-item" href="index.php">Home</a>
                         <a class="dropdown-item" href="../perfil.php">Meu perfil</a>
                         <a class="dropdown-item" href="../../logout.php">Sair</a>
                         <!-- <a class="dropdown-item" href="#">Another action</a>
