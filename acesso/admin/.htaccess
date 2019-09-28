@@ -1,6 +1,6 @@
 RewriteEngine On
 
-RewriteRule ^/?$ index.php
+RewriteRule ^home?$ index.php
 
 RewriteRule ^responsavel?$ responsavel.php
 RewriteRule ^responsavel/([0-9]+) responsavel.php?id=$1
