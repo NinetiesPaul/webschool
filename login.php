@@ -31,16 +31,16 @@ if (!empty($_POST)) {
             session_start();
             $_SESSION['user_id'] = $userId;
             $_SESSION['tipo'] = $tipo;
-                    
+            
             $msg = 'Bem-vindo!';
-            $redirect = "<p/><a href='index.php'>Ir</a> para minha tela inicial.";
+            $redirect = "<p/><a href='home'>Ir</a> para minha tela inicial.";
         } else {
             $msg = 'Usuário não cadastrado ou senha incorreta!';
-            $redirect = "<p/><a href='index.php'>Voltar</a>";
+            $redirect = "<p/><a href='home'>Voltar</a>";
         }
     } else {
         $msg = 'Usuário não cadastrado ou senha incorreta!';
-        $redirect = "<p/><a href='index.php'>Voltar</a>";
+        $redirect = "<p/><a href='home'>Voltar</a>";
     } ?>
     <html lang="en">
         <head>
@@ -55,7 +55,7 @@ if (!empty($_POST)) {
         </head>
         <body>
             <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-                <a class="navbar-brand" href="index.php">webSchool</a>
+                <a class="navbar-brand" >webSchool</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="PokeXchange">
                 <span class="navbar-toggler-icon"></span>
                 </button>
