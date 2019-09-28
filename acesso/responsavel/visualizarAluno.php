@@ -4,7 +4,7 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "responsavel") {
-        header('Location: index.php');
+        header('Location: ../index.php');
     } else {
         $userId = $_SESSION['user_id'];
         
@@ -69,7 +69,7 @@ if (isset($_SESSION['tipo'])) {
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Something else here</a> -->
-                            <a class="dropdown-item" href="../../logout.php">Sair</a>
+                            <a class="dropdown-item" href="../../../logout">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Something else here</a> -->
