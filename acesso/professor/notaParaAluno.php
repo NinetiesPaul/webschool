@@ -18,28 +18,27 @@ if (isset($_SESSION['tipo'])) {
         $professorQuery = $professorQuery->fetchObject();
 
         if (!empty($_GET)) {
-            $data = $_GET['a'];
         
-            $idAluno = $data[0];
-            $disciplina = $data[1];
-            $turma = $data[2];
-            $notaNum = $data[3]; ?>
+            $idAluno = $_GET['a'];
+            $disciplina = $_GET['d'];
+            $turma = $_GET['t'];
+            $notaNum = $_GET['n']; ?>
 
 <html lang="en">
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link href="../../css/glyphicons.css" rel="stylesheet">
-        <link href="../../res/navbar.css" rel="stylesheet">
-        <link href="../../res/css.css" rel="stylesheet">
-        <script src="../../res/jquery.js">
+        <link href="../../../../../../css/glyphicons.css" rel="stylesheet">
+        <link href="../../../../../../res/navbar.css" rel="stylesheet">
+        <link href="../../../../../../res/css.css" rel="stylesheet">
+        <script src="../../../../../../res/jquery.js">
         </script>
         <title>webSchool :: Alteração de Nota</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">webSchool</a>
+            <a class="navbar-brand" href="../../../../home">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -47,7 +46,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como <?php echo pegarNomeProfessor($professorQuery->idProfessor); ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="index.php">Home</a>
+                            <a class="dropdown-item" href="../../../../home">Home</a>
                             <a class="dropdown-item" href="../perfil.php">Meu perfil</a>
                             <a class="dropdown-item" href="../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
@@ -82,7 +81,7 @@ if (isset($_SESSION['tipo'])) {
                 
                 ?>
 
-                <form action="adicionarNotaParaAluno.php" method="post" role="form" class="form-horizontal ">
+                <form action="../../../../src/adicionarNotaParaAluno.php" method="post" role="form" class="form-horizontal ">
                     <input type="hidden" name="aluno" value="<?php echo $idAluno; ?>" />
                     <input type="hidden" name="disciplina" value="<?php echo $disciplina; ?>" />
                     <input type="hidden" name="turma" value="<?php echo $turma; ?>" />
@@ -107,29 +106,6 @@ if (isset($_SESSION['tipo'])) {
 <?php
         } else {
             header('Location: visualizarTurmas.php');
-        }
-
-        if (!empty($_POST)) {
-            $aluno = $_POST['aluno'];
-            $turma = $_POST['turma'];
-            $disciplina = $_POST['disciplina'];
-            $nota = $_POST['nota'];
-            $notaNum = $_POST['notaNum'];
-        
-            $user = $db->prepare("
-                UPDATE notaPorAluno
-                SET ".$notaNum."=:nota
-                where idAluno=:idAluno and idDisciplina=:idDisciplina and idTurma=:idTurma
-            ");
-
-            $user->execute([
-                'nota' => $nota,
-                'idAluno' => $aluno,
-                'idDisciplina' => $disciplina,
-                'idTurma' => $turma,
-            ]);
-        
-            header("Location: visualizarTurmas.php");
         }
     }
 } else {
