@@ -1,0 +1,23 @@
+RewriteEngine On
+
+
+RewriteRule ^home?$ index.php
+
+RewriteRule ^turmas/?$ visualizarTurmas.php
+
+RewriteRule ^turmas/([0-9]+)?$ detalhesDaTurma.php?id=$1
+
+RewriteRule ^nota/([0-9]+)/([0-9]+)/([0-9]+)/nota1?$ notaParaAluno.php?a=$1&d=$2&t=$3&n=nota1
+RewriteRule ^nota/([0-9]+)/([0-9]+)/([0-9]+)/rec1?$ notaParaAluno.php?a=$1&d=$2&t=$3&n=rec1
+RewriteRule ^nota/([0-9]+)/([0-9]+)/([0-9]+)/nota2?$ notaParaAluno.php?a=$1&d=$2&t=$3&n=nota2
+RewriteRule ^nota/([0-9]+)/([0-9]+)/([0-9]+)/rec2?$ notaParaAluno.php?a=$1&d=$2&t=$3&n=rec2
+RewriteRule ^nota/([0-9]+)/([0-9]+)/([0-9]+)/nota3?$ notaParaAluno.php?a=$1&d=$2&t=$3&n=nota3
+RewriteRule ^nota/([0-9]+)/([0-9]+)/([0-9]+)/rec3?$ notaParaAluno.php?a=$1&d=$2&t=$3&n=rec3
+RewriteRule ^nota/([0-9]+)/([0-9]+)/([0-9]+)/nota4?$ notaParaAluno.php?a=$1&d=$2&t=$3&n=nota4
+RewriteRule ^nota/([0-9]+)/([0-9]+)/([0-9]+)/rec4?$ notaParaAluno.php?a=$1&d=$2&t=$3&n=rec4
+
+RewriteRule ^diario-de-classe/([0-9]+)/([0-9]+)?$ diarioDeClasse.php?t=$1&d=$2
+
+RewriteRule ^criar-presenca/([0-9]+)/([0-9]+)/([0-9]+)/([0-9]+)/([0-9]+)/([0-9]+)?$ src/adicionarFaltaParaAluno.php?ano=$1&mes=$2&dia=$3&a=$4&di=$5&t=$6
+
+RewriteRule ^presenca/([0-9]+)?$ src/deletarFaltaParaAluno.php?falta=$1
