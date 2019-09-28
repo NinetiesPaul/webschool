@@ -7,6 +7,7 @@ if (! empty($_POST)) {
     $ano = $_POST["ano"];
     $turma = $_POST["turma"];
     $disc = $_POST["disc"];
+    $context = $_POST["context"];
 
     $days = cal_days_in_month(CAL_GREGORIAN, $mes, $ano);
     
@@ -20,7 +21,7 @@ if (! empty($_POST)) {
     echo '<p/>';
     
     $alunosQuery = $db->query("
-        select diariodeclasse.idAluno, usuario.nome
+        select diariodeclasse.*, usuario.nome
         from usuario
         inner join aluno on aluno.idUsuario = usuario.idUsuario
         inner join diariodeclasse on diariodeclasse.idAluno = aluno.idAluno
@@ -45,7 +46,7 @@ if (! empty($_POST)) {
         echo "<th scope='row'>".$date."</th>";
         foreach ($alunos as $aluno) {
             $diarioQuery = $db->query("
-            select presenca
+            select *
             from diariodeclasse
             where idAluno = $aluno->idAluno
             and dataDaFalta = '$date'
@@ -53,12 +54,24 @@ if (! empty($_POST)) {
             $diario = $diarioQuery->fetch(PDO::FETCH_OBJ);
             
             $presenca = 'Falta';
-            if (!empty($diario->presenca)) {
-                if ($diario->presenca) {
+            
+            $date = explode('-', $date);
+            
+            if ($context === 'professor') {
+                $link = "../../criar-presenca/$date[0]/$date[1]/$date[2]/$aluno->idAluno/$aluno->idDisciplina/$aluno->idTurma";
+            }
+            
+            if ($diario) {
+                if ($diario->presenca == 1) {
                     $presenca = 'Presente';
+                    if ($context === 'professor') {
+                        $link = "../../presenca/$diario->idDiario";
+                    }
                 }
             }
-            echo "<th scope='row'>".$presenca."</th>";
+            echo "<th scope='row'>";
+            echo ($context === 'professor') ? "<a href='$link' id='presenca'>$presenca</a>" : $presenca;
+            echo "</th>";
         }
     }
     echo "</tr>";

@@ -20,15 +20,20 @@ if (isset($_SESSION['tipo'])) {
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link href="../../css/glyphicons.css" rel="stylesheet">
-        <link href="../../res/css.css" rel="stylesheet">
         <link href="../../res/navbar.css" rel="stylesheet">
+        <link href="../../res/css.css" rel="stylesheet">
+        <style>
+            #btn_disciplina {
+                text-decoration: none;
+            }
+        </style>
         <script src="../../res/jquery.js">
         </script>
         <title>Professor :: Minhas Turmas</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">webSchool</a>
+            <a class="navbar-brand" href="home">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -36,7 +41,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como <?php echo pegarNomeProfessor($professorQuery->idProfessor); ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="index.php">Home</a>
+                            <a class="dropdown-item" href="home">Home</a>
                             <a class="dropdown-item" href="../perfil.php">Meu perfil</a>
                             <a class="dropdown-item" href="../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
@@ -59,7 +64,7 @@ if (isset($_SESSION['tipo'])) {
 
                 foreach ($disciplinaQuery as $disciplina){
                     echo pegarDisciplina($disciplina->idDisciplina).', '.pegarTurma($disciplina->idTurma);
-                    echo "<a href='detalhesDaTurma.php?id=$disciplina->idDisciplinaPorProfessor' class='btn-sm btn-info'><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a>";
+                    echo "<a href='turmas/$disciplina->idDisciplinaPorProfessor' class='btn-sm btn-info' id='btn_disciplina' '><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a>";
 
                     $alunosQuery = $db->query("
                         select distinct usuario.* from usuario, aluno, turma, disciplinaporprofessor

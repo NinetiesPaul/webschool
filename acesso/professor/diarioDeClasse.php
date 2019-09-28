@@ -25,18 +25,21 @@ if (isset($_SESSION['tipo'])) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link href="../../res/css.css" rel="stylesheet">
-        <link href="../../res/navbar.css" rel="stylesheet">
-        <script src="../../res/jquery.js">
-        </script>
-        <script src="../../res/detect.js">
+        <link href="../../../../res/css.css" rel="stylesheet">
+        <link href="../../../../res/navbar.css" rel="stylesheet">
+        <style>
+            #search {
+                text-decoration: none;
+            }
+        </style>
+        <script src="../../../../res/jquery.js">
         </script>
         <script>
-        function pesquisarFrequencia(mes, ano, turma, disc) {
+        function pesquisarFrequencia(mes, ano, turma, disc, context) {
             $.ajax({
                 type: "POST",
-                url: "../../data/pesquisarFrequencia.php",
-                data:'mes='+mes+'&ano='+ano+'&turma='+turma+'&disc='+disc,
+                url: "../../../../data/pesquisarFrequencia.php",
+                data:'mes='+mes+'&ano='+ano+'&turma='+turma+'&disc='+disc+'&context='+context,
                 success: function(data ){
                     $("#result").html(data);
                 }
@@ -49,7 +52,8 @@ if (isset($_SESSION['tipo'])) {
                 console.log($("#ano").val());
                 console.log($("#turma").val());
                 console.log($("#disc").val());
-                pesquisarFrequencia($("#mes").val(), $("#ano").val(), $("#turma").val(), $("#disc").val());
+                console.log($("#context").val());
+                pesquisarFrequencia($("#mes").val(), $("#ano").val(), $("#turma").val(), $("#disc").val(), $("#context").val());
                 
             });
         });
@@ -58,7 +62,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">webSchool</a>
+            <a class="navbar-brand" href="../../home">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -66,7 +70,7 @@ if (isset($_SESSION['tipo'])) {
                             Logado como <?php echo pegarNomeProfessor($professorQuery->idProfessor); ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="index.php">Home</a>
+                            <a class="dropdown-item" href="../../home">Home</a>
                             <a class="dropdown-item" href="../perfil.php">Meu perfil</a>
                             <a class="dropdown-item" href="../../logout.php">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
@@ -85,6 +89,7 @@ if (isset($_SESSION['tipo'])) {
                 
                 <input type="hidden" id="disc" value='<?php echo $disciplina?>' />
                 <input type="hidden" id="turma" value='<?php echo $turma ?>' />
+                <input type="hidden" id="context" value='professor' />
                 
                 <br/><select id="ano">
                     <option value="2018">2018</option>
@@ -106,7 +111,7 @@ if (isset($_SESSION['tipo'])) {
                     <option value="12">Dezembro</option>
                 </select><p/>
                 
-                <input type="button" id="search" value="Pesquisar" />
+                <input type="button" id="search" value="Pesquisar" class="btn btn-sm btn-info" />
                 
                 <div id="result">
                     Resultado aqui.

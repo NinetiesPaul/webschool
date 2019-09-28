@@ -12,14 +12,22 @@ if (isset($_SESSION['tipo'])) {
         include '../../../data/conn.php';
         
         $id = $_GET['falta'];
+        
+        $diarioQuery = $db->query("
+        select *
+        from diariodeclasse
+        where idDiario = $id
+        ");
 
-        $user = $db->prepare("DELETE FROM faltaPorAluno WHERE idfaltaporaluno=:id");
+        $diario = $diarioQuery->fetch(PDO::FETCH_OBJ);
+
+        $user = $db->prepare("UPDATE diariodeclasse SET presenca = 0 WHERE idDiario=:id");
 
         $user->execute([
             'id' => $id,
         ]);
-
-        header('Location: verTurmas.php');
+        
+        header("Location: ../diario-de-classe/$diario->idTurma/$diario->idDisciplina");
         
     }
 } else {
