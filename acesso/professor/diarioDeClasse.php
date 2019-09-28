@@ -47,14 +47,25 @@ if (isset($_SESSION['tipo'])) {
         }
         
         $(document).ready(function(){
+            var date = new Date();
+            
+            mes = date.getMonth()+1;
+            ano = date.getFullYear();
+            
+            $("#ano option").each(function(){
+                if ($(this).val() == ano) {
+                    $(this).attr('selected', true);
+                }
+            });
+            
+            $("#mes option").each(function(){
+                if ($(this).val() == mes) {
+                    $(this).attr('selected', true);
+                }
+            });
+            
             $("#search").click(function(){
-                console.log($("#mes").val());
-                console.log($("#ano").val());
-                console.log($("#turma").val());
-                console.log($("#disc").val());
-                console.log($("#context").val());
                 pesquisarFrequencia($("#mes").val(), $("#ano").val(), $("#turma").val(), $("#disc").val(), $("#context").val());
-                
             });
         });
         </script>
@@ -92,8 +103,15 @@ if (isset($_SESSION['tipo'])) {
                 <input type="hidden" id="context" value='professor' />
                 
                 <br/><select id="ano">
+                    <option value="2013">2013</option>
+                    <option value="2014">2014</option>
+                    <option value="2015">2015</option>
+                    <option value="2016">2016</option>
+                    <option value="2017">2017</option>
                     <option value="2018">2018</option>
                     <option value="2019">2019</option>
+                    <option value="2020">2020</option>
+                    <option value="2021">2021</option>
                 </select>
                 
                 <select id="mes">
