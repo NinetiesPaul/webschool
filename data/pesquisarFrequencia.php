@@ -49,6 +49,7 @@ if (! empty($_POST)) {
             select *
             from diariodeclasse
             where idAluno = $aluno->idAluno
+            and diariodeclasse.idDisciplina = $disc and diariodeclasse.idTurma = $turma
             and dataDaFalta = '$date'
             ");
             $diario = $diarioQuery->fetch(PDO::FETCH_OBJ);
