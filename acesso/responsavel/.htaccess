@@ -1,0 +1,8 @@
+RewriteEngine On
+
+
+RewriteRule ^home?$ index.php
+
+RewriteRule ^alunos/?$ visualizarAlunos.php
+
+RewriteRule ^aluno/([0-9]+)?$ visualizarAluno.php?aluno=$1

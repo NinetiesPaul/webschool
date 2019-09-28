@@ -102,7 +102,6 @@ if (isset($_SESSION['tipo'])) {
                                 Faltas
                             </button>
                         </td>";
-                        //echo "<td>Faltas: <a href='verFaltas.php?a[]=$alunoQuery->idAluno&a[]=$nota->idDisciplina&a[]=$nota->idTurma'>".pegarFaltasDoAluno($userId, $nota->idDisciplina, $nota->idTurma)."</a></td>";
                         echo '</tr>';
                     }
                     echo '</table>';

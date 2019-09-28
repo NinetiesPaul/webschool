@@ -29,7 +29,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">webSchool</a>
+            <a class="navbar-brand" href="home">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -37,7 +37,7 @@ if (isset($_SESSION['tipo'])) {
                           Logado como <?php echo pegarNomeDoResponsavel($userId); ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="index.php">Home</a>
+                            <a class="dropdown-item" href="home">Home</a>
                             <a class="dropdown-item" href="../perfil.php">Perfil</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
@@ -61,7 +61,7 @@ if (isset($_SESSION['tipo'])) {
                 $meusAlunosQuery = $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);
 
                 foreach ($meusAlunosQuery as $alunos) {
-                    echo "<a href='visualizarAluno.php?aluno=$alunos->idAluno'>".pegarNomeDoAluno($alunos->idAluno)."</a><br/>";
+                    echo "<a href='aluno/$alunos->idAluno'>".pegarNomeDoAluno($alunos->idAluno)."</a><br/>";
                 }
                 
                 ?>
