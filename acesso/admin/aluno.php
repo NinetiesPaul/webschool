@@ -4,7 +4,7 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo != "admin") {
-        header('Location: index.php');
+        header('Location: ..');
     } else {
         $userId = $_SESSION['user_id'];
         include '../../data/functions.php';
@@ -64,7 +64,7 @@ if (isset($_SESSION['tipo'])) {
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="..">Home</a>
-                            <a class="dropdown-item" href="../../logout.php">Sair</a>
+                            <a class="dropdown-item" href="../../logout">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Something else here</a> -->
@@ -219,7 +219,7 @@ if (isset($_SESSION['tipo'])) {
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="..">Home</a>
-                            <a class="dropdown-item" href="../../../logout.php">Sair</a>
+                            <a class="dropdown-item" href="../../../logout">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Something else here</a> -->
