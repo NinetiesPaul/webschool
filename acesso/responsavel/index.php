@@ -25,7 +25,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">webSchool</a>
+            <a class="navbar-brand" href="home">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -49,7 +49,7 @@ if (isset($_SESSION['tipo'])) {
 
         <div class="container">
             <div class="jumbotron text-center">
-                <a href="visualizarAlunos.php" class="btn btn-light btn btn-block">Meus Alunos</a>
+                <a href="alunos" class="btn btn-light btn btn-block">Meus Alunos</a>
                 <a href="../perfil.php" class="mobile btn btn-dark btn btn-block" >Meu Perfil</a>
                 <a href="../../logout.php" class="mobile btn btn-danger btn btn-block" >Sair</a>
                 <!-- <a href="solicitacoes.php">Fazer solicitações ao administrador</a><br/> -->
