@@ -5,16 +5,16 @@ session_start();
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
     if ($tipo == "admin") {
-        header('Location: acesso/admin/');
+        header('Location: acesso/admin/home');
     }
     if ($tipo == "responsavel") {
-        header('Location: acesso/responsavel/index.php');
+        header('Location: acesso/responsavel/home');
     }
     if ($tipo == "professor") {
-        header('Location: acesso/professor/index.php');
+        header('Location: acesso/professor/home');
     }
     if ($tipo == "aluno") {
-        header('Location: acesso/aluno/index.php');
+        header('Location: acesso/aluno/home');
     }
 } else {
     ?>
@@ -42,7 +42,7 @@ if (isset($_SESSION['tipo'])) {
             <h3>Bem-vindo</h3>
 
             <div class="login">
-                <form action="login.php" method="post" class="form-signin">
+                <form action="login" method="post" class="form-signin">
                     <input type="text" name="email" placeholder="Digite seu login" class="form-control" >
                     <input type="password" name="password" placeholder="Digite sua senha" class="form-control" >
                         <select name="tipo" class="form-control" required>

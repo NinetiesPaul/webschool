@@ -62,7 +62,7 @@ $(document).ready(function(){
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="../../logout.php">Sair</a>
+                            <a class="dropdown-item" href="../../logout">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Something else here</a> -->
@@ -79,7 +79,7 @@ $(document).ready(function(){
                 <a href="professor" class="btn btn-light btn btn-block">Professores</a>
                 <a href="aluno" class="btn btn-light btn btn-block">Alunos</a>
                 <a href="responsavel" class="btn btn-light btn btn-block">Responsáveis</a>
-                <a href="../../logout.php" class="mobile btn btn-danger btn btn-block" >Sair</a>
+                <a href="../../logout" class="mobile btn btn-danger btn btn-block" >Sair</a>
             </div>
         </div>
 

@@ -28,7 +28,7 @@ if (isset($_SESSION['tipo'])) {
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-            <a class="navbar-brand" href="index.php">webSchool</a>
+            <a class="navbar-brand" href="home">webSchool</a>
             <div class="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
@@ -37,7 +37,7 @@ if (isset($_SESSION['tipo'])) {
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="../perfil.php">Meu perfil</a>
-                            <a class="dropdown-item" href="../../logout.php">Sair</a>
+                            <a class="dropdown-item" href="../../logout">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Something else here</a> -->
@@ -51,7 +51,7 @@ if (isset($_SESSION['tipo'])) {
             <div class="jumbotron text-center">
                 <a href="turmas" class="btn btn-light btn btn-block">Turmas</a>
                 <a href="../perfil.php" class="mobile btn btn-dark btn btn-block" >Meu Perfil</a>
-                <a href="../../logout.php" class="mobile btn btn-danger btn btn-block" >Sair</a>
+                <a href="../../logout" class="mobile btn btn-danger btn btn-block" >Sair</a>
                 <!-- <a href="solicitacoes.php">Fazer solicitações ao administrador</a><br/> -->
             </div>
         </div>
