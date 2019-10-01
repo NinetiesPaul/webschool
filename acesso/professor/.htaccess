@@ -5,7 +5,7 @@ RewriteRule ^home?$ index.php
 
 RewriteRule ^turmas/?$ visualizarTurmas.php
 
-RewriteRule ^turmas/([0-9]+)?$ detalhesDaTurma.php?id=$1
+RewriteRule ^turma/([0-9]+)?$ detalhesDaTurma.php?id=$1
 
 RewriteRule ^nota/([0-9]+)/([0-9]+)/([0-9]+)/nota1?$ notaParaAluno.php?a=$1&d=$2&t=$3&n=nota1
 RewriteRule ^nota/([0-9]+)/([0-9]+)/([0-9]+)/rec1?$ notaParaAluno.php?a=$1&d=$2&t=$3&n=rec1
