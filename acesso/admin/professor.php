@@ -140,9 +140,11 @@ if (empty($_GET)) {
                         <label for="professor" class="col-form-label col-md-2 col-form-label-sm ">Professor:</label>
                         <div class="col-md-3">
                             <select name="professor" class="form-control form-control-sm">
-                                <?php foreach ($usersQuery as $user) : ?>
-                                    <option value="<?php echo pegaridProfessor($user->idUsuario); ?>"><?php echo $user->nome; ?></option>
-                                <?php endforeach; ?>
+                                <?php
+                                foreach ($usersQuery as $user) {
+                                    echo "<option value=" . pegaridProfessor($user->idUsuario) . ">$user->nome</option>";
+                                }
+                                ?>
                             </select>
                         </div>
                     </div>
@@ -150,11 +152,11 @@ if (empty($_GET)) {
                             <label for="disciplina" class="col-form-label col-md-2 col-form-label-sm">Disciplina:</label>
                             <div class="col-md-3" >
                                 <select name="disciplina" class="form-control form-control-sm">
-                                    <?php foreach ($disciplinaQuery as $disciplina) : ?>
-                                        <option value="<?php echo $disciplina->idDisciplina; ?>">
-                                        <?php echo $disciplina->nomeDisciplina ?>
-                                        </option>
-                                    <?php endforeach; ?>
+                                    <?php
+                                    foreach ($disciplinaQuery as $disciplina) {
+                                        echo "<option value='$disciplina->idDisciplina'>$disciplina->nomeDisciplina</option>";
+                                    }
+                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -162,11 +164,11 @@ if (empty($_GET)) {
                                 <label for="turma" class="col-form-label col-md-2 col-form-label-sm">Turma:</label>
                                 <div class="col-md-3">
                                         <select name="turma" class="form-control form-control-sm">
-                                        <?php foreach ($turmaQuery as $turma) : ?>
-                                                <option value="<?php echo $turma->idTurma; ?>">
-                                                <?php echo pegarTurma($turma->idTurma); ?>
-                                                </option>
-                                        <?php endforeach; ?>	
+                                        <?php
+                                        foreach ($turmaQuery as $turma) {
+                                            echo "<option value='$turma->idTurma'>".pegarTurma($turma->idTurma)."</option>";
+                                        }
+                                        ?>
                                         </select>
                                 </div>
                         </div>

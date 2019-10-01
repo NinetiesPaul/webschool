@@ -101,20 +101,18 @@ if (empty($_GET)) {
                         </div>
                     </div>
 
-                    <?php
-
-                    $turmaQuery = $db->query("select * from turma order by serie");
-                    $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
-
-                    ?>
-
                     <div class="form-group row justify-content-center ">
                             <label for="turma" class="col-form-label col-md-2 col-form-label-sm ">Turma:</label>
                             <div class="col-md-3">
                                     <select name="turma" class="form-control form-control-sm ">
-                                    <?php foreach ($turmaQuery as $turma) : ?>
-                                            <option value="<?php echo $turma->idTurma; ?>"> <?php echo pegarTurma($turma->idTurma); ?> </option>
-                                    <?php endforeach; ?>	
+                                    <?php
+                                    $turmaQuery = $db->query("select * from turma order by serie");
+                                    $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
+                    
+                                    foreach ($turmaQuery as $turma) {
+                                        echo "<option value='$turma->idTurma'> ".pegarTurma($turma->idTurma)."</option>";
+                                    }
+                                    ?>	
                                     </select>
                             </div>
                     </div>
@@ -124,15 +122,11 @@ if (empty($_GET)) {
 
                 <strong>Lista de Alunos</strong><p/>
 
+                <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
                 <?php
 
                 $usersQuery = $db->query("select usuario.* from usuario, aluno where usuario.idUsuario=aluno.idUsuario");
                 $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
-
-                ?>
-
-                <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
-                <?php
                 
                 foreach ($usersQuery as $user) {
                     echo '<tr><td>'.$user->nome.'</td>';
