@@ -1,21 +1,25 @@
 <?php
 session_start();
 
-if (isset($_SESSION['tipo'])) {
-    $tipo = $_SESSION['tipo'];
-    if ($tipo != "professor") {
-        header('Location: ../../index.php');
-    } else {
-        $userId = $_SESSION['user_id'];
-        include '../../data/functions.php';
-        include '../../data/conn.php';
+$tipo = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : false;
+if ($tipo !== "professor" || !$tipo) {
+    header('Location: ../../home');
+}
 
-        $professorQuery = $db->query("select * from professor where idUsuario=$userId");
-        $professorQuery = $professorQuery->fetchObject();
-    
-        if (!empty($_GET)) {
-            $iddisciplina = $_GET['id'];
-            ?>
+$iddisciplina = isset($_GET['id']) ? $_GET['id'] : false;
+if (!$iddisciplina || $iddisciplina == '') {
+    header('Location: ../turmas');
+}
+
+$userId = $_SESSION['user_id'];
+include '../../data/functions.php';
+include '../../data/conn.php';
+
+$professorQuery = $db->query("select * from professor where idUsuario=$userId");
+$professorQuery = $professorQuery->fetchObject();
+
+$iddisciplina = $_GET['id'];
+?>
 
 <html>
     <head>
@@ -65,6 +69,10 @@ if (isset($_SESSION['tipo'])) {
                 $disciplinaQuery = $db->query("select * from disciplinaporprofessor where idDisciplinaPorProfessor=$iddisciplina");
                 $result = $disciplinaQuery->fetchObject();
                 
+                if (!$result) {
+                    header('Location: ../turmas');
+                }
+                
                 $disciplina = $result->idDisciplina;
                 $turma = $result->idTurma;
 
@@ -108,16 +116,3 @@ if (isset($_SESSION['tipo'])) {
 
     </body>
 </html>
-
-<?php
-        } else {
-            header('Location: visualizarTurmas.php');
-        }
-    }
-} else {
-    header('Location: index.php');
-}
-?>
-
-
-	

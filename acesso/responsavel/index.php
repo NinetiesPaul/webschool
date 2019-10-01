@@ -1,15 +1,16 @@
 <?php
 session_start();
 
-if (isset($_SESSION['tipo'])) {
-    $tipo = $_SESSION['tipo'];
-    if ($tipo != "responsavel") {
-        header('Location: ../../index.php');
-    } else {
-        $userId = $_SESSION['user_id'];
-        include '../../data/functions.php';
-        
-        include '../../data/conn.php'; ?>
+$tipo = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : false;
+if ($tipo !== "responsavel" || !$tipo) {
+    header('Location: ../../home');
+}
+
+$userId = $_SESSION['user_id'];
+include '../../data/functions.php';
+include '../../data/conn.php';
+
+?>
 
 <html>
     <head>
@@ -60,14 +61,4 @@ if (isset($_SESSION['tipo'])) {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>	
     </body>
-</html>
-
-<?php
-    }
-} else {
-    header('Location: ../../index.php');
-}
-?>
-
-
-	
+</html>	

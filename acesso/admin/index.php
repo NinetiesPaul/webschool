@@ -1,13 +1,14 @@
 <?php
 session_start();
 
-if (isset($_SESSION['tipo'])) {
-    $tipo = $_SESSION['tipo'];
-    if ($tipo != "admin") {
-        header('Location: ../../index.php');
-    } else {
-        $userId = $_SESSION['user_id']; ?>
+$tipo = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : false;
+if ($tipo !== "admin" || !$tipo) {
+    header('Location: ../../home');
+}
 
+$userId = $_SESSION['user_id'];
+
+?>
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -19,35 +20,35 @@ if (isset($_SESSION['tipo'])) {
         </script>
         <script>
         var isMobile = {
-Android: function() {
-    return navigator.userAgent.match(/Android/i);
-},
-BlackBerry: function() {
-    return navigator.userAgent.match(/BlackBerry/i);
-},
-iOS: function() {
-    return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-},
-Opera: function() {
-    return navigator.userAgent.match(/Opera Mini/i);
-},
-Windows: function() {
-    return navigator.userAgent.match(/IEMobile/i);
-},
-any: function() {
-    return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-}
+            Android: function() {
+                return navigator.userAgent.match(/Android/i);
+            },
+            BlackBerry: function() {
+                return navigator.userAgent.match(/BlackBerry/i);
+            },
+            iOS: function() {
+                return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+            },
+            Opera: function() {
+                return navigator.userAgent.match(/Opera Mini/i);
+            },
+            Windows: function() {
+                return navigator.userAgent.match(/IEMobile/i);
+            },
+            any: function() {
+                return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
+            }
         };
 
-$(document).ready(function(){
-        $(".mobile").hide();
-        if (isMobile.any() == null) {
+        $(document).ready(function(){
+            $(".mobile").hide();
+            if (isMobile.any() == null) {
                 $(".mobile").hide();
                 console.log(isMobile.any());
-        } else {
+            } else {
                 $(".mobile").show();
-        };
-});
+            };
+        });
 
         </script>
         <title>webSchool :: Home Page</title>
@@ -88,9 +89,3 @@ $(document).ready(function(){
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>	
     </body>
 </html>
-
-<?php
-    }
-} else {
-    header('Location: ../../index.php');
-}

@@ -1,18 +1,17 @@
 <?php
 session_start();
 
-if (isset($_SESSION['tipo'])) {
-    $tipo = $_SESSION['tipo'];
-    if ($tipo != "professor") {
-        header('Location: index.php');
-    } else {
-        $userId = $_SESSION['user_id'];
-        include '../../data/functions.php';
-        
-        include '../../data/conn.php';
+$tipo = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : false;
+if ($tipo !== "professor" || !$tipo) {
+    header('Location: ../../home');
+}
+$userId = $_SESSION['user_id'];
+include '../../data/functions.php';
+include '../../data/conn.php';
 
-        $professorQuery = $db->query("select * from professor where idUsuario=$userId");
-        $professorQuery = $professorQuery->fetchObject(); ?>
+$professorQuery = $db->query("select * from professor where idUsuario=$userId");
+$professorQuery = $professorQuery->fetchObject();
+?>
 
 <html>
     <head>
@@ -64,7 +63,7 @@ if (isset($_SESSION['tipo'])) {
 
                 foreach ($disciplinaQuery as $disciplina){
                     echo pegarDisciplina($disciplina->idDisciplina).', '.pegarTurma($disciplina->idTurma);
-                    echo "<a href='turmas/$disciplina->idDisciplinaPorProfessor' class='btn-sm btn-info' id='btn_disciplina' '><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a>";
+                    echo "<a href='turma/$disciplina->idDisciplinaPorProfessor' class='btn-sm btn-info' id='btn_disciplina' '><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a>";
 
                     $alunosQuery = $db->query("
                         select distinct usuario.* from usuario, aluno, turma, disciplinaporprofessor
@@ -98,13 +97,3 @@ if (isset($_SESSION['tipo'])) {
 
     </body>
 </html>
-
-<?php
-    }
-} else {
-    header('Location: index.php');
-}
-?>
-
-
-	

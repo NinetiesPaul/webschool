@@ -1,16 +1,16 @@
 <?php
 session_start();
 
-if (isset($_SESSION['tipo'])) {
-    $tipo = $_SESSION['tipo'];
-    if ($tipo != "admin") {
-        header('Location: ..');
-    } else {
-        $userId = $_SESSION['user_id'];
-        include '../../data/functions.php';
-        include '../../data/conn.php';
-        
-        if (empty($_GET)) {
+$tipo = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : false;
+if ($tipo !== "admin" || !$tipo) {
+    header('Location: ..');
+}
+
+$userId = $_SESSION['user_id'];
+include '../../data/functions.php';
+include '../../data/conn.php';
+
+if (empty($_GET)) {
 ?>
 
 <html>
@@ -155,19 +155,19 @@ if (isset($_SESSION['tipo'])) {
 	
 
 <?php
-        } else {
-            $id = $_GET['id'];
-        
-            $usersQuery = $db->query("
-		select usuario.*,aluno.idAluno from usuario, aluno where usuario.idUsuario=aluno.idUsuario and usuario.idUsuario=$id
-            ");
-        
-            $usersQuery = $usersQuery->fetchObject();
-            
-            if (empty ($usersQuery)) {
-                header('Location: ../aluno');
-            }
-            ?>
+} else {
+    $id = $_GET['id'];
+
+    $usersQuery = $db->query("
+        select usuario.*,aluno.idAluno from usuario, aluno where usuario.idUsuario=aluno.idUsuario and usuario.idUsuario=$id
+    ");
+
+    $usersQuery = $usersQuery->fetchObject();
+
+    if (empty ($usersQuery)) {
+        header('Location: ../aluno');
+    }
+?>
 <html lang="en">
     <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -286,8 +286,4 @@ if (isset($_SESSION['tipo'])) {
     </body>
 </html>
 <?php
-        }
-    }
-} else {
-    header('Location: index.php');
 }

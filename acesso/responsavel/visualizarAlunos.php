@@ -1,18 +1,19 @@
 <?php
 session_start();
 
-if (isset($_SESSION['tipo'])) {
-    $tipo = $_SESSION['tipo'];
-    if ($tipo != "responsavel") {
-        header('Location: index.php');
-    } else {
-        $userId = $_SESSION['user_id'];
-        include '../../data/functions.php';
-        
-        include '../../data/conn.php';
+$tipo = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : false;
+if ($tipo !== "responsavel" || !$tipo) {
+    header('Location: ../../home');
+}
 
-        $responsavelQuery = $db->query("select * from responsavel where idUsuario=$userId");
-        $responsavelQuery = $responsavelQuery->fetchObject(); ?>
+$userId = $_SESSION['user_id'];
+include '../../data/functions.php';
+include '../../data/conn.php';
+
+$responsavelQuery = $db->query("select * from responsavel where idUsuario=$userId");
+$responsavelQuery = $responsavelQuery->fetchObject();
+
+?>
 
 <html>
     <head>
@@ -73,13 +74,3 @@ if (isset($_SESSION['tipo'])) {
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     </body>
 </html>
-
-<?php
-    }
-} else {
-    header('Location: index.php');
-}
-?>
-
-
-	

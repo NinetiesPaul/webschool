@@ -1,18 +1,18 @@
 <?php
 session_start();
 
-if (isset($_SESSION['tipo'])) {
-    $tipo = $_SESSION['tipo'];
-    if ($tipo != "professor") {
-        header('Location: ../../index.php');
-    } else {
-        $userId = $_SESSION['user_id'];
-        include '../../data/functions.php';
-        
-        include '../../data/conn.php';
+$tipo = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : false;
+if ($tipo !== "professor" || !$tipo) {
+    header('Location: ../../home');
+}
 
-        $professorQuery = $db->query("select * from professor where idUsuario=$userId");
-        $professorQuery = $professorQuery->fetchObject(); ?>
+$userId = $_SESSION['user_id'];
+include '../../data/functions.php';
+include '../../data/conn.php';
+
+$professorQuery = $db->query("select * from professor where idUsuario=$userId");
+$professorQuery = $professorQuery->fetchObject();
+?>
 
 <html>
     <head>
@@ -63,13 +63,3 @@ if (isset($_SESSION['tipo'])) {
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>	
     </body>
 </html>
-
-<?php
-    }
-} else {
-    header('Location: ../../index.php');
-}
-?>
-
-
-	
