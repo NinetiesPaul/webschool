@@ -1,24 +1,24 @@
 <?php
 session_start();
 
-if (isset($_SESSION['tipo'])) {
-    $tipo = $_SESSION['tipo'];
-    if ($tipo != "professor") {
-        header('Location: ../../home');
-    } else {
-        $userId = $_SESSION['user_id'];
-        include '../../data/functions.php';
-        
-        include '../../data/conn.php';
+$tipo = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : false;
+if ($tipo !== "professor" || !$tipo) {
+    header('Location: ../../home');
+}
 
-        $professorQuery = $db->query("select * from professor where idUsuario=$userId");
-        $professorQuery = $professorQuery->fetchObject();
+//((isset($_GET['id']) || (sizeof($_GET) < 2))) ? header('Location: ../../home') : '';
+
+$userId = $_SESSION['user_id'];
+include '../../data/functions.php';
+include '../../data/conn.php';
+
+$professorQuery = $db->query("select * from professor where idUsuario=$userId");
+$professorQuery = $professorQuery->fetchObject();
         
-        if (!empty($_GET)) {
-            $turma = $_GET['t'];
-            $disciplina = $_GET['d']; 
-        
-        ?>
+if (!empty($_GET)) {
+    $turma = $_GET['t'];
+    $disciplina = $_GET['d']; 
+?>
 
 <html>
     <head>
@@ -145,19 +145,4 @@ if (isset($_SESSION['tipo'])) {
 </html>
 
 <?php
-
-
-        //echo "<td> <a href='faltas.php' class='btn btn-info'><span class='glyphicon glyphicon-remove'></span> Faltas</a> </td>";
-        //echo "<td> <a href='comentarios.php' class='btn btn-info'><span class='glyphicon glyphicon-comment'></span> Comentários</a> </td>";
-
-        } else {
-            header('Location: visualizarTurmas.php');
-        }
-    }
-} else {
-    header('Location: index.php');
 }
-
-
-
-	

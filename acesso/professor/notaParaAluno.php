@@ -1,28 +1,26 @@
 <?php
-
-ini_set('display_errors', true);
-
 session_start();
 
-if (isset($_SESSION['tipo'])) {
-    $tipo = $_SESSION['tipo'];
-    if ($tipo != "professor") {
-        header('Location: ../../../../index.php');
-    } else {
-        $userId = $_SESSION['user_id'];
-        include '../../data/functions.php';
-        
-        include '../../data/conn.php';
+$tipo = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : false;
+if ($tipo !== "professor" || !$tipo) {
+    header('Location: ../../home');
+}
 
-        $professorQuery = $db->query("select * from professor where idUsuario=$userId");
-        $professorQuery = $professorQuery->fetchObject();
+//((isset($_GET['id']) || (sizeof($_GET) < 2))) ? header('Location: ../../home') : '';
 
-        if (!empty($_GET)) {
-        
-            $idAluno = $_GET['a'];
-            $disciplina = $_GET['d'];
-            $turma = $_GET['t'];
-            $notaNum = $_GET['n']; ?>
+$userId = $_SESSION['user_id'];
+include '../../data/functions.php';
+include '../../data/conn.php';
+
+$professorQuery = $db->query("select * from professor where idUsuario=$userId");
+$professorQuery = $professorQuery->fetchObject();
+
+if (!empty($_GET)) {
+    $idAluno = $_GET['a'];
+    $disciplina = $_GET['d'];
+    $turma = $_GET['t'];
+    $notaNum = $_GET['n'];
+?>
 
 <html lang="en">
     <head>
@@ -48,7 +46,7 @@ if (isset($_SESSION['tipo'])) {
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="../../../../home">Home</a>
                             <a class="dropdown-item" href="../perfil.php">Meu perfil</a>
-                            <a class="dropdown-item" href="../../logout">Sair</a>
+                            <a class="dropdown-item" href="../../../../../../logout">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="#">Something else here</a> -->
@@ -68,6 +66,10 @@ if (isset($_SESSION['tipo'])) {
                 $notaQuery = $db->query("
                     select * from notaPorAluno where idTurma=$turma and idAluno=$idAluno and idDisciplina=$disciplina
                 ");
+                
+                if (!$notaQuery) {
+                    header('Location: ../../../../turmas');
+                }
 
                 $count = $notaQuery->rowCount();
 
@@ -75,9 +77,7 @@ if (isset($_SESSION['tipo'])) {
 
                 $nota = ($count == 0) ? 0 : $notaQuery->$notaNum;
                 
-                pegarNomeDoAluno($idAluno);
-                
-                echo '<br/>'.pegarDisciplina($disciplina).', '.pegarTurma($turma).'<p/>';
+                echo '<br/>'.pegarDisciplina($disciplina).', '.pegarTurma($turma).'<br>'.pegarNomeDoAluno($idAluno).'<p/>';
                 
                 ?>
 
@@ -104,12 +104,4 @@ if (isset($_SESSION['tipo'])) {
 </html>
 
 <?php
-        } else {
-            header('Location: visualizarTurmas.php');
-        }
-    }
-} else {
-    header('Location: index.php');
 }
-?>
-
