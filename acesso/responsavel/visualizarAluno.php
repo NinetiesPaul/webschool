@@ -1,21 +1,23 @@
 <?php
 session_start();
 
-if (isset($_SESSION['tipo'])) {
-    $tipo = $_SESSION['tipo'];
-    if ($tipo != "responsavel") {
-        header('Location: ../index.php');
-    } else {
-        $userId = $_SESSION['user_id'];
-        
-        if (!empty($_GET)) {
-            $aluno = $_GET['aluno'];
-    
-            include '../../data/functions.php';
-            include '../../data/conn.php';
+$tipo = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : false;
+if ($tipo !== "responsavel" || !$tipo) {
+    header('Location: ../../home');
+}
 
-            $responsavelQuery = $db->query("select * from responsavel where idUsuario=$userId");
-            $responsavelQuery = $responsavelQuery->fetchObject(); ?>
+$userId = $_SESSION['user_id'];
+
+$aluno = isset($_GET['aluno']) ? $_GET['aluno'] : false;
+if (!$aluno || $aluno == '') {
+    header('Location: ../alunos');
+}
+
+include '../../data/functions.php';
+include '../../data/conn.php';
+
+$responsavelQuery = $db->query("select * from responsavel where idUsuario=$userId");
+$responsavelQuery = $responsavelQuery->fetchObject(); ?>
 
 <html>
     <head>
@@ -85,14 +87,11 @@ if (isset($_SESSION['tipo'])) {
 
                 <?php
 
-                //$alunoQuery = $db->query("select * from aluno where idAluno=$aluno");
-                //$alunoQuery = $alunoQuery->fetchObject();
-
                 $turmasQuery = $db->query("select idTurma from notaporaluno where idAluno=$aluno group by idTurma");
                 $turmas = $turmasQuery->fetchAll(PDO::FETCH_OBJ);
                 
                 if (empty($turmas)) {
-                    header('Location: visualizarAlunos.php');
+                    header('Location: ../alunos');
                 }
 
                 foreach ($turmas as $turma) {
@@ -154,16 +153,3 @@ if (isset($_SESSION['tipo'])) {
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     </body>
 </html>
-
-<?php
-        } else {
-            header('Location: visualizarAlunos.php');
-        }
-    }
-} else {
-    header('Location: index.php');
-}
-?>
-
-
-	
