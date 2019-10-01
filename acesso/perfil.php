@@ -277,9 +277,11 @@ if (!isset($_SESSION['tipo'])) {
 
                                 ?>
                                 <select name="estado" class="form-control form-control-sm" aria-describedby="avisoEstado">
-                                    <?php foreach ($estadoQuery as $estado) : ?>
-                                        <?php echo "<option value='".$estado->idEstado."'>".$estado->nome."</option>"; ?>
-                                    <?php endforeach; ?>
+                                    <?php
+                                    foreach ($estadoQuery as $estado) {
+                                        echo "<option value='".$estado->idEstado."'>".$estado->nome."</option>";
+                                    }
+                                    ?>
                                 </select> 
                                 <small id="avisoEstado" class="form-text text-muted">Atualmente reside em <?php echo pegarEstado($enderecoQuery->idEstado) ?></small>
                             </div>

@@ -238,13 +238,6 @@ if (empty($_GET)) {
                     <button type="submit" id="btn" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
                 </form>
 
-                <?php
-
-                $usersQuery = $db->query("select usuario.* from usuario, aluno where usuario.idUsuario=aluno.idUsuario");
-                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
-
-                ?>
-
                 Selecione quais alunos pertencem a este Responsável:<p/>
                 <form action="../src/adicionarResponsavelPorAluno.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id; ?>" />
@@ -252,9 +245,15 @@ if (empty($_GET)) {
                             <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
                             <div class="col-md-3" >
                                 <select name="aluno" class="form-control form-control-sm">
-                                <?php foreach ($usersQuery as $user) : ?>
-                                <option value="<?php echo $user->idUsuario; ?>"><?php echo $user->nome; ?> (<?php echo pegarTurmaDoAluno($user->idUsuario); ?>)</option>
-                                <?php endforeach; ?>
+                                <?php
+
+                                $usersQuery = $db->query("select usuario.* from usuario, aluno where usuario.idUsuario=aluno.idUsuario");
+                                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
+                                
+                                foreach ($usersQuery as $user) {
+                                    echo "<option value='$user->idUsuario'>$user->nome (".pegarTurmaDoAluno($user->idUsuario).")</option>";
+                                }
+                                ?>
                                 </select>
                             </div>
                         </div>
