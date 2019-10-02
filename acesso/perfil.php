@@ -1,29 +1,23 @@
 <?php
 
 session_start();
+include '../data/functions.php';
+include '../data/conn.php';
 
-if (!isset($_SESSION['tipo'])) {
-    header('Location: ../index.php');
-} else {
-    include '../data/functions.php';
-    include '../data/conn.php';
-    
-    $tipo = $_SESSION['tipo'];
-    $userId = $_SESSION['user_id'];
-    $nome = '';
-    
-    if ($tipo == 'admin') {
-        header('Location: admin/index.php');
-    }
+$tipo = (isset($_SESSION['tipo'])) ? $_SESSION['tipo'] : false;
 
-    $usersQuery = $db->query("
-	select usuario.* from usuario,$tipo where usuario.idUsuario=$tipo.idUsuario and usuario.idUsuario=$userId
-	");
-    
-    $usersQuery = $usersQuery->fetchObject();
-    
-    $nome = $usersQuery->nome;
+if (!$tipo || $tipo === 'admin') {
+    header('Location: home');
 }
+
+$userId = $_SESSION['user_id'];
+
+$usersQuery = $db->query("
+    select usuario.* from usuario,$tipo where usuario.idUsuario=$tipo.idUsuario and usuario.idUsuario=$userId
+");
+$usersQuery = $usersQuery->fetchObject();
+
+$nome = $usersQuery->nome;
 
 ?>
 
@@ -42,6 +36,33 @@ if (!isset($_SESSION['tipo'])) {
         <script src="../res/back.js">
         </script>
         <script>
+            function verificarLogin(email, tipo) {
+                $.ajax({
+                    type: "POST",
+                    url: "../data/verificarLoginEmAlteracao.php",
+                    data:'login='+email+'&tipo='+tipo+'&id='+<?php echo $userId; ?>,
+                    success: function(data ){
+                        console.log(data);
+                        if (data == 1){
+                            $("#disponibilidade").show();
+                            $("#atualizar").attr("disabled", true);
+                        } else {
+                            $("#disponibilidade").hide();
+                            $("#atualizar").attr("disabled", false);
+                        }
+                    },
+                    error: function(res) {
+                        console.log(res);
+                    }
+                });
+            }
+            
+            $(document).on('focusout', '#email', function(){
+                email = $("#email").val();
+                tipo = $("#tipo").val();
+                verificarLogin(email, tipo);
+            });
+            
             $(document).ready(function(){
                 $(".contato").hide();
                 $(".endereco").hide();
@@ -103,6 +124,8 @@ if (!isset($_SESSION['tipo'])) {
                         "font-weight": "bold"
                     });
                 });
+                
+                $("#disponibilidade").hide();
             });
         </script>
         <title>webSchool - Perfil</title>
@@ -138,7 +161,6 @@ if (!isset($_SESSION['tipo'])) {
                 <a href="#" class="contatoBotao mobile btn btn-secondary btn btn-block">Contato</a>
                 <a href="#" class="enderecoBotao mobile btn btn-secondary btn btn-block">Endereço</a>
                 <div class="foto">
-                Foto de Avatar<p/>
                 <?php
 
                 $perfilQuery = $db->query("select * from usuario where idUsuario=$userId");
@@ -175,10 +197,9 @@ if (!isset($_SESSION['tipo'])) {
                 </div>
 
                 <div class="contato">
-                    Informações de contato e login<p/>
 
                     <form action="atualizarPerfil.php" method="post" role="form" class="form-horizontal" >
-                        <input type="hidden" name="tipo" value="usuario">
+                        <input type="hidden" name="tipo" id="tipo" value="<?php echo $tipo; ?>">
                         <input type="hidden" name="usuario" value="<?php echo $userId; ?>">
 
                         <div class="form-group row justify-content-center">
@@ -190,7 +211,10 @@ if (!isset($_SESSION['tipo'])) {
                         <div class="form-group row justify-content-center">
                             <label for="email" class="col-form-label col-md-2 col-form-label-sm">E-Mail:</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="email" value="<?php echo $perfilQuery->email; ?>" >
+                                <input type="text" class="form-control form-control-sm" aria-describedby="disponibilidade" name="email" id="email" value="<?php echo $perfilQuery->email; ?>" >
+                                <small id="disponibilidade">
+                                    Login em uso!
+                                </small>
                             </div>
                         </div>
                         <div class="form-group row justify-content-center">
@@ -213,12 +237,11 @@ if (!isset($_SESSION['tipo'])) {
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
+                        <button type="submit" class="btn btn-success btn-sm" id="atualizar"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
                     </form>
 
                 </div>
                 <div class="endereco">
-                    Endereço<p/>
 
                     <form action="atualizarPerfil.php" method="post" role="form" class="form-horizontal" >
                         <input type="hidden" name="tipo" value="endereco">
@@ -294,7 +317,7 @@ if (!isset($_SESSION['tipo'])) {
             </div>
         </div>
 
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>	
     </body>
