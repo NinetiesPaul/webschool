@@ -154,12 +154,9 @@ $nome = $usersQuery->nome;
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Meu Perfil</strong><p/>
-                <a href="#" class="fotoBotao nonmobile btn btn-secondary">Foto de Avatar</a>
-                <a href="#" class="contatoBotao nonmobile btn btn-secondary">Contato</a>
-                <a href="#" class="enderecoBotao nonmobile btn btn-secondary">Endereço</a>
-                <a href="#" class="fotoBotao mobile btn btn-secondary btn btn-block">Foto de Avatar</a>
-                <a href="#" class="contatoBotao mobile btn btn-secondary btn btn-block">Contato</a>
-                <a href="#" class="enderecoBotao mobile btn btn-secondary btn btn-block">Endereço</a>
+                <a href="#" class="fotoBotao btn btn-secondary">Foto de Avatar</a>
+                <a href="#" class="contatoBotao btn btn-secondary">Contato</a>
+                <a href="#" class="enderecoBotao btn btn-secondary">Endereço</a>
                 <div class="foto">
                 <?php
 
