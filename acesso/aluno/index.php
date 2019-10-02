@@ -36,7 +36,7 @@ $alunoQuery = $alunoQuery->fetchObject();
                             Logado como <?php echo pegarNomeDoAluno($alunoQuery->idAluno); ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="../perfil.php">Meu perfil</a>
+                            <a class="dropdown-item" href="../perfil">Meu perfil</a>
                             <a class="dropdown-item" href="../../logout">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
@@ -50,7 +50,7 @@ $alunoQuery = $alunoQuery->fetchObject();
         <div class="container">
             <div class="jumbotron text-center">
                 <a href="turmas" class="btn btn-light btn btn-block">Turmas</a>
-                <a href="../perfil.php" class="mobile btn btn-dark btn btn-block" >Meu Perfil</a>
+                <a href="../perfil" class="mobile btn btn-dark btn btn-block" >Meu Perfil</a>
                 <a href="../../logout" class="mobile btn btn-danger btn btn-block" >Sair</a>
                 <!-- <a href="solicitacoes.php">Fazer solicitações ao administrador</a><br/> -->
             </div>

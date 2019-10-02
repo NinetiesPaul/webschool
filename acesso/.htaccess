@@ -1,0 +1,6 @@
+RewriteEngine On
+
+
+RewriteRule ^home?$ index.php
+
+RewriteRule ^perfil/?$ perfil.php
