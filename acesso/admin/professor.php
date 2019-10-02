@@ -26,7 +26,7 @@ if (empty($_GET)) {
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "../../../data/verificarLogin.php",
+                url: "../../data/verificarLogin.php",
                 data:'login='+val+'&tipo=professor',
                 success: function(data ){
                     if (data == 1){
@@ -235,7 +235,7 @@ if (empty($_GET)) {
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "../../data/verificarLoginEmAlteracao.php",
+                url: "../../../data/verificarLoginEmAlteracao.php",
                 data:'login='+val+'&tipo=professor&id='+<?php echo $id; ?>,
                 success: function(data ){
                     if (data == 1){

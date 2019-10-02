@@ -26,7 +26,7 @@ if (empty($_GET)) {
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "../../../data/verificarLogin.php",
+                url: "../../data/verificarLogin.php",
                 data:'login='+val+'&tipo=responsavel',
                 success: function(data ){
                     if (data == 1){
