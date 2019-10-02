@@ -82,7 +82,7 @@ if (!empty($_GET)) {
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="../../home">Home</a>
-                            <a class="dropdown-item" href="../perfil.php">Meu perfil</a>
+                            <a class="dropdown-item" href="../../../perfil">Meu perfil</a>
                             <a class="dropdown-item" href="../../../../logout">Sair</a>
                             <!-- <a class="dropdown-item" href="#">Another action</a>
                             <div class="dropdown-divider"></div>
