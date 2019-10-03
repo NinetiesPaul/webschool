@@ -19,6 +19,8 @@ $usersQuery = $usersQuery->fetchObject();
 
 $nome = $usersQuery->nome;
 
+$msg = (isset($_SESSION['msg'])) ? $_SESSION['msg'] : false;
+unset($_SESSION['msg']);
 ?>
 
 <html>
@@ -159,7 +161,7 @@ $nome = $usersQuery->nome;
                 <a href="#" class="enderecoBotao btn btn-secondary">Endereço</a>
                 <div class="foto">
                 <?php
-
+                        
                 $perfilQuery = $db->query("select * from usuario where idUsuario=$userId");
                 $perfilQuery = $perfilQuery->fetchObject();
 
@@ -187,6 +189,8 @@ $nome = $usersQuery->nome;
                             <input type="file" name="fileToUpload" >
                         </div>
                     </div>
+                    
+                    <?php echo $msg . '<br/>'; ?>
 
                     <button type="submit" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Carregar</button>
                 </form>
