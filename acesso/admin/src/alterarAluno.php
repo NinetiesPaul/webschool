@@ -1,6 +1,7 @@
 <?php
 
-ini_set('display_errors', true);
+include '../../../data/functions.php';
+include '../../../data/conn.php';
 
 session_start();
 
@@ -19,8 +20,13 @@ if (isset($_SESSION['tipo'])) {
             $password = $_POST['password'];
             $salt = $_POST['salt'];
             $turma = $_POST['turma'];
-
-            include '../../../data/conn.php';
+            
+            $exists = verificarLoginOnPost('aluno', $email, $userId);
+        
+            if ($exists) {
+                header('Location: ../aluno');
+                exit();
+            }
                 
             $sql = 'UPDATE usuario
 			SET nome=:nome, email=:email';
