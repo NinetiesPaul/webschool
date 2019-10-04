@@ -4,6 +4,7 @@ session_start();
 ini_set('display_errors', true);
 
 include '../../../data/conn.php';
+include '../../../data/functions.php';
 
 if (isset($_SESSION['tipo'])) {
     $tipo = $_SESSION['tipo'];
@@ -21,7 +22,14 @@ if (isset($_SESSION['tipo'])) {
     
         $nome = $_POST['nome'];
         $email = $_POST['email'];
-                
+        
+        $exists = verificarLoginOnPost('professor', $email);
+        
+        if ($exists) {
+            header('Location: ../professor');
+            exit();
+        }
+        
         $password = $_POST['password'];
         $salt = time() + rand(100, 1000);
         $password = md5($password . $salt);
