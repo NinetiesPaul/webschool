@@ -1,5 +1,9 @@
 <?php
 
+
+include '../../../data/functions.php';
+include '../../../data/conn.php';
+
 ini_set('display_errors', true);
 
 session_start();
@@ -15,11 +19,18 @@ if (isset($_SESSION['tipo'])) {
             $userId = $_POST['id'];
             $nome = $_POST['nome'];
             $email = $_POST['email'];
+            
+            $exists = verificarLoginOnPost('responsavel', $email, $userId);
+        
+            if ($exists) {
+                header('Location: ../responsavel');
+                exit();
+            }
+            
             $password = $_POST['password'];
             $salt = $_POST['salt'];
             $newPassword = md5($password);
 
-            include '../../../data/conn.php';
                 
             $sql = "
                 UPDATE usuario

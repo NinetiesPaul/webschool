@@ -217,3 +217,27 @@ function verificarLogin($email)
     
     return $user;
 }
+
+function verificarLoginOnPost($tipo, $email, $id = false)
+{ //function parameters, two variables.
+
+    include 'conn.php';
+    
+    $query = "
+	SELECT usuario.idUsuario FROM usuario,$tipo
+            WHERE usuario.idUsuario = $tipo.idUsuario
+            and usuario.email = '$email'
+	";
+    
+    
+    if ($id) {
+        $query .= " and usuario.idUsuario != $id";
+    }
+    
+    $userQuery = $db->query($query);
+    
+    $user = $userQuery->fetchObject();
+    
+    return $user;
+}
+

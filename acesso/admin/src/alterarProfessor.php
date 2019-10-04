@@ -1,6 +1,7 @@
 <?php
 
-ini_set('display_errors', true);
+include '../../../data/functions.php';
+include '../../../data/conn.php';
 
 session_start();
 
@@ -15,11 +16,18 @@ if (isset($_SESSION['tipo'])) {
             $userId = $_POST['id'];
             $nome = $_POST['nome'];
             $email = $_POST['email'];
+            
+            $exists = verificarLoginOnPost('professor', $email, $userId);
+        
+            if ($exists) {
+                header('Location: ../professor');
+                exit();
+            }
+            
             $password = $_POST['password'];
             $salt = $_POST['salt'];
             $newPassword = md5($password);
 
-            include '../../../data/conn.php';
                 
             $sql = "
                     UPDATE usuario
