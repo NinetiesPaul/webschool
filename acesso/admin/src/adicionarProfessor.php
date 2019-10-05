@@ -1,65 +1,61 @@
 <?php
+
 session_start();
 
-ini_set('display_errors', true);
+$tipo = (isset($_SESSION['tipo'])) ? $_SESSION['tipo'] : false;
+if (!$tipo || $tipo !== 'admin') {
+    header('Location: ../home');
+    exit();
+}
 
 include '../../../data/conn.php';
 include '../../../data/functions.php';
 
-if (isset($_SESSION['tipo'])) {
-    $tipo = $_SESSION['tipo'];
-    if ($tipo != "admin") {
-        header('Location: index.php');
-    } else {
-        $endereco = $db->prepare("INSERT INTO endereco (idEstado)
-		VALUES (:estado)");
-        
-        $endereco->execute([
-            'estado' => 1,
-        ]);
-        
-        $idEndereco = (int) $db->lastInsertId();
-    
-        $nome = $_POST['nome'];
-        $email = $_POST['email'];
-        
-        $exists = verificarLoginOnPost('professor', $email);
-        
-        if ($exists) {
-            header('Location: ../professor');
-            exit();
-        }
-        
-        $password = $_POST['password'];
-        $salt = time() + rand(100, 1000);
-        $password = md5($password . $salt);
-        $turma = $_POST['turma'];
-        
-        $user = $db->prepare("INSERT INTO usuario (nome, email, pass, salt, idEndereco)
-		VALUES (:name, :email, :password, :salt, :endereco)");
-        
-        $user->execute([
-            'name' => $nome,
-            'email' => $email,
-            'password' => $password,
-            'salt' => $salt,
-            'endereco' => $idEndereco,
-        ]);
-        
-        $userId = (int) $db->lastInsertId();
+$endereco = $db->prepare("INSERT INTO endereco (idEstado)
+    VALUES (:estado)");
 
-        $professor = $db->prepare("INSERT INTO professor (idUsuario) VALUES (:idUusuario)");
-        $professor->execute([
-            'idUusuario' => $userId,
-        ]);
+$endereco->execute([
+    'estado' => 1,
+]);
 
-        $avatar = $db->prepare("INSERT INTO fotosdeavatar (idUsuario) VALUES (:idUusuario)");
-        $avatar->execute([
-            'idUusuario' => $userId,
-        ]);
-    
-        header('Location: ../professor');
-    }
-} else {
-    header('Location: index.php');
+$idEndereco = (int) $db->lastInsertId();
+
+$nome = $_POST['nome'];
+$email = $_POST['email'];
+
+$exists = verificarLoginOnPost('professor', $email);
+
+if ($exists) {
+    header('Location: ../professor');
+    exit();
 }
+
+$password = $_POST['password'];
+$salt = time() + rand(100, 1000);
+$password = md5($password . $salt);
+$turma = $_POST['turma'];
+
+$user = $db->prepare("INSERT INTO usuario (nome, email, pass, salt, idEndereco)
+        VALUES (:name, :email, :password, :salt, :endereco)");
+
+$user->execute([
+    'name' => $nome,
+    'email' => $email,
+    'password' => $password,
+    'salt' => $salt,
+    'endereco' => $idEndereco,
+]);
+
+$userId = (int) $db->lastInsertId();
+
+$professor = $db->prepare("INSERT INTO professor (idUsuario) VALUES (:idUusuario)");
+$professor->execute([
+    'idUusuario' => $userId,
+]);
+
+$avatar = $db->prepare("INSERT INTO fotosdeavatar (idUsuario) VALUES (:idUusuario)");
+$avatar->execute([
+    'idUusuario' => $userId,
+]);
+
+header('Location: ../professor');
