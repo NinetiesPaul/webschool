@@ -83,6 +83,15 @@ foreach ($disciplinas as $disciplina) {
         'rec3' => 0,
         'rec4' => 0,
     ]);
+    
+    $diario = $db->prepare("INSERT INTO diariodeclasse (idAluno, idDisciplina, idTurma, dataDaFalta, presenca) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), :presenca)");
+
+    $diario->execute([
+        'idAluno' => $lastid,
+        'idDisciplina' => $disciplina['idDisciplina'],
+        'idTurma' => $turma,
+        'presenca' => 0,
+    ]);
 }
 
 header('Location: ../aluno');
