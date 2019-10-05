@@ -75,16 +75,16 @@ $professorQuery = $professorQuery->fetchObject();
                         order by usuario.nome
                     ");
                     $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
-
+                    
+                    $text = '<br/>Sem alunos cadastrados nessa turma no momento';
                     if (!empty($alunosQuery)) {
+                        $text = '';
                         foreach ($alunosQuery as $aluno) {
-                            echo '<br/>'.$aluno->nome;
+                            $text .= '<br/>'.$aluno->nome;
                         }
-                    } else {
-                        echo '<br/>Sem alunos cadastrados nessa turma';
                     }
 
-                    echo '<p/>';
+                    echo "$text<p/>";
                 }
 
                 ?>

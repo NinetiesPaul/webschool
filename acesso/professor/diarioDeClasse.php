@@ -6,8 +6,6 @@ if ($tipo !== "professor" || !$tipo) {
     header('Location: ../../home');
 }
 
-//((isset($_GET['id']) || (sizeof($_GET) < 2))) ? header('Location: ../../home') : '';
-
 $userId = $_SESSION['user_id'];
 include '../../data/functions.php';
 include '../../data/conn.php';
