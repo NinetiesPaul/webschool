@@ -80,6 +80,20 @@ foreach ($disciplinas as $disciplina) {
             'rec4' => 0,
         ]);
     }
+    
+    $checkDiarioQuery = $db->query("SELECT idDiario FROM diariodeclasse WHERE idTurma = $turma and idAluno = $idAluno and idDisciplina = $disciplina->idDisciplina");
+    $checkDiario = $checkDiarioQuery->fetchAll(PDO::FETCH_OBJ);
+
+    if (empty($checkDiario)) {
+        $diario = $db->prepare("INSERT INTO diariodeclasse (idAluno, idDisciplina, idTurma, dataDaFalta, presenca) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), :presenca)");
+
+        $diario->execute([
+            'idAluno' => $idAluno,
+            'idDisciplina' => $disciplina->idDisciplina,
+            'idTurma' => $turma,
+            'presenca' => 0,
+        ]);
+    }
 }
 
 header('Location: ../aluno');
