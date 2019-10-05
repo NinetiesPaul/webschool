@@ -102,19 +102,19 @@ if (empty($_GET)) {
                     </div>
 
                     <div class="form-group row justify-content-center ">
-                            <label for="turma" class="col-form-label col-md-2 col-form-label-sm ">Turma:</label>
-                            <div class="col-md-3">
-                                    <select name="turma" class="form-control form-control-sm ">
-                                    <?php
-                                    $turmaQuery = $db->query("select * from turma order by serie");
-                                    $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
-                    
-                                    foreach ($turmaQuery as $turma) {
-                                        echo "<option value='$turma->idTurma'> ".pegarTurma($turma->idTurma)."</option>";
-                                    }
-                                    ?>	
-                                    </select>
-                            </div>
+                        <label for="turma" class="col-form-label col-md-2 col-form-label-sm ">Turma:</label>
+                        <div class="col-md-3">
+                            <select name="turma" class="form-control form-control-sm ">
+                            <?php
+                            $turmaQuery = $db->query("select * from turma order by serie");
+                            $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
+
+                            foreach ($turmaQuery as $turma) {
+                                echo "<option value='$turma->idTurma'> ".pegarTurma($turma->idTurma)."</option>";
+                            }
+                            ?>	
+                            </select>
+                        </div>
                     </div>
 
                     <button type="submit" id="btn" class="btn btn-primary btn-sm"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button>
