@@ -7,7 +7,6 @@ if (! empty($_POST)) {
     $ano = $_POST["ano"];
     $turma = $_POST["turma"];
     $disc = $_POST["disc"];
-    $context = $_POST["context"];
 
     $days = cal_days_in_month(CAL_GREGORIAN, $mes, $ano);
     
@@ -53,23 +52,21 @@ if (! empty($_POST)) {
                 and dataDaFalta = '".$date->format('Y-m-d')."'
             ");
             $diario = $diarioQuery->fetch(PDO::FETCH_OBJ);
-
-            $presenca = "<span class='glyphicon glyphicon-remove'></span>";
-
+            
             $date = explode('-', $date->format('Y-m-d'));
-
-            if ($context === 'professor') {
-                $link = "../../criar-presenca/$date[0]/$date[1]/$date[2]/$aluno->idAluno/$aluno->idDisciplina/$aluno->idTurma";
-            }
-
+           
+            $spanPresenca = "<span class='glyphicon glyphicon-remove'></span>";
+            $linkPresenca = "../../criar-presenca/$date[0]/$date[1]/$date[2]/$aluno->idAluno/$aluno->idDisciplina/$aluno->idTurma";
+            
             if ($diario && $diario->presenca == 1) {
-                $presenca = "<span class='glyphicon glyphicon-ok'></span>";
-                if ($context === 'professor') {
-                    $link = "../../presenca/$diario->idDiario";
-                }
+                $spanPresenca = "<span class='glyphicon glyphicon-ok'></span>";
+                $linkPresenca = "../../presenca/$diario->idDiario";
             }
+            
+            $linkComentario = "../../comentario/$date[0]/$date[1]/$date[2]/$aluno->idAluno/$aluno->idDisciplina/$aluno->idTurma";
+            
             echo "<td>";
-            echo ($context === 'professor') ? "<a href='$link' id='presenca'>$presenca</a>" : $presenca;
+            echo "<a href='$linkPresenca' id='presenca'>$spanPresenca</a> <a href='$linkComentario' id='presenca' ><span class='glyphicon glyphicon-comment'></span></a>";
             echo "</td>";
         }
     }
