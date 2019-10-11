@@ -1,7 +1,7 @@
 <?php
 
 if (! empty($_POST)) {
-    include('conn.php');
+    include('../conn.php');
     
     $aluno = $_POST["aluno"];
     $turma = $_POST["turma"];

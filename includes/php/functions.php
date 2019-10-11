@@ -5,7 +5,7 @@ ini_set('display_errors', true);
 function pegarTurma($int)
 { 
 
-    include '../../data/conn.php';
+    include 'conn.php';
     
     $usersQuery = $db->query("
 	select * from turma where id=$int
@@ -21,7 +21,7 @@ function pegarTurma($int)
 function pegarTurmaDoAluno($int)
 { 
     
-    include '../../data/conn.php';
+    include 'conn.php';
     
     $usersQuery = $db->query("
 	select * from aluno where usuario=$int
@@ -45,7 +45,7 @@ function pegarTurmaDoAluno($int)
 function pegarDisciplina($int)
 { 
 
-    include '../../data/conn.php';
+    include 'conn.php';
     
     $usersQuery = $db->query("
 	select * from disciplina where id=$int
@@ -59,7 +59,7 @@ function pegarDisciplina($int)
 function pegarNomeProfessor($int)
 { 
 
-    include '../../data/conn.php';
+    include 'conn.php';
     
     $usersQuery = $db->query("
 	select usuario.* from usuario,professor where usuario.id=professor.usuario and professor.id=$int
@@ -73,7 +73,7 @@ function pegarNomeProfessor($int)
 function pegarIdDoAluno($int)
 { 
 
-    include '../../data/conn.php';
+    include 'conn.php';
     
     $alunoQuery = $db->query("
 	select * from aluno where usuario=$int
@@ -87,7 +87,7 @@ function pegarIdDoAluno($int)
 function pegarNotaDoAluno($aluno, $disciplina, $turma)
 { 
 
-    include '../../data/conn.php';
+    include 'conn.php';
     
     $idAluno = pegarIdDoAluno($aluno);
     
@@ -107,7 +107,7 @@ function pegarNotaDoAluno($aluno, $disciplina, $turma)
 function pegarFaltasDoAluno($aluno, $disciplina, $turma)
 { 
 
-    include '../../data/conn.php';
+    include 'conn.php';
     
     $idAluno = pegarIdDoAluno($aluno);
     
@@ -127,7 +127,7 @@ function pegarFaltasDoAluno($aluno, $disciplina, $turma)
 function pegarNomeDoAluno($int)
 { 
 
-    include '../../data/conn.php';
+    include 'conn.php';
     
     $usersQuery = $db->query("
 	select usuario.* from usuario,aluno where usuario.id=aluno.usuario and aluno.id=$int
@@ -141,7 +141,7 @@ function pegarNomeDoAluno($int)
 function pegarEstado($int)
 { 
 
-    include '../data/conn.php';
+    include '../includes/php/conn.php';
     
     $estadoQuery = $db->query("
 	select * from estado where id=$int

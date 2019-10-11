@@ -1,7 +1,7 @@
 <?php
 
 if (! empty($_POST)) {
-    include('conn.php');
+    include('../conn.php');
     $login = $_POST["login"];
     $tipo = $_POST["tipo"];
     $id = (isset($_POST["id"])) ? $_POST['id'] : null;
