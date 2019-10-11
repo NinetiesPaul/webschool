@@ -11,12 +11,9 @@ if (!$iddisciplina || $iddisciplina == '') {
     header('Location: ../turmas');
 }
 
-$userId = $_SESSION['user_id'];
+$user = $_SESSION['user'];
 include '../../data/functions.php';
 include '../../data/conn.php';
-
-$professorQuery = $db->query("select * from professor where idUsuario=$userId");
-$professorQuery = $professorQuery->fetchObject();
 
 $iddisciplina = $_GET['id'];
 ?>
@@ -45,7 +42,7 @@ $iddisciplina = $_GET['id'];
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Logado como <?php echo pegarNomeProfessor($professorQuery->idProfessor); ?>
+                            Logado como <?php echo $user->nome; ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="../home">Home</a>
@@ -66,24 +63,24 @@ $iddisciplina = $_GET['id'];
                 <strong>Detalhes da turma</strong> <p/>
                 <?php
 
-                $disciplinaQuery = $db->query("select * from disciplinaporprofessor where idDisciplinaPorProfessor=$iddisciplina");
+                $disciplinaQuery = $db->query("select * from disciplina_por_professor where id=$iddisciplina");
                 $result = $disciplinaQuery->fetchObject();
                 
                 if (!$result) {
                     header('Location: ../turmas');
                 }
                 
-                $disciplina = $result->idDisciplina;
-                $turma = $result->idTurma;
+                $disciplina = $result->disciplina;
+                $turma = $result->turma;
 
                 echo pegarDisciplina($disciplina).', '.pegarTurma($turma).'<br/>';
                 echo "<a href='../diario-de-classe/$turma/$disciplina' class='btn-sm btn-info' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a><p/>";
                 
                 $alunosQuery = $db->query("
-                    select usuario.idUsuario, usuario.nome, notaporaluno.nota1, notaporaluno.nota2, notaporaluno.nota3, notaporaluno.nota4, notaporaluno.rec1, notaporaluno.rec2, notaporaluno.rec3, notaporaluno.rec4
+                    select usuario.id, usuario.nome, nota_por_aluno.nota1, nota_por_aluno.nota2, nota_por_aluno.nota3, nota_por_aluno.nota4, nota_por_aluno.rec1, nota_por_aluno.rec2, nota_por_aluno.rec3, nota_por_aluno.rec4
                     from usuario
-                    inner join aluno on aluno.idUsuario = usuario.idUsuario
-                    inner join notaporaluno on notaporaluno.idAluno = aluno.idAluno and notaporaluno.idDisciplina=$disciplina and notaporaluno.idTurma=$turma
+                    inner join aluno on aluno.usuario = usuario.id
+                    inner join nota_por_aluno on nota_por_aluno.aluno = aluno.id and nota_por_aluno.disciplina=$disciplina and nota_por_aluno.turma=$turma
                     group by usuario.nome
                     order by usuario.nome
                 ");
@@ -93,14 +90,14 @@ $iddisciplina = $_GET['id'];
                 echo '<tr><td></td><td>Nota 1</td><td>Rec. 1</td><td>Nota 2:</td><td>Rec. 2</td><td>Nota 3</td><td>Rec. 3</td><td>Nota 4</td><td>Rec. 4</td><td></td><td></td>';
                 foreach ($alunosQuery as $aluno){
                     echo '<tr><td>'.$aluno->nome.'</td>';
-                    echo "<td> <a href='../nota/$aluno->idUsuario/$disciplina/$turma/nota1'>$aluno->nota1</a> </td>";
-                    echo "<td> <a href='../nota/$aluno->idUsuario/$disciplina/$turma/rec1'>$aluno->rec1</a> </td>";
-                    echo "<td> <a href='../nota/$aluno->idUsuario/$disciplina/$turma/nota2'>$aluno->nota2</a> </td>";
-                    echo "<td> <a href='../nota/$aluno->idUsuario/$disciplina/$turma/rec2'>$aluno->rec2</a> </td>";
-                    echo "<td> <a href='../nota/$aluno->idUsuario/$disciplina/$turma/nota3'>$aluno->nota3</a> </td>";
-                    echo "<td> <a href='../nota/$aluno->idUsuario/$disciplina/$turma/rec3'>$aluno->rec3</a> </td>";
-                    echo "<td> <a href='../nota/$aluno->idUsuario/$disciplina/$turma/nota4'>$aluno->nota4</a> </td>";
-                    echo "<td> <a href='../nota/$aluno->idUsuario/$disciplina/$turma/rec4'>$aluno->rec4</a> </td>";
+                    echo "<td> <a href='../nota/$aluno->id/$disciplina/$turma/nota1'>$aluno->nota1</a> </td>";
+                    echo "<td> <a href='../nota/$aluno->id/$disciplina/$turma/rec1'>$aluno->rec1</a> </td>";
+                    echo "<td> <a href='../nota/$aluno->id/$disciplina/$turma/nota2'>$aluno->nota2</a> </td>";
+                    echo "<td> <a href='../nota/$aluno->id/$disciplina/$turma/rec2'>$aluno->rec2</a> </td>";
+                    echo "<td> <a href='../nota/$aluno->id/$disciplina/$turma/nota3'>$aluno->nota3</a> </td>";
+                    echo "<td> <a href='../nota/$aluno->id/$disciplina/$turma/rec3'>$aluno->rec3</a> </td>";
+                    echo "<td> <a href='../nota/$aluno->id/$disciplina/$turma/nota4'>$aluno->nota4</a> </td>";
+                    echo "<td> <a href='../nota/$aluno->id/$disciplina/$turma/rec4'>$aluno->rec4</a> </td>";
                 }
                 echo '</table>';
                 

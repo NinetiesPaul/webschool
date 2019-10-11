@@ -8,7 +8,6 @@ if (!$tipo || $tipo !== 'professor') {
     exit();
 }
 
-$userId = $_SESSION['user_id'];
 include '../../../data/functions.php';
 include '../../../data/conn.php';
 
@@ -28,20 +27,20 @@ if (!empty($_GET)) {
     $data = $ano.'-'.$mes.'-'.$dia;
 
     $diarioQuery = $db->query("
-    select idDiario
-    from diariodeclasse
-    where idAluno = $aluno
-    and idDisciplina = $disciplina
-    and idTurma = $turma
-    and dataDaFalta = '$data'
+    select id
+    from diario_de_classe
+    where aluno = $aluno
+    and disciplina = $disciplina
+    and turma = $turma
+    and data = '$data'
     ");
 
     $diario = $diarioQuery->fetch(PDO::FETCH_OBJ);
 
     if (!$diario) {
         $user = $db->prepare("
-            INSERT INTO diariodeclasse (idAluno, idDisciplina, idTurma, dataDaFalta, presenca) 
-            values (:aluno, :disciplina, :turma, :data, 1)
+            INSERT INTO diario_de_classe (aluno, disciplina, turma, data, presenca, contexto) 
+            values (:aluno, :disciplina, :turma, :data, 1, 'presenca')
         ");
 
         $user->execute([
@@ -59,11 +58,11 @@ if (!empty($_GET)) {
             $presenca = 0;
         }
 
-        $user = $db->prepare("UPDATE diariodeclasse SET presenca = :presenca WHERE idDiario=:id");
+        $user = $db->prepare("UPDATE diario_de_classe SET presenca = :presenca WHERE id=:id");
 
         $user->execute([
             'presenca' => $presenca,
-            'id' => $diario->idDiario,
+            'id' => $diario->id,
         ]);
     }
 

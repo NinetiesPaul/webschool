@@ -6,14 +6,10 @@ if ($tipo !== "professor" || !$tipo) {
     header('Location: ../../home');
 }
 
-//((isset($_GET['id']) || (sizeof($_GET) < 2))) ? header('Location: ../../home') : '';
-
-$userId = $_SESSION['user_id'];
+$user = $_SESSION['user'];
 include '../../data/functions.php';
 include '../../data/conn.php';
 
-$professorQuery = $db->query("select * from professor where idUsuario=$userId");
-$professorQuery = $professorQuery->fetchObject();
 
 if (!empty($_GET)) {
     $idAluno = $_GET['a'];
@@ -41,7 +37,7 @@ if (!empty($_GET)) {
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Logado como <?php echo pegarNomeProfessor($professorQuery->idProfessor); ?>
+                            Logado como <?php echo $user->nome; ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="../../../../home">Home</a>
@@ -62,20 +58,16 @@ if (!empty($_GET)) {
                 <?php
 
                 $idAluno = pegarIdDoAluno($idAluno);
-
-                $notaQuery = $db->query("
-                    select * from notaPorAluno where idTurma=$turma and idAluno=$idAluno and idDisciplina=$disciplina
-                ");
                 
-                if (!$notaQuery) {
-                    header('Location: ../../../../turmas');
-                }
-
-                $count = $notaQuery->rowCount();
-
+                $notaQuery = $db->query("
+                    select $notaNum from nota_por_aluno where turma=$turma and aluno=$idAluno and disciplina=$disciplina
+                ");
                 $notaQuery = $notaQuery->fetchObject();
-
-                $nota = ($count == 0) ? 0 : $notaQuery->$notaNum;
+                
+                $nota = $notaQuery->$notaNum;
+                if (!$nota ) {
+                    $nota = 0;
+                }
                 
                 echo '<br/>'.pegarDisciplina($disciplina).', '.pegarTurma($turma).'<br>'.pegarNomeDoAluno($idAluno).'<p/>';
                 
