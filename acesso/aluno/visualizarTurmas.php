@@ -18,8 +18,7 @@ include '../../includes/php/conn.php';
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link href="../../includes/css/css.css" rel="stylesheet">
         <link href="../../includes/css/navbar.css" rel="stylesheet">
-        <script src="../../includes/js/jquery.js">
-        </script>
+        <script src="../../includes/js/jquery.js"></script>
         <script>
         function pesquisarFaltas(aluno,turma,disciplina) {
             $.ajax({
