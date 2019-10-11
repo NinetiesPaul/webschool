@@ -10,19 +10,19 @@ if (! empty($_POST)) {
     echo '<p/>';
     
     $faltasQuery = $db->query("
-        select * from diariodeclasse where idTurma=$turma and idAluno=$aluno and idDisciplina=$disciplina and presenca = 1 order by dataDaFalta
+        select * from diario_de_classe where turma=$turma and aluno=$aluno and disciplina=$disciplina and presenca = 1 order by data
     ");
     $faltas = $faltasQuery->fetchAll(PDO::FETCH_OBJ);
     
     echo "Este aluno possui ".$faltasQuery->rowCount()." falta(s) nesta matéria:<p/>";
     
     foreach ($faltas as $falta) {
-        $data = new DateTime($falta->dataDaFalta);
+        $data = new DateTime($falta->data);
         echo $data->format('d/m/Y') . "<br/>";
     }
     
     $comentariosQuery = $db->query("
-        select * from diariodeclasse_comentarios where turma=$turma and aluno=$aluno and disciplina=$disciplina order by data
+        select * from diario_de_classe where turma=$turma and aluno=$aluno and disciplina=$disciplina and contexto='observacao' order by data
     ");
     $comentarios = $comentariosQuery->fetchAll(PDO::FETCH_OBJ);
     
@@ -30,7 +30,7 @@ if (! empty($_POST)) {
     
     foreach ($comentarios as $comentario) {
         $data = new DateTime($comentario->data);
-        echo $data->format('d/m/Y') . "<br/>$comentario->mensagem<br/>";
+        echo $data->format('d/m/Y') . "<br/>$comentario->observacao<br/>";
     } 
    
 }
