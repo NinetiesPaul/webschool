@@ -8,7 +8,7 @@ if (!$tipo || $tipo !== 'admin') {
     exit();
 }
 
-include '../../../data/conn.php';
+include '../../../includes/php/conn.php';
 
 $turma = $_POST['id'];
 $nome = $_POST['nome'];

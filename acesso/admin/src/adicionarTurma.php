@@ -8,7 +8,7 @@ if (!$tipo || $tipo !== 'admin') {
     exit();
 }
 
-include '../../../data/conn.php';
+include '../../../includes/php/conn.php';
 
 $serie = $_POST['serie'];
 $nome = $_POST['nome'];

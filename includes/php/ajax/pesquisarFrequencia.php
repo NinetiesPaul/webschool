@@ -1,7 +1,7 @@
 <?php
 
 if (! empty($_POST)) {
-    include('conn.php');
+    include('../conn.php');
     
     $mes = $_POST["mes"];
     $ano = $_POST["ano"];

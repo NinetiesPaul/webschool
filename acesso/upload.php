@@ -1,7 +1,7 @@
 <?php
 
-include '../data/functions.php';
-include '../data/conn.php';
+include '../includes/php/functions.php';
+include '../includes/php/conn.php';
 
 $userId = $_POST['usuario'];
 

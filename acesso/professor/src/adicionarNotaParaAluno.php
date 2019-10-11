@@ -9,8 +9,8 @@ if (!$tipo || $tipo !== 'professor') {
 }
 
 $userId = $_SESSION['user_id'];
-include '../../../data/functions.php';
-include '../../../data/conn.php';
+include '../../../includes/php/functions.php';
+include '../../../includes/php/conn.php';
 
 if (!empty($_POST)) {
     $aluno = $_POST['aluno'];

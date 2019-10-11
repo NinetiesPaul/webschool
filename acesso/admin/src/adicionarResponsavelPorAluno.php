@@ -8,7 +8,7 @@ if (!$tipo || $tipo !== 'admin') {
     exit();
 }
 
-include '../../../data/conn.php';
+include '../../../includes/php/conn.php';
 
 $responsavel = $_POST['id'];
 $aluno = $_POST['aluno'];

@@ -1,8 +1,8 @@
 <?php
 
 session_start();
-include '../data/functions.php';
-include '../data/conn.php';
+include '../includes/php/functions.php';
+include '../includes/php/conn.php';
 
 $tipo = (isset($_SESSION['tipo'])) ? $_SESSION['tipo'] : false;
 
@@ -21,10 +21,10 @@ unset($_SESSION['msg']);
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link href="../css/glyphicons.css" rel="stylesheet">
-        <link href="../res/css.css" rel="stylesheet">
-        <link href="../res/navbar.css" rel="stylesheet">
-        <script src="../res/jquery.js">
+        <link href="../includes/bootstrap/css/glyphicons.css" rel="stylesheet">
+        <link href="../includes/css/css.css" rel="stylesheet">
+        <link href="../includes/css/navbar.css" rel="stylesheet">
+        <script src="../includes/js/jquery.js">
         </script>
         <script src="../res/detect.js">
         </script>
@@ -34,7 +34,7 @@ unset($_SESSION['msg']);
             function verificarLogin(email, tipo) {
                 $.ajax({
                     type: "POST",
-                    url: "../data/verificarLogin.php",
+                    url: "../includes/php/ajax/verificarLogin.php",
                     data:'login='+email+'&tipo='+tipo+'&id='+<?php echo $user->id; ?>,
                     success: function(data ){
                         console.log(data);
@@ -158,7 +158,7 @@ unset($_SESSION['msg']);
                 $avatarQuery = $db->query("select * from fotos_de_avatar where usuario=$user->id");
                 $avatar = $avatarQuery->fetchObject();
 
-                $img = "<img src='../res/default_avatar.jpg' />";
+                $img = "<img src='../uploads/default_avatar.jpg' />";
                 
                 if ($avatar->endereco) {
                     $img = "<img src='".$avatar->endereco_thumb."' />";
