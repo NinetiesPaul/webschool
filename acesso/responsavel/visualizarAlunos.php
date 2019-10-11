@@ -6,12 +6,10 @@ if ($tipo !== "responsavel" || !$tipo) {
     header('Location: ../../home');
 }
 
-$userId = $_SESSION['user_id'];
+$user = $_SESSION['user'];
 include '../../data/functions.php';
 include '../../data/conn.php';
 
-$responsavelQuery = $db->query("select * from responsavel where idUsuario=$userId");
-$responsavelQuery = $responsavelQuery->fetchObject();
 
 ?>
 
@@ -35,7 +33,7 @@ $responsavelQuery = $responsavelQuery->fetchObject();
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Logado como <?php echo pegarNomeDoResponsavel($userId); ?>
+                          Logado como <?php echo $user->nome; ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="home">Home</a>
@@ -58,11 +56,11 @@ $responsavelQuery = $responsavelQuery->fetchObject();
                 <strong>Meus alunos</strong> <p/>
                 <?php
 
-                $meusAlunosQuery = $db->query("select * from responsavelporaluno where idresponsavel=$responsavelQuery->idResponsavel");
+                $meusAlunosQuery = $db->query("select * from responsavel_por_aluno where responsavel=$user->responsavel");
                 $meusAlunosQuery = $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);
 
                 foreach ($meusAlunosQuery as $alunos) {
-                    echo "<a href='aluno/$alunos->idAluno'>".pegarNomeDoAluno($alunos->idAluno)."</a><br/>";
+                    echo "<a href='aluno/$alunos->aluno'>".pegarNomeDoAluno($alunos->aluno)."</a><br/>";
                 }
                 
                 ?>
