@@ -2,85 +2,67 @@
 
 ini_set('display_errors', true);
 
-
 function pegarTurma($int)
-{ //function parameters, two variables.
+{ 
 
     include '../../data/conn.php';
     
     $usersQuery = $db->query("
-	select * from turma where idTurma=$int
+	select * from turma where id=$int
 	");
     
     $usersQuery = $usersQuery->fetchObject();
     
-    $nomeTurma = $usersQuery->serie.'º Série '.$usersQuery->nomeTurma;
+    $nomeTurma = $usersQuery->serie.'º Série '.$usersQuery->nome;
     
     return $nomeTurma;
 }
 
 function pegarTurmaDoAluno($int)
-{ //function parameters, two variables.
+{ 
     
     include '../../data/conn.php';
     
     $usersQuery = $db->query("
-	select * from aluno where idUsuario=$int
-	");
-    
+	select * from aluno where usuario=$int
+    ");
     $usersQuery = $usersQuery->fetchObject();
     
     $turmaQuery = $db->query("
-	select * from turma where idTurma=$usersQuery->idTurma
-	");
+	select * from turma where id=$usersQuery->turma
+    ");
+    $turmaQuery = $turmaQuery->fetchObject();
     
-    $nomeTurma = '';
+    $nomeTurma = 'Sem turma';
     
-    if ($turmaQuery==false) {
-        $nomeTurma = 'Sem turma';
-    } else {
-        $turmaQuery = $turmaQuery->fetchObject();
-        $nomeTurma = $turmaQuery->serie.'º Série '.$turmaQuery->nomeTurma;
+    if ($turmaQuery) {
+        $nomeTurma = " na " . $turmaQuery->serie.'º Série '.$turmaQuery->nome;
     }
     
     return $nomeTurma;
 }
 
 function pegarDisciplina($int)
-{ //function parameters, two variables.
+{ 
 
     include '../../data/conn.php';
     
     $usersQuery = $db->query("
-	select * from disciplina where idDisciplina=$int
+	select * from disciplina where id=$int
 	");
     
     $usersQuery = $usersQuery->fetchObject();
     
-    return $usersQuery->nomeDisciplina;
-}
-
-function pegaridProfessor($int)
-{ //function parameters, two variables.
-
-    include '../../data/conn.php';
-    
-    $usersQuery = $db->query("
-	select * from professor where idUsuario=$int
-	");
-    
-    $usersQuery = $usersQuery->fetchObject();
-    
-    return $usersQuery->idProfessor;
+    return $usersQuery->nome;
 }
 
 function pegarNomeProfessor($int)
-{ //function parameters, two variables.
+{ 
 
     include '../../data/conn.php';
     
     $usersQuery = $db->query("
-	select usuario.* from usuario,professor where usuario.idUsuario=professor.idUsuario and professor.idProfessor=$int
+	select usuario.* from usuario,professor where usuario.id=professor.usuario and professor.id=$int
 	");
     
     $usersQuery = $usersQuery->fetchObject();
@@ -89,21 +71,21 @@ function pegarNomeProfessor($int)
 }
 
 function pegarIdDoAluno($int)
-{ //function parameters, two variables.
+{ 
 
     include '../../data/conn.php';
     
     $alunoQuery = $db->query("
-	select * from aluno where idUsuario=$int
+	select * from aluno where usuario=$int
 	");
     
     $alunoQuery = $alunoQuery->fetchObject();
     
-    return $alunoQuery->idAluno;
+    return $alunoQuery->id;
 }
 
 function pegarNotaDoAluno($aluno, $disciplina, $turma)
-{ //function parameters, two variables.
+{ 
 
     include '../../data/conn.php';
     
@@ -123,7 +105,7 @@ function pegarNotaDoAluno($aluno, $disciplina, $turma)
 }
 
 function pegarFaltasDoAluno($aluno, $disciplina, $turma)
-{ //function parameters, two variables.
+{ 
 
     include '../../data/conn.php';
     
@@ -142,47 +124,13 @@ function pegarFaltasDoAluno($aluno, $disciplina, $turma)
     return $nota;
 }
 
-function pegarFaltasDoAluno_($aluno, $disciplina, $turma)
-{ //function parameters, two variables.
-
-    include '../../data/conn.php';
-    
-    $idAluno = $aluno;
-    
-    $notaQuery = $db->query("
-	select count(idAluno) as count from faltaPorAluno where idTurma=$turma and idAluno=$idAluno and idDisciplina=$disciplina
-	");
-    
-    $count = $notaQuery->rowCount();
-    
-    $notaQuery = $notaQuery->fetchObject();
-    
-    $nota = ($count == 0) ? 0 : $notaQuery->count;
-    
-    return $nota;
-}
-
 function pegarNomeDoAluno($int)
-{ //function parameters, two variables.
+{ 
 
     include '../../data/conn.php';
     
     $usersQuery = $db->query("
-	select usuario.* from usuario,aluno where usuario.idUsuario=aluno.idUsuario and aluno.idAluno=$int
-	");
-    
-    $usersQuery = $usersQuery->fetchObject();
-    
-    return $usersQuery->nome;
-}
-
-function pegarNomeDoResponsavel($int)
-{ //function parameters, two variables.
-
-    include '../../data/conn.php';
-    
-    $usersQuery = $db->query("
-	select usuario.* from usuario,responsavel where usuario.idUsuario=responsavel.idUsuario and responsavel.idUsuario=$int
+	select usuario.* from usuario,aluno where usuario.id=aluno.usuario and aluno.id=$int
 	");
     
     $usersQuery = $usersQuery->fetchObject();
@@ -191,12 +139,12 @@ function pegarNomeDoResponsavel($int)
 }
 
 function pegarEstado($int)
-{ //function parameters, two variables.
+{ 
 
     include '../data/conn.php';
     
     $estadoQuery = $db->query("
-	select * from estado where idEstado=$int
+	select * from estado where id=$int
 	");
     
     $estadoQuery = $estadoQuery->fetchObject();
@@ -204,34 +152,20 @@ function pegarEstado($int)
     return $estadoQuery->sigla;
 }
 
-function verificarLogin($email)
-{ //function parameters, two variables.
-
-    include '../../data/conn.php';
-    
-    $userQuery = $db->query("
-	select idUsuario from usuario where email='$email'
-	");
-    
-    $user = $userQuery->fetchObject();
-    
-    return $user;
-}
-
 function verificarLoginOnPost($tipo, $email, $id = false)
-{ //function parameters, two variables.
+{ 
 
     include 'conn.php';
     
     $query = "
-	SELECT usuario.idUsuario FROM usuario,$tipo
-            WHERE usuario.idUsuario = $tipo.idUsuario
+	SELECT usuario.id FROM usuario,$tipo
+            WHERE usuario.id = $tipo.id
             and usuario.email = '$email'
 	";
     
     
     if ($id) {
-        $query .= " and usuario.idUsuario != $id";
+        $query .= " and usuario.id != $id";
     }
     
     $userQuery = $db->query($query);
