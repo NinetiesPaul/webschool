@@ -7,8 +7,8 @@ if ($tipo !== "professor" || !$tipo) {
 }
 
 $user = $_SESSION['user'];
-include '../../data/functions.php';
-include '../../data/conn.php';
+include '../../includes/php/functions.php';
+include '../../includes/php/conn.php';
         
 if (!empty($_GET)) {
     $turma = $_GET['t'];
@@ -20,21 +20,21 @@ if (!empty($_GET)) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link href="../../../../css/glyphicons.css" rel="stylesheet">
-        <link href="../../../../res/css.css" rel="stylesheet">
-        <link href="../../../../res/navbar.css" rel="stylesheet">
+        <link href="../../../../includes/bootstrap/css/glyphicons.css" rel="stylesheet">
+        <link href="../../../../includes/css/css.css" rel="stylesheet">
+        <link href="../../../../includes/css/navbar.css" rel="stylesheet">
         <style>
             #search {
                 text-decoration: none;
             }
         </style>
-        <script src="../../../../res/jquery.js">
+        <script src="../../../../includes/js/jquery.js">
         </script>
         <script>
         function pesquisarFrequencia(mes, ano, turma, disc, context) {
             $.ajax({
                 type: "POST",
-                url: "../../../../data/pesquisarFrequencia.php",
+                url: "../../../../includes/php/ajax/pesquisarFrequencia.php",
                 data:'mes='+mes+'&ano='+ano+'&turma='+turma+'&disc='+disc+'&context='+context,
                 success: function(data ){
                     $("#result").html(data);

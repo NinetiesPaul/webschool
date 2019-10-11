@@ -8,8 +8,8 @@ if (!$tipo || $tipo !== 'admin') {
     exit();
 }
 
-include '../../../data/conn.php';
-include '../../../data/functions.php';
+include '../../../includes/php/conn.php';
+include '../../../includes/php/functions.php';
 
 $email = $_POST['email'];
 

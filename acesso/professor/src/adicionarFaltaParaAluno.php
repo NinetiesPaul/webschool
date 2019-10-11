@@ -8,8 +8,8 @@ if (!$tipo || $tipo !== 'professor') {
     exit();
 }
 
-include '../../../data/functions.php';
-include '../../../data/conn.php';
+include '../../../includes/php/functions.php';
+include '../../../includes/php/conn.php';
 
 if (!empty($_GET)) {
 

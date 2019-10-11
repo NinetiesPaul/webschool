@@ -8,7 +8,7 @@ if (!$tipo || $tipo !== 'admin') {
     exit();
 }
 
-include '../../../data/conn.php';
+include '../../../includes/php/conn.php';
 
 if(sizeof($_POST) < 3) {
     header("Location: ../professor");

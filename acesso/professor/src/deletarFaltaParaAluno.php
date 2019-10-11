@@ -8,7 +8,7 @@ if (!$tipo || $tipo !== 'professor') {
     exit();
 }
 
-include '../../../data/conn.php';
+include '../../../includes/php/conn.php';
 
 $id = $_GET['falta'];
 
