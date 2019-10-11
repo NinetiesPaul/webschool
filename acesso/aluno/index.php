@@ -6,12 +6,10 @@ if ($tipo !== "aluno" || !$tipo) {
     header('Location: ../../home');
 }
 
-$userId = $_SESSION['user_id'];
+$user = $_SESSION['user'];
 include '../../data/functions.php';
 include '../../data/conn.php';
 
-$alunoQuery = $db->query("select * from aluno where idUsuario=$userId");
-$alunoQuery = $alunoQuery->fetchObject();
 ?>
 
 <html>
@@ -34,7 +32,7 @@ $alunoQuery = $alunoQuery->fetchObject();
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Logado como <?php echo pegarNomeDoAluno($alunoQuery->idAluno); ?>
+                            Logado como <?php echo $user->nome; ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="../perfil">Meu perfil</a>

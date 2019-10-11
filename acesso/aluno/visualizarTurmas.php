@@ -6,12 +6,9 @@ if ($tipo !== "aluno" || !$tipo) {
     header('Location: ../../home');
 }
 
-$userId = $_SESSION['user_id'];
+$user = $_SESSION['user'];
 include '../../data/functions.php';
 include '../../data/conn.php';
-
-$alunoQuery = $db->query("select * from aluno where idUsuario=$userId");
-$alunoQuery = $alunoQuery->fetchObject();
 ?>
 
 <html>
@@ -56,7 +53,7 @@ $alunoQuery = $alunoQuery->fetchObject();
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Logado como <?php echo pegarNomeDoAluno($alunoQuery->idAluno); ?>
+                        Logado como <?php echo $user->nome; ?>
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="home">Home</a>
@@ -77,18 +74,17 @@ $alunoQuery = $alunoQuery->fetchObject();
 
                 <?php
 
-                $turmasQuery = $db->query("select idTurma from notaporaluno where idAluno=$alunoQuery->idAluno group by idTurma");
+                $turmasQuery = $db->query("select turma from nota_por_aluno where aluno=$user->aluno group by turma");
                 $turmas = $turmasQuery->fetchAll(PDO::FETCH_OBJ);
                 
                 foreach ($turmas as $turma) {
-                    $turma = $turma->idTurma;
-                    echo pegarTurma($turma).'<br/>';
-                    $notasQuery = $db->query("select * from notaporaluno where idAluno=$alunoQuery->idAluno and idTurma=$turma order by idDisciplina");
+                    echo pegarTurma($turma->turma).'<br/>';
+                    $notasQuery = $db->query("select * from nota_por_aluno where aluno=$user->aluno and turma=$turma->turma order by disciplina");
                     $notas = $notasQuery->fetchAll(PDO::FETCH_OBJ);
                     echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;" class="table">';
 
                     foreach ($notas as $nota) {
-                        echo '<tr><td><strong>'.pegarDisciplina($nota->idDisciplina).'<strong></td>';
+                        echo '<tr><td><strong>'.pegarDisciplina($nota->disciplina).'<strong></td>';
                         echo '<td>Nota 1: '.$nota->nota1.'</td>';
                         echo '<td>Nota 2: '.$nota->nota2.'</td>';
                         echo '<td>Nota 3: '.$nota->nota3.'</td>';
@@ -98,7 +94,7 @@ $alunoQuery = $alunoQuery->fetchObject();
                         echo '<td>Rec 3: '.$nota->rec3.'</td>';
                         echo '<td>Rec 4: '.$nota->rec4.'</td>';
                         echo "<td>
-                            <button class='btn btn-sm btn-info faltas' data-toggle='modal' data-target='#modalExemplo' id='$alunoQuery->idAluno.$turma.$nota->idDisciplina'>
+                            <button class='btn btn-sm btn-info faltas' data-toggle='modal' data-target='#modalExemplo' id='$user->aluno.$turma->turma.$nota->disciplina'>
                                 Faltas
                             </button>
                         </td>";
