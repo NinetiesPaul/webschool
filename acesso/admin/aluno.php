@@ -6,7 +6,6 @@ if ($tipo !== "admin" || !$tipo) {
     header('Location: ..');
 }
 
-$userId = $_SESSION['user_id'];
 include '../../data/functions.php';
 include '../../data/conn.php';
 
@@ -107,10 +106,10 @@ if (empty($_GET)) {
                             <select name="turma" class="form-control form-control-sm ">
                             <?php
                             $turmaQuery = $db->query("select * from turma order by serie");
-                            $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
+                            $turmas = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
 
-                            foreach ($turmaQuery as $turma) {
-                                echo "<option value='$turma->idTurma'> ".pegarTurma($turma->idTurma)."</option>";
+                            foreach ($turmas as $turma) {
+                                echo "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
                             }
                             ?>	
                             </select>
@@ -125,14 +124,14 @@ if (empty($_GET)) {
                 <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
                 <?php
 
-                $usersQuery = $db->query("select usuario.* from usuario, aluno where usuario.idUsuario=aluno.idUsuario");
-                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
+                $usersQuery = $db->query("select usuario.* from usuario, aluno where usuario.id=aluno.usuario");
+                $alunos = $usersQuery->fetchAll(PDO::FETCH_OBJ);
                 
-                foreach ($usersQuery as $user) {
-                    echo '<tr><td>'.$user->nome.'</td>';
-                    echo '<td>'.pegarTurmaDoAluno($user->idUsuario).'</td>';
-                    echo "<td><a href='aluno/$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
-                    echo "<td><a href='deletar-aluno/$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></a></td></tr>";
+                foreach ($alunos as $aluno) {
+                    echo '<tr><td>'.$aluno->nome.'</td>';
+                    echo '<td>'.pegarTurmaDoAluno($aluno->id).'</td>';
+                    echo "<td><a href='aluno/$aluno->id' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
+                    echo "<td><a href='deletar-aluno/$aluno->id' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></a></td></tr>";
                 }
                 
                 ?>	
@@ -153,12 +152,12 @@ if (empty($_GET)) {
     $id = $_GET['id'];
 
     $usersQuery = $db->query("
-        select usuario.*,aluno.idAluno from usuario, aluno where usuario.idUsuario=aluno.idUsuario and usuario.idUsuario=$id
+        select usuario.*,aluno.id from usuario, aluno where usuario.id=aluno.usuario and usuario.id=$id
     ");
 
-    $usersQuery = $usersQuery->fetchObject();
+    $aluno = $usersQuery->fetch(PDO::FETCH_OBJ);;
 
-    if (empty ($usersQuery)) {
+    if (empty ($aluno)) {
         header('Location: ../aluno');
     }
 ?>
@@ -175,7 +174,7 @@ if (empty($_GET)) {
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "../../../data/verificarLoginEmAlteracao.php",
+                url: "../../../data/verificarLogin.php",
                 data:'login='+val+'&tipo=aluno&id='+<?php echo $id; ?>,
                 success: function(data ){
                     if (data == 1){
@@ -228,18 +227,18 @@ if (empty($_GET)) {
                 <strong>Alteração de Aluno</strong><p/>
                 <form action="../src/alterarAluno.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id ?>" />
-                    <input type="hidden" name="idAluno" value="<?php echo $usersQuery->idAluno ?>" />
-                    <input type="hidden" name="salt" value="<?php echo $usersQuery->salt ?>" />
+                    <input type="hidden" name="idAluno" value="<?php echo $aluno->id ?>" />
+                    <input type="hidden" name="salt" value="<?php echo $aluno->salt ?>" />
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
                         <div class="col-md-3">
-                                <input type="text" name="nome" id="nome" class="form-control form-control-sm" value="<?php echo $usersQuery->nome; ?>" required>
+                                <input type="text" name="nome" id="nome" class="form-control form-control-sm" value="<?php echo $aluno->nome; ?>" required>
                         </div>
                     </div>
                     <div class="form-group row justify-content-center ">
                         <label for="email" class="col-form-label col-md-2 col-form-label-sm">Login:</label>
                         <div class="col-md-3">
-                            <input type="text" name="email" id="email" class="form-control form-control-sm" aria-describedby="disponibilidade" value="<?php echo $usersQuery->email; ?>" required>
+                            <input type="text" name="email" id="email" class="form-control form-control-sm" aria-describedby="disponibilidade" value="<?php echo $aluno->email; ?>" required>
                             <small id="disponibilidade">
                                 Login em uso!
                             </small>
@@ -254,18 +253,20 @@ if (empty($_GET)) {
                     <?php
 
                     $turmaQuery = $db->query("select * from turma order by serie");
-                    $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
+                    $turmas = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
                     
                     ?>
                     <div class="form-group row justify-content-center ">
                         <label for="password" class="col-form-label col-md-2 col-form-label-sm">Turma:</label>
                         <div class="col-md-3">
                             <select name="turma" class="form-control form-control-sm"  aria-describedby="avisoTurma">
-                            <?php foreach ($turmaQuery as $turma) { ?>
-                                    <option value="<?php echo $turma->idTurma; ?>"><?php echo $turma->serie.'º Série '.$turma->nomeTurma; ?></option>
-                            <?php } ?>
+                            <?php
+                            foreach($turmas as $turma) {
+                                echo "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";   
+                            }
+                            ?>
                             </select> 
-                            <small id="avisoTurma" class="form-text text-muted">(Atualmente na <?php echo pegarTurmaDoAluno($id); ?>)</small>
+                            <small id="avisoTurma" class="form-text text-muted">(Atualmente <?php echo pegarTurmaDoAluno($id); ?>)</small>
                         </div>
                     </div>
                     <button type="submit" id="btn" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>

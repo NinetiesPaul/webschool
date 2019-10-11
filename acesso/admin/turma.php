@@ -6,7 +6,6 @@ if ($tipo !== "admin" || !$tipo) {
     header('Location: ..');
 }
 
-$userId = $_SESSION['user_id'];
 include '../../data/functions.php';
 include '../../data/conn.php';
 
@@ -79,17 +78,17 @@ if (empty($_GET)) {
                 <?php
 
                 $turmaQuery = $db->query("select * from turma order by serie");
-                $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
+                $turmas = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
 
                 ?>
 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
                     <?php
                     
-                    foreach ($turmaQuery as $turma) {
-                        echo "<tr><td>".pegarTurma($turma->idTurma)."</td>";
-                        echo "<td><a href='turma/$turma->idTurma' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
-                        echo "<td><a href='deletar-turma/$turma->idTurma' class='btn btn-danger btn-sm btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
+                    foreach ($turmas as $turma) {
+                        echo "<tr><td>$turma->serie º Série $turma->nome</td>";
+                        echo "<td><a href='turma/$turma->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
+                        echo "<td><a href='deletar-turma/$turma->id' class='btn btn-danger btn-sm btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
                     }
                     
                     ?>
@@ -110,12 +109,12 @@ if (empty($_GET)) {
     $id = $_GET['id'];
 
     $usersQuery = $db->query("
-        select * from turma where idTurma=$id
+        select * from turma where id=$id
     ");
 
-    $usersQuery = $usersQuery->fetchObject();
+    $turma = $usersQuery->fetch(PDO::FETCH_OBJ);
 
-    if (empty ($usersQuery)) {
+    if (empty ($turma)) {
         header('Location: ../turma');
     }
 
@@ -171,13 +170,13 @@ if (empty($_GET)) {
                                 <option value='8'>8º Série</option>
                                 <option value='9'>9º Série</option>
                             </select> 
-                            <small id="avisoSerie" class="form-text text-muted">(Atualmente <?php echo $usersQuery->serie; ?> º Série)</small>
+                            <small id="avisoSerie" class="form-text text-muted">(Atualmente <?php echo $turma->serie; ?> º Série)</small>
                         </div>
                     </div>
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Letra da Turma:</label>
                         <div class="col-md-3">
-                            <input type="text" name="nome" class="form-control form-control-sm" value="<?php echo $usersQuery->nomeTurma; ?>">
+                            <input type="text" name="nome" class="form-control form-control-sm" value="<?php echo $turma->nome; ?>">
                         </div>
                     </div>
                     <button type="submit" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>

@@ -6,7 +6,6 @@ if ($tipo !== "admin" || !$tipo) {
     header('Location: ..');
 }
 
-$userId = $_SESSION['user_id'];
 include '../../data/functions.php';
 include '../../data/conn.php';
 
@@ -106,18 +105,18 @@ if (empty($_GET)) {
 
                 <?php
 
-                $usersQuery = $db->query("select usuario.* from usuario, professor where usuario.idUsuario=professor.idUsuario");
-                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
+                $usersQuery = $db->query("select usuario.*,professor.id as professor from usuario, professor where usuario.id=professor.usuario");
+                $professores = $usersQuery->fetchAll(PDO::FETCH_OBJ);
 
                 ?>
 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table table-condensed">
                 <?php
                 
-                foreach ($usersQuery as $user) {
-                    echo '<tr><td>'.$user->nome.'</td>';
-                    echo "<td><a href='professor/$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
-                    echo "<td><a href='deletar-professor/$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr></a> ";
+                foreach ($professores as $professor) {
+                    echo '<tr><td>'.$professor->nome.'</td>';
+                    echo "<td><a href='professor/$professor->id' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
+                    echo "<td><a href='deletar-professor/$professor->id' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr></a> ";
                 }
                 
                 ?>	
@@ -127,11 +126,11 @@ if (empty($_GET)) {
 
                 <?php
 
-                $disciplinaQuery = $db->query("select * from disciplina order by nomeDisciplina");
-                $disciplinaQuery = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
+                $disciplinaQuery = $db->query("select * from disciplina order by nome");
+                $disciplinas = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
 
                 $turmaQuery = $db->query("select * from turma order by serie");
-                $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
+                $turmas = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
 
                 ?>
 
@@ -141,8 +140,10 @@ if (empty($_GET)) {
                         <div class="col-md-3">
                             <select name="professor" class="form-control form-control-sm">
                                 <?php
-                                foreach ($usersQuery as $user) {
-                                    echo "<option value=" . pegaridProfessor($user->idUsuario) . ">$user->nome</option>";
+                                foreach ($professores as $professor) {
+                                    if (!$professor->is_deleted) {
+                                        echo "<option value='$professor->professor'>$professor->nome</option>";
+                                    }
                                 }
                                 ?>
                             </select>
@@ -153,8 +154,8 @@ if (empty($_GET)) {
                             <div class="col-md-3" >
                                 <select name="disciplina" class="form-control form-control-sm">
                                     <?php
-                                    foreach ($disciplinaQuery as $disciplina) {
-                                        echo "<option value='$disciplina->idDisciplina'>$disciplina->nomeDisciplina</option>";
+                                    foreach ($disciplinas as $disciplina) {
+                                        echo "<option value='$disciplina->id'>$disciplina->nome</option>";
                                     }
                                     ?>
                                 </select>
@@ -165,8 +166,8 @@ if (empty($_GET)) {
                                 <div class="col-md-3">
                                         <select name="turma" class="form-control form-control-sm">
                                         <?php
-                                        foreach ($turmaQuery as $turma) {
-                                            echo "<option value='$turma->idTurma'>".pegarTurma($turma->idTurma)."</option>";
+                                        foreach ($turmas as $turma) {
+                                            echo "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
                                         }
                                         ?>
                                         </select>
@@ -180,19 +181,19 @@ if (empty($_GET)) {
 
                 <?php
 
-                $profDiscQuery = $db->query("select * from disciplinaporprofessor order by idTurma");
-                $profDiscQuery = $profDiscQuery->fetchAll(PDO::FETCH_OBJ);
+                $profDiscQuery = $db->query("select * from disciplina_por_professor order by turma");
+                $profDiscs= $profDiscQuery->fetchAll(PDO::FETCH_OBJ);
                 
                 ?>
 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
                     <?php
                     
-                    foreach ($profDiscQuery as $profDisc) {
-                        echo "<tr><td>".pegarNomeProfessor($profDisc->idProfessor)."</td>";
-                        echo "<td>".pegarDisciplina($profDisc->idDisciplina)."</td>";
-                        echo "<td>".pegarTurma($profDisc->idTurma)."</td>";
-                        echo "<td><a href='deletar-disciplina-professor/$profDisc->idDisciplinaPorProfessor' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
+                    foreach ($profDiscs as $profDisc) {
+                        echo "<tr><td>".pegarNomeProfessor($profDisc->professor)."</td>";
+                        echo "<td>".pegarDisciplina($profDisc->disciplina)."</td>";
+                        echo "<td>".pegarTurma($profDisc->turma)."</td>";
+                        echo "<td><a href='deletar-disciplina-professor/$profDisc->id' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
                     }
                     
                     ?>
@@ -213,12 +214,12 @@ if (empty($_GET)) {
     $id = $_GET['id'];
 
     $usersQuery = $db->query("
-        select usuario.* from usuario, professor where usuario.idUsuario=professor.idUsuario and usuario.idUsuario=$id
+        select usuario.* from usuario, professor where usuario.id=professor.usuario and usuario.id=$id
         ");
 
-    $usersQuery = $usersQuery->fetchObject();
+    $professor = $usersQuery->fetch(PDO::FETCH_OBJ);
 
-    if (empty ($usersQuery)) {
+    if (empty ($professor)) {
         header('Location: ../professor');
     }
 ?>
@@ -235,7 +236,7 @@ if (empty($_GET)) {
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "../../../data/verificarLoginEmAlteracao.php",
+                url: "../../../data/verificarLogin.php",
                 data:'login='+val+'&tipo=professor&id='+<?php echo $id; ?>,
                 success: function(data ){
                     if (data == 1){
@@ -288,17 +289,17 @@ if (empty($_GET)) {
                 <strong>Alteração de professor</strong><p/>
                 <form action="../src/alterarProfessor.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id ?>" />
-                    <input type="hidden" name="salt" value="<?php echo $usersQuery->salt ?>" />
+                    <input type="hidden" name="salt" value="<?php echo $professor->salt ?>" />
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
                         <div class="col-md-3">
-                                <input type="text" name="nome" id="nome" value="<?php echo $usersQuery->nome; ?>" class="form-control form-control-sm" required>
+                                <input type="text" name="nome" id="nome" value="<?php echo $professor->nome; ?>" class="form-control form-control-sm" required>
                         </div>
                     </div>
                     <div class="form-group row justify-content-center ">
                         <label for="email" class="col-form-label col-md-2 col-form-label-sm">Login:</label>
                         <div class="col-md-3">
-                            <input type="text" name="email" id="email" value="<?php echo $usersQuery->email; ?>" class="form-control form-control-sm" required >
+                            <input type="text" name="email" id="email" value="<?php echo $professor->email; ?>" class="form-control form-control-sm" required >
                             <small id="disponibilidade">
                                 Login em uso!
                             </small>

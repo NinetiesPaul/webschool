@@ -6,7 +6,6 @@ if ($tipo !== "admin" || !$tipo) {
     header('Location: ..');
 }
 
-$userId = $_SESSION['user_id'];
 include '../../data/conn.php';
 include '../../data/functions.php';
 
@@ -106,19 +105,18 @@ if (empty($_GET)) {
 
                 <?php
 
-                $usersQuery = $db->query("select usuario.* from usuario, responsavel where usuario.idUsuario=responsavel.idUsuario");
-                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
+                $usersQuery = $db->query("select usuario.* from usuario, responsavel where usuario.id=responsavel.usuario");
+                $responsaveis = $usersQuery->fetchAll(PDO::FETCH_OBJ);
 
                 ?>
-
                 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
                     <?php
                     
-                    foreach ($usersQuery as $user) {
-                        echo '<tr><td>'.$user->nome.'</td>'; 
-                        echo "<td><a href='responsavel/$user->idUsuario' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>"; 
-                        echo "<td><a href='deletar-responsavel/$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
+                    foreach ($responsaveis as $responsavel) {
+                        echo '<tr><td>'.$responsavel->nome.'</td>'; 
+                        echo "<td><a href='responsavel/$responsavel->id' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>"; 
+                        echo "<td><a href='deletar-responsavel/$responsavel->id' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
                     }
                     
                     ?>
@@ -138,12 +136,12 @@ if (empty($_GET)) {
     $id = $_GET['id'];
 
     $usersQuery = $db->query("
-        select usuario.* from usuario, responsavel where usuario.idUsuario=responsavel.idUsuario and responsavel.idUsuario=$id
+        select usuario.* from usuario, responsavel where usuario.id=responsavel.usuario and responsavel.usuario=$id
         ");
 
-    $usersQuery = $usersQuery->fetchObject();
+    $responsavel = $usersQuery->fetch(PDO::FETCH_OBJ);
 
-    if (empty ($usersQuery)) {
+    if (empty ($responsavel)) {
         header('Location: ../responsavel');
     }
 ?>
@@ -160,7 +158,7 @@ if (empty($_GET)) {
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "../../../data/verificarLoginEmAlteracao.php",
+                url: "../../../data/verificarLogin.php",
                 data:'login='+val+'&tipo=responsavel&id='+<?php echo $id; ?>,
                 success: function(data ){
                     if (data == 1){
@@ -213,17 +211,17 @@ if (empty($_GET)) {
                 <strong>Alteração de Responsável</strong> <p/>
                 <form action="../src/alterarResponsavel.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id ?>" />
-                    <input type="hidden" name="salt" value="<?php echo $usersQuery->salt ?>" />
+                    <input type="hidden" name="salt" value="<?php echo $responsavel->salt ?>" />
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
                         <div class="col-md-3">
-                                <input type="text" name="nome" id="nome" placeholder="Nome" aria-describedby="disponibilidade" value="<?php echo $usersQuery->nome; ?>" class="form-control form-control-sm" required >
+                                <input type="text" name="nome" id="nome" placeholder="Nome" aria-describedby="disponibilidade" value="<?php echo $responsavel->nome; ?>" class="form-control form-control-sm" required >
                         </div>
                     </div>
                     <div class="form-group row justify-content-center ">
                         <label for="email" class="col-form-label col-md-2 col-form-label-sm">Login:</label>
                         <div class="col-md-3">
-                            <input type="text" name="email" id="email" value="<?php echo $usersQuery->email; ?>" class="form-control form-control-sm" required >
+                            <input type="text" name="email" id="email" value="<?php echo $responsavel->email; ?>" class="form-control form-control-sm" required >
                             <small id="disponibilidade">
                                 Login em uso!
                             </small>
@@ -238,7 +236,8 @@ if (empty($_GET)) {
                     <button type="submit" id="btn" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
                 </form>
 
-                Selecione quais alunos pertencem a este Responsável:<p/>
+                <p><strong>Cadastrar aluno para responsável</strong></p>
+                
                 <form action="../src/adicionarResponsavelPorAluno.php" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="id" value="<?php echo $id; ?>" />
                         <div class="form-group row justify-content-center ">
@@ -247,11 +246,11 @@ if (empty($_GET)) {
                                 <select name="aluno" class="form-control form-control-sm">
                                 <?php
 
-                                $usersQuery = $db->query("select usuario.* from usuario, aluno where usuario.idUsuario=aluno.idUsuario");
+                                $usersQuery = $db->query("select usuario.* from usuario, aluno where usuario.id=aluno.usuario");
                                 $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
                                 
                                 foreach ($usersQuery as $user) {
-                                    echo "<option value='$user->idUsuario'>$user->nome (".pegarTurmaDoAluno($user->idUsuario).")</option>";
+                                    echo "<option value='$user->id'>$user->nome (".pegarTurmaDoAluno($user->id).")</option>";
                                 }
                                 ?>
                                 </select>
@@ -262,32 +261,26 @@ if (empty($_GET)) {
 
                 <?php
 
-                $responsavelQuery = $db->query("select idresponsavel from responsavel where idUsuario=$id");
+                $responsavelQuery = $db->query("select id from responsavel where usuario=$id");
 
                 $responsavelQuery = $responsavelQuery->fetchObject();
 
                 $usersQuery = $db->query("
-                    select distinct usuario.* from usuario, aluno, responsavelporaluno
-                    where aluno.idUsuario = usuario.idUsuario
-                    and aluno.idaluno = responsavelporaluno.idaluno
-                    and responsavelporaluno.idresponsavel=$responsavelQuery->idresponsavel
+                    select distinct usuario.* from usuario, aluno, responsavel_por_aluno
+                    where aluno.usuario = usuario.id
+                    and aluno.id = responsavel_por_aluno.aluno
+                    and responsavel_por_aluno.responsavel=$responsavelQuery->id
                     ");
+                
+                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
 
-                $count = $usersQuery->rowCount();
-
-                if ($count > 0) {
-                    $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
-
-                    echo '<table style="margin-left: auto; margin-right: auto; font-size: 13; width: 50%;" class="table">';
-                    foreach ($usersQuery as $user) {
-                        echo '<tr><td>'.$user->nome.'</td><td>'.pegarTurmaDoAluno($user->idUsuario).'</td>';
-                        echo "<td><a href='../deletar-aluno-responsavel/$id/$user->idUsuario' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
-                    }
-                    echo '</table>';
-                } else {
-                    echo 'Atualmente este responsável não possui responsabilizados cadastrados.<p/>';
+                echo '<table style="margin-left: auto; margin-right: auto; font-size: 13; width: 50%;" class="table">';
+                foreach ($usersQuery as $user) {
+                    echo '<tr><td>'.$user->nome.'</td><td>'.pegarTurmaDoAluno($user->id).'</td>';
+                    echo "<td><a href='../deletar-aluno-responsavel/$id/$user->id' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
                 }
-
+                echo '</table>';
+                
                 ?>
 
             </div>
