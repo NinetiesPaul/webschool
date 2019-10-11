@@ -11,8 +11,6 @@ if (!$tipo || $tipo !== 'admin') {
 include '../../../data/functions.php';
 include '../../../data/conn.php';
 
-$userId = $_SESSION['user_id'];
-
 $userId = $_POST['id'];
 $nome = $_POST['nome'];
 $email = $_POST['email'];
@@ -46,8 +44,8 @@ if (strlen($password) > 0) {
     $fields['pass'] = $password;
 }
 
+$sql .= ' where id=:userId';
 $fields['userId'] = $userId;
-$sql .= ' where idUsuario=:userId';
 
 $user = $db->prepare($sql);
 $user->execute($fields);

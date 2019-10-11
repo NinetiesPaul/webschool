@@ -5,12 +5,10 @@ $tipo = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : false;
 if ($tipo !== "professor" || !$tipo) {
     header('Location: ../../home');
 }
-$userId = $_SESSION['user_id'];
+
+$user = $_SESSION['user'];
 include '../../data/functions.php';
 include '../../data/conn.php';
-
-$professorQuery = $db->query("select * from professor where idUsuario=$userId");
-$professorQuery = $professorQuery->fetchObject();
 ?>
 
 <html>
@@ -37,7 +35,7 @@ $professorQuery = $professorQuery->fetchObject();
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Logado como <?php echo pegarNomeProfessor($professorQuery->idProfessor); ?>
+                            Logado como <?php echo $user->nome; ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="home">Home</a>
@@ -57,21 +55,21 @@ $professorQuery = $professorQuery->fetchObject();
                 <strong>Minhas turmas</strong><p/>
 
                 <?php
+                
+                $disciplinaQuery = $db->query("select * from disciplina_por_professor where professor=$user->professor");
+                $disciplinas = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
 
-                $disciplinaQuery = $db->query("select * from disciplinaporprofessor where idProfessor=$professorQuery->idProfessor");
-                $disciplinaQuery = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
-
-                foreach ($disciplinaQuery as $disciplina){
-                    echo pegarDisciplina($disciplina->idDisciplina).', '.pegarTurma($disciplina->idTurma);
-                    echo "<a href='turma/$disciplina->idDisciplinaPorProfessor' class='btn-sm btn-info' id='btn_disciplina' '><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a>";
-
+                foreach ($disciplinas as $disciplina){
+                    echo pegarDisciplina($disciplina->disciplina).', '.pegarTurma($disciplina->turma);
+                    echo "<a href='turma/$disciplina->id' class='btn-sm btn-info' id='btn_disciplina' '><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a>";
+                    
                     $alunosQuery = $db->query("
-                        select distinct usuario.* from usuario, aluno, turma, disciplinaporprofessor
-                        where usuario.idUsuario=aluno.idUsuario
-                        and aluno.idTurma=disciplinaporprofessor.idTurma
-                        and disciplinaporprofessor.idTurma=$disciplina->idTurma
-                        and disciplinaporprofessor.idDisciplina=$disciplina->idDisciplina
-                        and disciplinaporprofessor.idProfessor=$professorQuery->idProfessor
+                        select distinct usuario.* from usuario, aluno, turma, disciplina_por_professor
+                        where usuario.id=aluno.usuario
+                        and aluno.turma=disciplina_por_professor.turma
+                        and disciplina_por_professor.turma=$disciplina->turma
+                        and disciplina_por_professor.disciplina=$disciplina->disciplina
+                        and disciplina_por_professor.professor=$user->professor
                         order by usuario.nome
                     ");
                     $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);

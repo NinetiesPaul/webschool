@@ -28,7 +28,6 @@ $password = $_POST['password'];
 $salt = $_POST['salt'];
 $newPassword = md5($password);
 
-
 $sql = "
     UPDATE usuario
     SET nome=:nome, email=:email";
@@ -46,8 +45,8 @@ if (strlen($password) > 0) {
     $fields['pass'] = $password;
 }
 
+$sql .= ' where id=:userId';
 $fields['userId'] = $userId;
-$sql .= ' where idUsuario=:userId';
 
 $professorQuery = $db->prepare($sql);
 $professorQuery->execute($fields);

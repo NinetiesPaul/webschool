@@ -12,39 +12,32 @@ switch ($tipo) {
         $email = $_POST['email'];
         $password = $_POST['senha'];
         $newPassword = md5($password);
-        $tel1 = $_POST['tel1'];
-        $tel2 = $_POST['tel2'];
+        $tel1 = $_POST['telefone1'];
+        $tel2 = $_POST['telefone2'];
 
-        if (strlen($password) == 0) {
-            $user = $db->prepare("
-                UPDATE usuario
-                SET nome=:nome, email=:email, telefone1=:tel1, telefone2=:tel2
-                where idUsuario=:userId
-            ");
+        $user = $db->prepare("
+            UPDATE usuario
+            SET nome=:nome, email=:email, telefone1=:tel1, telefone2=:tel2
+            where idUsuario=:userId
+        ");
 
-            $user->execute([
-                'nome' => $nome,
-                'email' => $email,
-                'tel1' => $tel1,
-                'tel2' => $tel2,
-                'userId' => $userId,
-            ]);
-        } else {
-            $user = $db->prepare("
-                UPDATE usuario
-                SET nome=:nome, email=:email, telefone1=:tel1, telefone2=:tel2, pass=:password
-                where idUsuario=:userId
-            ");
-
-            $user->execute([
-                'nome' => $nome,
-                'email' => $email,
-                'password' => $newPassword,
-                'tel1' => $tel1,
-                'tel2' => $tel2,
-                'userId' => $userId,
-            ]);
-        }
+        $user->execute([
+            'nome' => $nome,
+            'email' => $email,
+            'tel1' => $tel1,
+            'tel2' => $tel2,
+            'userId' => $userId,
+        ]);
+        
+        session_start();
+        $endereco = $_SESSION['user']->endereco;
+        
+        $user = (object) $_POST;
+        $user->id = $userId;
+        
+        $user->endereco = $endereco;
+        $_SESSION['user'] = $user;
+        
         break;
         
     case 'endereco':
@@ -55,13 +48,16 @@ switch ($tipo) {
         $cidade = $_POST['cidade'];
         $cep = $_POST['cep'];
         $estado = $_POST['estado'];
-        $endereco = $_POST['endereco'];
+        $endereco = $_POST['id'];
 
+        
+        
         $user = $db->prepare("
             UPDATE endereco
-            SET rua=:rua, numero=:numero, bairro=:bairro, complemento=:complemento, cidade=:cidade, cep=:cep, idEstado=:estado
-            where idEndereco=:endereco
+            SET rua=:rua, numero=:numero, bairro=:bairro, complemento=:complemento, cidade=:cidade, cep=:cep, estado=:estado
+            where id=:endereco
         ");
+        
 
         $user->execute([
             'rua' => $rua,
@@ -73,10 +69,19 @@ switch ($tipo) {
             'estado' => $estado,
             'endereco' => $endereco,
         ]);
+        
+        unset($_POST['tipo']);
+        $endereco = (object) $_POST;
+        
+        session_start();
+        $user = $_SESSION['user'];
+        $user->endereco = $endereco;
+        $_SESSION['user'] = $user;
+        
         break;
     
     case false:
-        header('Location: perfil');
+        break;
 }
 
 header('Location: perfil');

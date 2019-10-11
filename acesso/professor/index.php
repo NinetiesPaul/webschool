@@ -6,12 +6,9 @@ if ($tipo !== "professor" || !$tipo) {
     header('Location: ../../home');
 }
 
-$userId = $_SESSION['user_id'];
+$user = $_SESSION['user'];
 include '../../data/functions.php';
 include '../../data/conn.php';
-
-$professorQuery = $db->query("select * from professor where idUsuario=$userId");
-$professorQuery = $professorQuery->fetchObject();
 ?>
 
 <html>
@@ -34,7 +31,7 @@ $professorQuery = $professorQuery->fetchObject();
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Logado como <?php echo pegarNomeProfessor($professorQuery->idProfessor); ?>
+                            Logado como <?php echo $user->nome; ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="../perfil">Meu perfil</a>

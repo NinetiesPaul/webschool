@@ -6,7 +6,6 @@ if ($tipo !== "admin" || !$tipo) {
     header('Location: ..');
 }
 
-$userId = $_SESSION['user_id'];
 include '../../data/functions.php';
 include '../../data/conn.php';
 
@@ -64,17 +63,17 @@ if (empty($_GET)) {
                 <?php
 
                 $usersQuery = $db->query("select * from disciplina");
-                $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
+                $disciplinas = $usersQuery->fetchAll(PDO::FETCH_OBJ);
 
                 ?>
 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
                 <?php
                 
-                foreach ($usersQuery as $user) {
-                    echo '<tr><td>'.$user->nomeDisciplina.'</td>';
-                    echo "<td><a href='disciplina/$user->idDisciplina' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
-                    echo "<td><a href='deletar-disciplina/$user->idDisciplina' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
+                foreach ($disciplinas as $user) {
+                    echo '<tr><td>'.$user->nome.'</td>';
+                    echo "<td><a href='disciplina/$user->id' class='btn btn-info btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>";
+                    echo "<td><a href='deletar-disciplina/$user->id' class='btn btn-danger btn-sm'><span class='glyphicon glyphicon-remove'></span> Deletar</a></td></tr>";
                 }
                 
                 ?>	
@@ -94,12 +93,12 @@ if (empty($_GET)) {
     $id = $_GET['id'];
 
     $usersQuery = $db->query("
-        select * from disciplina where idDisciplina=$id
+        select * from disciplina where id=$id
         ");
 
-    $usersQuery = $usersQuery->fetchObject();
+    $disciplina = $usersQuery->fetch(PDO::FETCH_OBJ);
 
-    if (empty ($usersQuery)) {
+    if (empty ($disciplina)) {
         header('Location: ../disciplina');
     }
 ?>
@@ -143,7 +142,7 @@ if (empty($_GET)) {
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome da Disciplina:</label>
                         <div class="col-md-3">
-                            <input type="text" name="nome" value="<?php echo $usersQuery->nomeDisciplina; ?>" class="form-control form-control-sm" required>
+                            <input type="text" name="nome" value="<?php echo $disciplina->nome; ?>" class="form-control form-control-sm" required>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>

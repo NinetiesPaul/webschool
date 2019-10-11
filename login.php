@@ -10,26 +10,37 @@ if (!empty($_POST)) {
     $password = $_POST['password'];
     
     $usersQuery = $db->query("
-	select usuario.idusuario, usuario.salt, usuario.pass from usuario, $tipo
-	where usuario.idusuario=$tipo.idusuario
-	and usuario.email='$email'
+        SELECT usuario.*, $tipo.id AS $tipo FROM usuario, $tipo
+	WHERE usuario.id=$tipo.usuario
+	AND usuario.email='$email'
 	");
     
     $user = $usersQuery->fetchObject();
-                
+    
     $msg = '';
     $redirect = '';
         
     if ($user) {
         $actualPassword = $user->pass;
-            
-        $salt = $user->salt;
-        $password = md5($password . $salt);
+        $password = md5($password . $user->salt);
                 
         if ($password == $actualPassword) {
-            $userId = $user->idusuario;
+            
+            if ($user->endereco) {
+                $enderecoQuery = $db->query("
+                    SELECT * from endereco where id = $user->endereco
+                ");
+
+                $endereco = $enderecoQuery->fetchObject();
+                $user->endereco = $endereco;
+            }
+            
+            echo "<pre>";
+            print_r($user);
+            echo "</pre>";
+            
             session_start();
-            $_SESSION['user_id'] = $userId;
+            $_SESSION['user'] = $user;
             $_SESSION['tipo'] = $tipo;
             
             $msg = 'Bem-vindo!';

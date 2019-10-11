@@ -6,7 +6,6 @@ if ($tipo !== "professor" || !$tipo) {
     header('Location: ../../home');
 }
 
-$userId = $_SESSION['user_id'];
 include '../../data/functions.php';
 include '../../data/conn.php';
 
@@ -25,9 +24,7 @@ $data = $ano.'-'.$mes.'-'.$dia;
 
 $date = new DateTime($data);
 
-$user = $_SESSION['user_id'];
-
-$idprof = pegaridProfessor($user);
+$user = $_SESSION['user'];
 
 ?>
 
@@ -50,7 +47,7 @@ $idprof = pegaridProfessor($user);
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Logado como <?php echo pegarNomeProfessor($idprof); ?>
+                            Logado como <?php echo $user->nome; ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="../../../../../../home">Home</a>
@@ -72,18 +69,19 @@ $idprof = pegaridProfessor($user);
                 
                 $comentarioQuery = $db->query("
                     select *
-                    from diariodeclasse_comentarios
+                    from diario_de_classe
                     where aluno = $aluno
                     and disciplina = $disciplina
                     and turma = $turma
                     and data = '$data'
-                    and professor = $idprof
+                    and professor = $user->professor
+                    and contexto = 'observacao'
                 ");
                 $comentario = $comentarioQuery->fetch(PDO::FETCH_OBJ);
                 
                 $mensagem = '';
                 if ($comentario) {
-                    $mensagem = $comentario->mensagem;
+                    $mensagem = $comentario->observacao;
                 }
                 
                 
@@ -95,7 +93,7 @@ $idprof = pegaridProfessor($user);
                     <input type="hidden" name="disciplina" value="<?php echo $disciplina; ?>" />
                     <input type="hidden" name="turma" value="<?php echo $turma; ?>" />
                     <input type="hidden" name="data" value="<?php echo $data; ?>" />
-                    <input type="hidden" name="prof" value="<?php echo $idprof; ?>" />
+                    <input type="hidden" name="prof" value="<?php echo $user->professor; ?>" />
                     <div class="form-group row justify-content-center ">
                         <div class="col-md-3">
                             <textarea name="comentario"><?php echo $mensagem ?></textarea>

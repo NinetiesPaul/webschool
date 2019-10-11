@@ -12,10 +12,10 @@ include '../../../data/conn.php';
 
 $id = $_GET['id'];
 
-$user = $db->prepare("DELETE FROM turma WHERE idTurma=:user_id");
+$user = $db->prepare("DELETE FROM turma WHERE id=:id");
 
 $user->execute([
-    'user_id' => $id,
+    'id' => $id,
 ]);
 
 header('Location: ../turma');

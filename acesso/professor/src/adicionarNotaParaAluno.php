@@ -20,9 +20,9 @@ if (!empty($_POST)) {
     $notaNum = $_POST['notaNum'];
 
     $user = $db->prepare("
-        UPDATE notaPorAluno
+        UPDATE nota_por_aluno
         SET ".$notaNum."=:nota
-        where idAluno=:idAluno and idDisciplina=:idDisciplina and idTurma=:idTurma
+        where aluno=:idAluno and disciplina=:idDisciplina and turma=:idTurma
     ");
 
     $user->execute([
@@ -32,5 +32,5 @@ if (!empty($_POST)) {
         'idTurma' => $turma,
     ]);
 
-    header("Location: ../turmas");
+    header("Location: ../turma/$turma");
 }

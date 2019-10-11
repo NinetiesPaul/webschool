@@ -52,14 +52,14 @@ move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $path . $file_name_thumb
 $urlFinal = '../res/images/'.$file_name;
 $urlThumbFinal = '../res/images/thumbs/'.$file_name_thumb;
 
-$avatarQuery = $db->query("select * from fotosdeavatar where idUsuario=$userId");
+$avatarQuery = $db->query("select * from fotos_de_avatar where usuario=$userId");
 $avatar = $avatarQuery->fetchObject();
 
 if ($avatar) {
-    unlink($avatar->imagemThumbUrl);
-    unlink($avatar->imagemUrl);
+    unlink($avatar->endereco_thumb);
+    unlink($avatar->endereco);
 
-    $deleteAvatar = $db->prepare("DELETE FROM fotosdeavatar WHERE idUsuario=:idUsuario");
+    $deleteAvatar = $db->prepare("DELETE FROM fotos_de_avatar WHERE usuario=:idUsuario");
 
     $deleteAvatar->execute([
         'idUsuario' => $userId,
@@ -67,7 +67,7 @@ if ($avatar) {
 }
 
 $user = $db->prepare("
-    INSERT INTO fotosdeavatar (imagemThumbUrl, imagemUrl, idUsuario) VALUES (:imagemThumbUrl, :imagemUrl, :idUsuario)
+    INSERT INTO fotos_de_avatar (endereco_thumb, endereco, usuario) VALUES (:imagemThumbUrl, :imagemUrl, :idUsuario)
 ");
 
 $user->execute([

@@ -6,8 +6,6 @@ if ($tipo !== "admin" || !$tipo) {
     header('Location: ../../home');
 }
 
-$userId = $_SESSION['user_id'];
-
 ?>
 <html>
     <head>

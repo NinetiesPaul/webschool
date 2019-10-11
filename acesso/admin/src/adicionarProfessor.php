@@ -11,16 +11,7 @@ if (!$tipo || $tipo !== 'admin') {
 include '../../../data/conn.php';
 include '../../../data/functions.php';
 
-$endereco = $db->prepare("INSERT INTO endereco (idEstado)
-    VALUES (:estado)");
 
-$endereco->execute([
-    'estado' => 1,
-]);
-
-$idEndereco = (int) $db->lastInsertId();
-
-$nome = $_POST['nome'];
 $email = $_POST['email'];
 
 $exists = verificarLoginOnPost('professor', $email);
@@ -30,12 +21,22 @@ if ($exists) {
     exit();
 }
 
+$endereco = $db->prepare("INSERT INTO endereco (estado)
+    VALUES (:estado)");
+
+$endereco->execute([
+    'estado' => 1,
+]);
+
+$idEndereco = (int) $db->lastInsertId();
+
+$nome = $_POST['nome'];
+
 $password = $_POST['password'];
 $salt = time() + rand(100, 1000);
 $password = md5($password . $salt);
-$turma = $_POST['turma'];
 
-$user = $db->prepare("INSERT INTO usuario (nome, email, pass, salt, idEndereco)
+$user = $db->prepare("INSERT INTO usuario (nome, email, pass, salt, endereco)
         VALUES (:name, :email, :password, :salt, :endereco)");
 
 $user->execute([
@@ -48,12 +49,12 @@ $user->execute([
 
 $userId = (int) $db->lastInsertId();
 
-$professor = $db->prepare("INSERT INTO professor (idUsuario) VALUES (:idUusuario)");
+$professor = $db->prepare("INSERT INTO professor (usuario) VALUES (:idUusuario)");
 $professor->execute([
     'idUusuario' => $userId,
 ]);
 
-$avatar = $db->prepare("INSERT INTO fotosdeavatar (idUsuario) VALUES (:idUusuario)");
+$avatar = $db->prepare("INSERT INTO fotosdeavatar (usuario) VALUES (:idUusuario)");
 $avatar->execute([
     'idUusuario' => $userId,
 ]);

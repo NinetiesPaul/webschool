@@ -20,11 +20,11 @@ if (! empty($_POST)) {
     echo '<p/>';
     
     $alunosQuery = $db->query("
-        select diariodeclasse.*, usuario.nome
+        select diario_de_classe.*, usuario.nome
         from usuario
-        inner join aluno on aluno.idUsuario = usuario.idUsuario
-        inner join diariodeclasse on diariodeclasse.idAluno = aluno.idAluno
-        and diariodeclasse.idDisciplina = $disc and diariodeclasse.idTurma = $turma
+        inner join aluno on aluno.usuario = usuario.id
+        inner join diario_de_classe on diario_de_classe.aluno = aluno.id
+        and diario_de_classe.disciplina = $disc and diario_de_classe.turma = $turma
         group by usuario.nome
         order by usuario.nome 
     ");
@@ -46,24 +46,24 @@ if (! empty($_POST)) {
         foreach ($dates as $date) {
             $diarioQuery = $db->query("
                 select *
-                from diariodeclasse
-                where idAluno = $aluno->idAluno
-                and diariodeclasse.idDisciplina = $disc and diariodeclasse.idTurma = $turma
-                and dataDaFalta = '".$date->format('Y-m-d')."'
+                from diario_de_classe
+                where aluno = $aluno->aluno
+                and diario_de_classe.disciplina = $disc and diario_de_classe.turma = $turma
+                and data = '".$date->format('Y-m-d')."'
             ");
             $diario = $diarioQuery->fetch(PDO::FETCH_OBJ);
             
             $date = explode('-', $date->format('Y-m-d'));
            
             $spanPresenca = "<span class='glyphicon glyphicon-remove'></span>";
-            $linkPresenca = "../../criar-presenca/$date[0]/$date[1]/$date[2]/$aluno->idAluno/$aluno->idDisciplina/$aluno->idTurma";
+            $linkPresenca = "../../criar-presenca/$date[0]/$date[1]/$date[2]/$aluno->aluno/$aluno->disciplina/$aluno->turma";
             
             if ($diario && $diario->presenca == 1) {
                 $spanPresenca = "<span class='glyphicon glyphicon-ok'></span>";
-                $linkPresenca = "../../presenca/$diario->idDiario";
+                $linkPresenca = "../../presenca/$diario->id";
             }
             
-            $linkComentario = "../../comentario/$date[0]/$date[1]/$date[2]/$aluno->idAluno/$aluno->idDisciplina/$aluno->idTurma";
+            $linkComentario = "../../comentario/$date[0]/$date[1]/$date[2]/$aluno->aluno/$aluno->disciplina/$aluno->turma";
             
             echo "<td>";
             echo "<a href='$linkPresenca' id='presenca'>$spanPresenca</a> <a href='$linkComentario' id='presenca' ><span class='glyphicon glyphicon-comment'></span></a>";

@@ -10,14 +10,7 @@ if (!$tipo || $tipo === 'admin') {
     header('Location: home');
 }
 
-$userId = $_SESSION['user_id'];
-
-$usersQuery = $db->query("
-    select usuario.* from usuario,$tipo where usuario.idUsuario=$tipo.idUsuario and usuario.idUsuario=$userId
-");
-$usersQuery = $usersQuery->fetchObject();
-
-$nome = $usersQuery->nome;
+$user = $_SESSION['user'];
 
 $msg = (isset($_SESSION['msg'])) ? $_SESSION['msg'] : false;
 unset($_SESSION['msg']);
@@ -41,8 +34,8 @@ unset($_SESSION['msg']);
             function verificarLogin(email, tipo) {
                 $.ajax({
                     type: "POST",
-                    url: "../data/verificarLoginEmAlteracao.php",
-                    data:'login='+email+'&tipo='+tipo+'&id='+<?php echo $userId; ?>,
+                    url: "../data/verificarLogin.php",
+                    data:'login='+email+'&tipo='+tipo+'&id='+<?php echo $user->id; ?>,
                     success: function(data ){
                         console.log(data);
                         if (data == 1){
@@ -139,7 +132,7 @@ unset($_SESSION['msg']);
                 <ul class="navbar-nav mr-auto">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Logado como <?php echo $nome; ?>
+                            Logado como <?php echo $user->nome; ?>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="index.php">Home</a>
@@ -161,27 +154,22 @@ unset($_SESSION['msg']);
                 <a href="#" class="enderecoBotao btn btn-secondary">Endereço</a>
                 <div class="foto">
                 <?php
-                        
-                $perfilQuery = $db->query("select * from usuario where idUsuario=$userId");
-                $perfilQuery = $perfilQuery->fetchObject();
 
-                $enderecoQuery = $db->query("select * from endereco where idEndereco=$perfilQuery->idEndereco");
-                $enderecoQuery = $enderecoQuery->fetchObject();
+                $avatarQuery = $db->query("select * from fotos_de_avatar where usuario=$user->id");
+                $avatar = $avatarQuery->fetchObject();
 
-                $avatarQuery = $db->query("select * from fotosdeavatar where idUsuario=$userId");
-                $avatar = $avatarQuery->rowCount();
-                $avatarQuery = $avatarQuery->fetchObject();
-
-                if ($avatar==0) {
-                    echo "<img src='../res/default_avatar.jpg' />";
-                } else {
-                    echo "<img src='".$avatarQuery->imagemThumbUrl."' />";
+                $img = "<img src='../res/default_avatar.jpg' />";
+                
+                if ($avatar->endereco) {
+                    $img = "<img src='".$avatar->endereco_thumb."' />";
                 }
+                
+                echo $img;
 
                 ?>
 
                 <form action="upload.php" method="post" enctype="multipart/form-data" role="form" class="form-horizontal" >
-                    <input type="hidden" name="usuario" value="<?php echo $userId; ?>">
+                    <input type="hidden" name="usuario" value="<?php echo $user->id; ?>">
 
                     <div class="form-group row justify-content-center">
                         <label for="fileToUpload" class="col-form-label col-md-2 col-form-label-sm">Selecione foto:</label>
@@ -200,19 +188,19 @@ unset($_SESSION['msg']);
                 <div class="contato">
 
                     <form action="atualizarPerfil.php" method="post" role="form" class="form-horizontal" >
-                        <input type="hidden" name="tipo" id="tipo" value="<?php echo $tipo; ?>">
-                        <input type="hidden" name="usuario" value="<?php echo $userId; ?>">
+                        <input type="hidden" name="tipo" id="tipo" value='usuario'>
+                        <input type="hidden" name="usuario" value="<?php echo $user->id; ?>">
 
                         <div class="form-group row justify-content-center">
                             <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="nome" value="<?php echo $perfilQuery->nome; ?>" >
+                                <input type="text" class="form-control form-control-sm" name="nome" value="<?php echo $user->nome; ?>" >
                             </div>
                         </div>
                         <div class="form-group row justify-content-center">
                             <label for="email" class="col-form-label col-md-2 col-form-label-sm">E-Mail:</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" aria-describedby="disponibilidade" name="email" id="email" value="<?php echo $perfilQuery->email; ?>" >
+                                <input type="text" class="form-control form-control-sm" aria-describedby="disponibilidade" name="email" id="email" value="<?php echo $user->email; ?>" >
                                 <small id="disponibilidade">
                                     Login em uso!
                                 </small>
@@ -228,13 +216,13 @@ unset($_SESSION['msg']);
                         <div class="form-group row justify-content-center">
                             <label for="tel1" class="col-form-label col-md-2 col-form-label-sm">Telefone 1:</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm " name="tel1" value="<?php echo $perfilQuery->telefone1; ?>">
+                                <input type="text" class="form-control form-control-sm " name="telefone1" value="<?php echo $user->telefone1; ?>">
                             </div>
                         </div>
                         <div class="form-group row justify-content-center">
                             <label for="tel2" class="col-form-label col-md-2 col-form-label-sm">Telefone  2:</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm " name="tel2" value="<?php echo $perfilQuery->telefone2; ?>" >
+                                <input type="text" class="form-control form-control-sm " name="telefone2" value="<?php echo $user->telefone2; ?>" >
                             </div>
                         </div>
 
@@ -246,47 +234,47 @@ unset($_SESSION['msg']);
 
                     <form action="atualizarPerfil.php" method="post" role="form" class="form-horizontal" >
                         <input type="hidden" name="tipo" value="endereco">
-                        <input type="hidden" name="endereco" value="<?php echo $enderecoQuery->idEndereco; ?>">
+                        <input type="hidden" name="id" value="<?php echo $user->endereco->id; ?>">
 
                         <div class="form-group row justify-content-center">
                             <label for="rua" class="col-form-label col-md-2 col-form-label-sm">Rua:</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="rua" value="<?php echo $enderecoQuery->rua; ?>" >
+                                <input type="text" class="form-control form-control-sm" name="rua" value="<?php echo $user->endereco->rua; ?>" >
                             </div>
                         </div>
 
                         <div class="form-group row justify-content-center">
                             <label for="numero" class="col-form-label col-md-2 col-form-label-sm">Número:</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="numero" value="<?php echo $enderecoQuery->numero; ?>" >
+                                <input type="text" class="form-control form-control-sm" name="numero" value="<?php echo $user->endereco->numero; ?>" >
                             </div>
                         </div>
 
                         <div class="form-group row justify-content-center">
                             <label for="bairro" class="col-form-label col-md-2 col-form-label-sm">Bairro:</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="bairro" value="<?php echo $enderecoQuery->bairro; ?>" >
+                                <input type="text" class="form-control form-control-sm" name="bairro" value="<?php echo $user->endereco->bairro; ?>" >
                             </div>
                         </div>
 
                         <div class="form-group row justify-content-center">
                             <label for="cep" class="col-form-label col-md-2 col-form-label-sm">CEP:</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="cep" value="<?php echo $enderecoQuery->cep; ?>" >
+                                <input type="text" class="form-control form-control-sm" name="cep" value="<?php echo $user->endereco->cep; ?>" >
                             </div>
                         </div>
 
                         <div class="form-group row justify-content-center">
                             <label for="complemento" class="col-form-label col-md-2 col-form-label-sm">Complemento:</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="complemento" value="<?php echo $enderecoQuery->complemento; ?>" >
+                                <input type="text" class="form-control form-control-sm" name="complemento" value="<?php echo $user->endereco->complemento; ?>" >
                             </div>
                         </div>
 
                         <div class="form-group row justify-content-center">
                             <label for="cidade" class="col-form-label col-md-2 col-form-label-sm">Cidade:</label>
                             <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="cidade" value="<?php echo $enderecoQuery->cidade; ?>" >
+                                <input type="text" class="form-control form-control-sm" name="cidade" value="<?php echo $user->endereco->cidade; ?>" >
                             </div>
                         </div>
 
@@ -303,11 +291,11 @@ unset($_SESSION['msg']);
                                 <select name="estado" class="form-control form-control-sm" aria-describedby="avisoEstado">
                                     <?php
                                     foreach ($estadoQuery as $estado) {
-                                        echo "<option value='".$estado->idEstado."'>".$estado->nome."</option>";
+                                        echo "<option value='".$estado->id."'>".$estado->nome."</option>";
                                     }
                                     ?>
                                 </select> 
-                                <small id="avisoEstado" class="form-text text-muted">Atualmente reside em <?php echo pegarEstado($enderecoQuery->idEstado) ?></small>
+                                <small id="avisoEstado" class="form-text text-muted">Atualmente reside em <?php echo pegarEstado($user->endereco->estado) ?></small>
                             </div>
                         </div>
 
