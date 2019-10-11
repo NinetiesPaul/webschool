@@ -13,14 +13,12 @@ include '../../../data/conn.php';
 $serie = $_POST['serie'];
 $nome = $_POST['nome'];
 
-$user = $db->prepare("INSERT INTO turma (nomeTurma, serie)
+$user = $db->prepare("INSERT INTO turma (nome, serie)
         VALUES (:nome, :serie)");
 
-$count = $user->execute([
+$user->execute([
     'nome' => $nome,
     'serie' => $serie,
 ]);
-
-$userId = (int) $db->lastInsertId();
 
 header('Location: ../turma');

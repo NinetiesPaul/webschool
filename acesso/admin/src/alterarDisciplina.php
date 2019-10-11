@@ -10,20 +10,18 @@ if (!$tipo || $tipo !== 'admin') {
 
 include '../../../data/conn.php';
 
-$userId = $_SESSION['user_id'];
-
-$idDisciplina = $_POST['id'];
+$id = $_POST['id'];
 $nome = $_POST['nome'];
 
 $user = $db->prepare("
     UPDATE disciplina
-    SET nomeDisciplina=:nome
-    where idDisciplina=:idDisciplina
+    SET nome=:nome
+    where id=:id
     ");
 
 $user->execute([
     'nome' => $nome,
-    'idDisciplina' => $idDisciplina,
+    'id' => $id,
 ]);
 
 header('Location: ../disciplina');

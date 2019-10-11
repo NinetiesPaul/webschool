@@ -13,17 +13,17 @@ include '../../../data/conn.php';
 $responsavel = $_POST['id'];
 $aluno = $_POST['aluno'];
 
-$responsavelQuery = $db->query("select idresponsavel from responsavel where idUsuario=$responsavel");
+$responsavelQuery = $db->query("select id from responsavel where usuario=$responsavel");
 $responsavelQuery = $responsavelQuery->fetchObject();
 
-$alunoQuery = $db->query("select idaluno from aluno where idUsuario=$aluno");
+$alunoQuery = $db->query("select id from aluno where usuario=$aluno");
 $alunoQuery = $alunoQuery->fetchObject();
 
-$user = $db->prepare("INSERT INTO responsavelporaluno (idresponsavel, idaluno)
+$user = $db->prepare("INSERT INTO responsavel_por_aluno (responsavel, aluno)
         VALUES (:responsavel, :aluno)");
 
 $count = $user->execute([
-    'responsavel' => $responsavelQuery->idresponsavel,
-    'aluno' => $alunoQuery->idaluno,
+    'responsavel' => $responsavelQuery->id,
+    'aluno' => $alunoQuery->id,
 ]);
 header("Location: ../responsavel/$responsavel");

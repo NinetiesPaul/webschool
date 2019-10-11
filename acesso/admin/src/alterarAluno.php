@@ -11,8 +11,6 @@ if (!$tipo || $tipo !== 'admin') {
 include '../../../data/functions.php';
 include '../../../data/conn.php';
 
-$userId = $_SESSION['user_id'];
-
 $userId = $_POST['id'];
 $idAluno = $_POST['idAluno'];
 $nome = $_POST['nome'];
@@ -44,54 +42,46 @@ if (strlen($password) > 0) {
     $fields['pass'] = $password;
 }
 
+$sql .= ' where id=:userId';
 $fields['userId'] = $userId;
-$sql .= ' where idUsuario=:userId';
 
 $alunoQuery = $db->prepare($sql);
 $alunoQuery->execute($fields);
 
-$turmaQuery = $db->prepare("UPDATE aluno SET idTurma=:idTurma WHERE idUsuario=:idUusuario");
+
+$turmaQuery = $db->prepare("UPDATE aluno SET turma=:idTurma WHERE usuario=:idUusuario");
 $turmaQuery->execute([
     'idTurma' => $turma,
     'idUusuario' => $userId,
 ]);
 
-$disciplinasQuery = $db->query("SELECT * FROM disciplinaporprofessor where idTurma = $turma");
+$disciplinasQuery = $db->query("SELECT * FROM disciplina_por_professor where turma = $turma");
 $disciplinas = $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
 
 foreach ($disciplinas as $disciplina) {
-    $checkDisciplinaQuery = $db->query("SELECT idNotaPorAluno FROM notaporaluno WHERE idTurma = $turma and idAluno = $idAluno and idDisciplina = $disciplina->idDisciplina");
+    $checkDisciplinaQuery = $db->query("SELECT id FROM nota_por_aluno WHERE turma = $turma and aluno = $idAluno and disciplina = $disciplina->disciplina");
     $checkDisciplina = $checkDisciplinaQuery->fetchAll(PDO::FETCH_OBJ);
-
-    if (empty($checkDisciplina)) {
-        $nota = $db->prepare("INSERT INTO notaporaluno (idAluno, idDisciplina, idTurma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, :nota1, :nota2, :nota3, :nota4, :rec1, :rec2, :rec3, :rec4)");
+    
+    if (empty($checkDisciplina)) {        
+        $nota = $db->prepare("INSERT INTO nota_por_aluno (aluno, disciplina, turma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, 0, 0, 0, 0, 0, 0, 0, 0)");
 
         $nota->execute([
             'idAluno' => $idAluno,
-            'idDisciplina' => $disciplina->idDisciplina,
+            'idDisciplina' => $disciplina->disciplina,
             'idTurma' => $turma,
-            'nota1' => 0,
-            'nota2' => 0,
-            'nota3' => 0,
-            'nota4' => 0,
-            'rec1' => 0,
-            'rec2' => 0,
-            'rec3' => 0,
-            'rec4' => 0,
         ]);
     }
-    
-    $checkDiarioQuery = $db->query("SELECT idDiario FROM diariodeclasse WHERE idTurma = $turma and idAluno = $idAluno and idDisciplina = $disciplina->idDisciplina");
+        
+    $checkDiarioQuery = $db->query("SELECT id FROM diario_de_classe WHERE turma = $turma and aluno = $idAluno and disciplina = $disciplina->disciplina");
     $checkDiario = $checkDiarioQuery->fetchAll(PDO::FETCH_OBJ);
 
-    if (empty($checkDiario)) {
-        $diario = $db->prepare("INSERT INTO diariodeclasse (idAluno, idDisciplina, idTurma, dataDaFalta, presenca) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), :presenca)");
+    if (empty($checkDiario)) {        
+        $diario = $db->prepare("INSERT INTO diario_de_classe (aluno, disciplina, turma, data, presenca, contexto) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), 0, 'presenca')");
 
         $diario->execute([
             'idAluno' => $idAluno,
-            'idDisciplina' => $disciplina->idDisciplina,
+            'idDisciplina' => $disciplina->disciplina,
             'idTurma' => $turma,
-            'presenca' => 0,
         ]);
     }
 }

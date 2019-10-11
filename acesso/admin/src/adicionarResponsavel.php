@@ -11,7 +11,14 @@ if (!$tipo || $tipo !== 'admin') {
 include '../../../data/conn.php';
 include '../../../data/functions.php';
 
-$endereco = $db->prepare("INSERT INTO endereco (idEstado)
+$email = $_POST['email'];
+$exists = verificarLoginOnPost('responsavel', $email);
+if ($exists) {
+    header('Location: ../responsavel');
+    exit();
+}
+
+$endereco = $db->prepare("INSERT INTO endereco (estado)
         VALUES (:estado)");
 
 $endereco->execute([
@@ -21,21 +28,11 @@ $endereco->execute([
 $idEndereco = (int) $db->lastInsertId();
 
 $nome = $_POST['nome'];
-$email = $_POST['email'];
-
-$exists = verificarLoginOnPost('responsavel', $email);
-
-if ($exists) {
-    header('Location: ../responsavel');
-    exit();
-}
-
 $password = $_POST['password'];
 $salt = time() + rand(100, 1000);
 $password = md5($password . $salt);
-$turma = $_POST['turma'];
 
-$user = $db->prepare("INSERT INTO usuario (nome, email, pass, salt, idEndereco)
+$user = $db->prepare("INSERT INTO usuario (nome, email, pass, salt, endereco)
         VALUES (:name, :email, :password, :salt, :endereco)");
 
 $user->execute([
@@ -48,12 +45,12 @@ $user->execute([
 
 $userId = (int) $db->lastInsertId();
 
-$responsavel = $db->prepare("INSERT INTO responsavel (idUsuario) VALUES (:idUusuario)");
+$responsavel = $db->prepare("INSERT INTO responsavel (usuario) VALUES (:idUusuario)");
 $responsavel->execute([
     'idUusuario' => $userId,
 ]);
 
-$avatar = $db->prepare("INSERT INTO fotosdeavatar (idUsuario) VALUES (:idUusuario)");
+$avatar = $db->prepare("INSERT INTO fotos_de_avatar (usuario) VALUES (:idUusuario)");
 $avatar->execute([
     'idUusuario' => $userId,
 ]);

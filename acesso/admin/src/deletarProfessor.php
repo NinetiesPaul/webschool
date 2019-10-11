@@ -12,7 +12,12 @@ include '../../../data/conn.php';
 
 $id = $_GET['id'];
 
-$prof = $db->prepare("DELETE FROM professor WHERE idUsuario=:user_id");
+$user = $db->prepare("UPDATE usuario SET is_deleted = 1 WHERE id=:user_id");
+$user->execute([
+    'user_id' => $id,
+]);
+
+/*$prof = $db->prepare("DELETE FROM professor WHERE idUsuario=:user_id");
 
 $prof->execute([
     'user_id' => $id,
@@ -34,6 +39,6 @@ $avatar->execute([
 $user = $db->prepare("DELETE FROM usuario WHERE idUsuario=:user_id");
 $user->execute([
     'user_id' => $id,
-]);
+]);*/
 
 header('Location: ../professor');

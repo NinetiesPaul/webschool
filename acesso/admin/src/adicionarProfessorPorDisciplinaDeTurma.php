@@ -10,11 +10,16 @@ if (!$tipo || $tipo !== 'admin') {
 
 include '../../../data/conn.php';
 
+if(sizeof($_POST) < 3) {
+    header("Location: ../professor");
+    exit();
+}
+
 $disciplina = $_POST['disciplina'];
 $turma = $_POST['turma'];
 $professor = $_POST['professor'];
 
-$user = $db->prepare("INSERT INTO disciplinaporprofessor (idProfessor, idDisciplina, idTurma)
+$user = $db->prepare("INSERT INTO disciplina_por_professor (professor, disciplina, turma)
         VALUES (:idProfessor, :idDisciplina, :idTurma)");
 
 $count = $user->execute([
@@ -23,25 +28,25 @@ $count = $user->execute([
     'idTurma' => $turma,
 ]);
 
-$alunosQuery = $db->query("SELECT * FROM aluno where idTurma = $turma");
-$alunos = $alunosQuery->fetchAll(PDO::FETCH_ASSOC);
+$alunosQuery = $db->query("SELECT * FROM aluno where turma = $turma");
+$alunos = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
 
 foreach ($alunos as $aluno) {
-    $nota = $db->prepare("INSERT INTO notaporaluno (idAluno, idDisciplina, idTurma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, :nota1, :nota2, :nota3, :nota4, :rec1, :rec2, :rec3, :rec4)");
+    $nota = $db->prepare("INSERT INTO nota_por_aluno (aluno, disciplina, turma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, 0, 0, 0, 0, 0, 0, 0, 0)");
 
     $nota->execute([
-        'idAluno' => $aluno['idAluno'],
+        'idAluno' => $aluno->id,
         'idDisciplina' => $disciplina,
         'idTurma' => $turma,
-        'nota1' => 0,
-        'nota2' => 0,
-        'nota3' => 0,
-        'nota4' => 0,
-        'rec1' => 0,
-        'rec2' => 0,
-        'rec3' => 0,
-        'rec4' => 0,
     ]);
+    
+    $diario = $db->prepare("INSERT INTO diario_de_classe (aluno, disciplina, turma, data, contexto, presenca) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), 'presenca', 0)");
+
+    $diario->execute([
+        'idAluno' => $aluno->id,
+        'idDisciplina' => $disciplina->disciplina,
+        'idTurma' => $turma,
+    ]);    
 }
 
 header("Location: ../professor");

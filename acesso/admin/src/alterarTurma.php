@@ -10,22 +10,20 @@ if (!$tipo || $tipo !== 'admin') {
 
 include '../../../data/conn.php';
 
-$userId = $_SESSION['user_id'];
-
-$turmaId = $_POST['id'];
+$turma = $_POST['id'];
 $nome = $_POST['nome'];
 $serie = $_POST['serie'];
 
 $user = $db->prepare("
     UPDATE turma
-    SET serie=:serie, nomeTurma=:nome
-    where idTurma=:turmaId
+    SET serie=:serie, nome=:nome
+    where id=:turma
     ");
 
 $user->execute([
     'nome' => $nome,
     'serie' => $serie,
-    'turmaId' => $turmaId,
+    'turma' => $turma,
 ]);
 
 header('Location: ../turma');

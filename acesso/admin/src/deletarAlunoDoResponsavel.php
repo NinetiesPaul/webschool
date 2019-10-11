@@ -14,9 +14,9 @@ $id = $_GET['resp'];
 $aluno = $_GET['aluno'];
 
 $user = $db->prepare("
-    delete from responsavelporaluno
-    where responsavelporaluno.idresponsavel in (select idresponsavel from responsavel where idUsuario=:user_id)
-    and responsavelporaluno.idaluno in (select idaluno from aluno where idUsuario=:idaluno)
+    delete from responsavel_por_aluno
+    where responsavel_por_aluno.responsavel in (select id from responsavel where usuario=:user_id)
+    and responsavel_por_aluno.aluno in (select id from aluno where usuario=:idaluno)
 ");
 
 $user->execute([

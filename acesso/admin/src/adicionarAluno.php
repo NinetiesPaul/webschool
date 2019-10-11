@@ -10,8 +10,17 @@ if (!$tipo || $tipo !== 'admin') {
 
 include '../../../data/conn.php';
 include '../../../data/functions.php';
+
+$email = $_POST['email'];
+
+$exists = verificarLoginOnPost('aluno', $email);
+
+if ($exists) {
+    header('Location: ../aluno');
+    exit();
+}
         
-$endereco = $db->prepare("INSERT INTO endereco (idEstado)
+$endereco = $db->prepare("INSERT INTO endereco (estado)
     VALUES (:estado)");
 
 $endereco->execute([
@@ -21,22 +30,13 @@ $endereco->execute([
 $idEndereco = (int) $db->lastInsertId();
 
 $nome = $_POST['nome'];
-$email = $_POST['email'];
-
-$exists = verificarLoginOnPost('aluno', $email);
-
-if ($exists) {
-    header('Location: ../aluno');
-    exit();
-}
-
 $password = $_POST['password'];
 $salt = time() + rand(100, 1000);
 $password = md5($password . $salt);
 $turma = $_POST['turma'];
 
 $user = $db->prepare("
-    INSERT INTO usuario (nome, email, pass, idEndereco, salt)
+    INSERT INTO usuario (nome, email, pass, endereco, salt)
     VALUES (:name, :email, :password, :endereco, :salt)
 ");
 
@@ -50,47 +50,38 @@ $user->execute([
 
 $userId = (int) $db->lastInsertId();
 
-$aluno = $db->prepare("INSERT INTO aluno (idUsuario, idTurma) VALUES (:idUusuario, :idTurma)");
+$avatar = $db->prepare("INSERT INTO fotos_de_avatar (usuario) VALUES (:idUusuario)");
+$avatar->execute([
+    'idUusuario' => $userId,
+]);
+
+
+$aluno = $db->prepare("INSERT INTO aluno (usuario, turma) VALUES (:idUusuario, :idTurma)");
 $aluno->execute([
     'idUusuario' => $userId,
     'idTurma' => $turma,
 ]);
 
-$lastidQuery = $db->query("SELECT last_insert_id() as id");
-$lastid = $lastidQuery->fetch()['id'];
+$lastid = (int) $db->lastInsertId();
 
-$avatar = $db->prepare("INSERT INTO fotosdeavatar (idUsuario) VALUES (:idUusuario)");
-$avatar->execute([
-    'idUusuario' => $userId,
-]);
-
-$disciplinasQuery = $db->query("SELECT * FROM disciplinaporprofessor where idTurma = $turma");
-$disciplinas = $disciplinasQuery->fetchAll(PDO::FETCH_ASSOC);
+$disciplinasQuery = $db->query("SELECT * FROM disciplina_por_professor where turma = $turma");
+$disciplinas = $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
 
 foreach ($disciplinas as $disciplina) {
-    $nota = $db->prepare("INSERT INTO notaporaluno (idAluno, idDisciplina, idTurma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, :nota1, :nota2, :nota3, :nota4, :rec1, :rec2, :rec3, :rec4)");
+    $nota = $db->prepare("INSERT INTO nota_por_aluno (aluno, disciplina, turma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, 0, 0, 0, 0, 0, 0, 0, 0)");
 
     $nota->execute([
         'idAluno' => $lastid,
-        'idDisciplina' => $disciplina['idDisciplina'],
+        'idDisciplina' => $disciplina->disciplina,
         'idTurma' => $turma,
-        'nota1' => 0,
-        'nota2' => 0,
-        'nota3' => 0,
-        'nota4' => 0,
-        'rec1' => 0,
-        'rec2' => 0,
-        'rec3' => 0,
-        'rec4' => 0,
     ]);
     
-    $diario = $db->prepare("INSERT INTO diariodeclasse (idAluno, idDisciplina, idTurma, dataDaFalta, presenca) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), :presenca)");
+    $diario = $db->prepare("INSERT INTO diario_de_classe (aluno, disciplina, turma, data, contexto, presenca) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), 'presenca', 0)");
 
     $diario->execute([
         'idAluno' => $lastid,
-        'idDisciplina' => $disciplina['idDisciplina'],
+        'idDisciplina' => $disciplina->disciplina,
         'idTurma' => $turma,
-        'presenca' => 0,
     ]);
 }
 
