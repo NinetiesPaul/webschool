@@ -30,7 +30,7 @@ if (! empty($_POST)) {
     ");
     $alunos = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
     
-    echo "<table class='table table-striped table-borderless table-responsive'>";
+    echo "<table style='margin-left: auto; margin-right: auto; font-size: 13;' class='table table-striped table-responsive'>";
     echo "<thead class='thead-dark'>";
     echo "<tr>";
     echo "<th scope='col'>  </th>";

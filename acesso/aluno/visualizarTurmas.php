@@ -80,18 +80,19 @@ include '../../includes/php/conn.php';
                     echo pegarTurma($turma->turma).'<br/>';
                     $notasQuery = $db->query("select * from nota_por_aluno where aluno=$user->aluno and turma=$turma->turma order by disciplina");
                     $notas = $notasQuery->fetchAll(PDO::FETCH_OBJ);
-                    echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;" class="table">';
-
+                    
+                    echo "<table style='margin-left: auto; margin-right: auto; font-size: 13;' class='table'>";
+                    echo '<thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th><th></th></tr></thead>';
                     foreach ($notas as $nota) {
-                        echo '<tr><td><strong>'.pegarDisciplina($nota->disciplina).'<strong></td>';
-                        echo '<td>Nota 1: '.$nota->nota1.'</td>';
-                        echo '<td>Nota 2: '.$nota->nota2.'</td>';
-                        echo '<td>Nota 3: '.$nota->nota3.'</td>';
-                        echo '<td>Nota 4: '.$nota->nota4.'</td>';
-                        echo '<td>Rec 1: '.$nota->rec1.'</td>';
-                        echo '<td>Rec 2: '.$nota->rec2.'</td>';
-                        echo '<td>Rec 3: '.$nota->rec3.'</td>';
-                        echo '<td>Rec 4: '.$nota->rec4.'</td>';
+                        echo '<tr><td>'.pegarDisciplina($nota->disciplina).'</td>';
+                        echo '<td>'.$nota->nota1.'</td>';
+                        echo '<td>'.$nota->rec1.'</td>';
+                        echo '<td>'.$nota->nota2.'</td>';
+                        echo '<td>'.$nota->rec2.'</td>';
+                        echo '<td>'.$nota->nota3.'</td>';
+                        echo '<td>'.$nota->rec3.'</td>';
+                        echo '<td>'.$nota->nota4.'</td>';
+                        echo '<td>'.$nota->rec4.'</td>';
                         echo "<td>
                             <button class='btn btn-sm btn-info faltas' data-toggle='modal' data-target='#modalExemplo' id='$user->aluno.$turma->turma.$nota->disciplina'>
                                 Faltas
