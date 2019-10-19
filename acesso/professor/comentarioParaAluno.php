@@ -63,31 +63,8 @@ $user = $_SESSION['user'];
 
         <div class="container">
             <div class="jumbotron text-center">
-                
-                <?php
-                
-                $comentarioQuery = $db->query("
-                    select *
-                    from diario_de_classe
-                    where aluno = $aluno
-                    and disciplina = $disciplina
-                    and turma = $turma
-                    and data = '$data'
-                    and professor = $user->professor
-                    and contexto = 'observacao'
-                ");
-                $comentario = $comentarioQuery->fetch(PDO::FETCH_OBJ);
-                
-                $mensagem = '';
-                if ($comentario) {
-                    $mensagem = $comentario->observacao;
-                }
-                
-                
-                ?>
-                
                 <strong>Comentário</strong> <p/>
-                <form action="../../../../../../src/adicionarComentarioParaAluno.php" method="post" role="form" class="form-horizontal ">
+                <form action="../../../../../../src/adicionarComentarioParaAluno.php" method="post" role="form" class="form-horizontal " enctype="multipart/form-data" >
                     <input type="hidden" name="aluno" value="<?php echo $aluno; ?>" />
                     <input type="hidden" name="disciplina" value="<?php echo $disciplina; ?>" />
                     <input type="hidden" name="turma" value="<?php echo $turma; ?>" />
@@ -95,11 +72,64 @@ $user = $_SESSION['user'];
                     <input type="hidden" name="prof" value="<?php echo $user->professor; ?>" />
                     <div class="form-group row justify-content-center ">
                         <div class="col-md-3">
-                            <textarea name="comentario"><?php echo $mensagem ?></textarea>
+                            <textarea name="comentario"> </textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row justify-content-center">
+                        <label for="fileToUpload" class="col-form-label col-md-2 col-form-label-sm">Selecione arquivo para anexar:</label>
+                        <div class="col-md-3">
+                            <input type="file" name="fileToUpload" >
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary btn-sm btn-sm"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button>
                 </form>
+                
+                <strong>Lista de comentários</strong> <p/>                
+                
+                <?php
+                    $comentarioQuery = $db->query("
+                        select *
+                        from diario_de_classe
+                        where aluno = $aluno
+                        and disciplina = $disciplina
+                        and turma = $turma
+                        and data = '$data'
+                        and professor = $user->professor
+                        and contexto = 'observacao'
+                    ");
+                    $comentarios = $comentarioQuery->fetchAll(PDO::FETCH_OBJ);
+
+                    echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;" class="table">';
+                    echo "<thead><tr><th>Comentário</th><th colspan='2'>Arquivos anexados</th><th>Deletar</th></tr></thead><tbody>";
+                    foreach ($comentarios as $comentario) {
+                        echo "<tr><td>$comentario->observacao</td>";
+
+                        $arquivoQuery = $db->query("
+                            select *
+                            from arquivos
+                            where contexto = 'ddc'
+                            and diario = $comentario->id
+                        ");
+                        $arquivos = $arquivoQuery->fetchAll(PDO::FETCH_OBJ);
+
+                        $span = 'colpan=2';
+                        $line = 'Essa observação não contem arquivos anexados';
+                        $td = '<td></td>';
+                        if ($arquivos) {
+                            $span = '';
+                            $line = '';
+                            $td = '';
+                            foreach ($arquivos as $arquivo) {
+                               $line .= "<a href='../../../../../$arquivo->endereco'>$arquivo->nome</a></td><td><a href='../../../../../deletar-arquivo/$arquivo->id'><span class='glyphicon glyphicon-trash'></span></a>";
+                            }
+                        }
+                        echo "<td $span>$line</td>$td";
+                        echo "<td><a href='../../../../../deletar/$comentario->id'><span class='glyphicon glyphicon-trash'></span></a></td></tr>";
+                        //echo "<tr><td></td><td colspan='2'>Anexar arquivo</td><td></td><td></td></tr>";
+                    }
+                    echo '</tbody></table>';
+                ?>
+                             
             </div>
         </div>
 
