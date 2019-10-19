@@ -1,0 +1,7 @@
+/.php_cs.cache
+uploads/images/
+uploads/files/
+outros/
+nbproject/
+vendor/
+composer.lock
