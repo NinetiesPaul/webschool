@@ -85,8 +85,8 @@ $iddisciplina = $_GET['id'];
                 ");
                 $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
 
-                echo '<table style="margin-left: auto; margin-right: auto; font-size: 13;" class="table">';
-                echo '<tr><td></td><td>Nota 1</td><td>Rec. 1</td><td>Nota 2:</td><td>Rec. 2</td><td>Nota 3</td><td>Rec. 3</td><td>Nota 4</td><td>Rec. 4</td><td></td><td></td>';
+                echo "<table style='margin-left: auto; margin-right: auto; font-size: 13;' class='table table-striped'>";
+                echo '<thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2:</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th></tr></thead>';
                 foreach ($alunosQuery as $aluno){
                     echo '<tr><td>'.$aluno->nome.'</td>';
                     echo "<td> <a href='../nota/$aluno->id/$disciplina/$turma/nota1'>$aluno->nota1</a> </td>";
@@ -97,6 +97,7 @@ $iddisciplina = $_GET['id'];
                     echo "<td> <a href='../nota/$aluno->id/$disciplina/$turma/rec3'>$aluno->rec3</a> </td>";
                     echo "<td> <a href='../nota/$aluno->id/$disciplina/$turma/nota4'>$aluno->nota4</a> </td>";
                     echo "<td> <a href='../nota/$aluno->id/$disciplina/$turma/rec4'>$aluno->rec4</a> </td>";
+                    echo '</tr>';
                 }
                 echo '</table>';
                 
