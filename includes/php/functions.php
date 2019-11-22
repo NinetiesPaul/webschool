@@ -2,6 +2,20 @@
 
 ini_set('display_errors', true);
 
+function pegarIdDaTurmaDoAluno($int)
+{ 
+
+    include 'conn.php';
+    
+    $query = $db->query("
+	select turma from aluno where id=$int
+	");
+    
+    $query = $query->fetch(PDO::FETCH_OBJ);
+    
+    return $query->turma;
+}
+
 function pegarTurma($int)
 { 
 
@@ -68,6 +82,20 @@ function pegarNomeProfessor($int)
     $usersQuery = $usersQuery->fetchObject();
     
     return $usersQuery->nome;
+}
+
+function pegarIdDeUsuarioDoAluno($int)
+{ 
+
+    include 'conn.php';
+    
+    $alunoQuery = $db->query("
+	select usuario from aluno where id=$int
+	");
+    
+    $alunoQuery = $alunoQuery->fetchObject();
+    
+    return $alunoQuery->usuario;
 }
 
 function pegarIdDoAluno($int)
