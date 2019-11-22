@@ -16,6 +16,7 @@ include '../../includes/php/conn.php';
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link href="../../includes/css/glyphicons.css" rel="stylesheet">
         <link href="../../includes/css/css.css" rel="stylesheet">
         <link href="../../includes/css/navbar.css" rel="stylesheet">
         <script src="../../includes/js/jquery.js"></script>
@@ -30,7 +31,7 @@ include '../../includes/php/conn.php';
                 }
             });
         }
-        
+
         $(document).ready(function(){
             $(".faltas").click(function(){
                 dado = this.id;
@@ -39,7 +40,27 @@ include '../../includes/php/conn.php';
                 turma = dado[1];
                 disciplina = dado[2];
                 pesquisarFaltas(aluno,turma,disciplina);
-                
+            });
+
+            $(".baixar").click(function(){
+                dado = this.id;
+                dado = dado.split('.');
+                aluno = dado[0];
+                turma = dado[1];
+                console.log(dado);
+                $("#aluno-pdf").val(aluno);
+                $("#turma-pdf").val(turma);
+                $("#historico-pdf").val('boletim');
+                $("#gerarBoletim").submit();
+            });
+
+            $(".historico").click(function(){
+                aluno = this.id;
+                console.log(aluno);
+                $("#aluno-pdf").val(aluno);
+                $("#turma-pdf").val('');
+                $("#historico-pdf").val('historico');
+                $("#gerarBoletim").submit();
             });
         });
         </script>
@@ -69,15 +90,33 @@ include '../../includes/php/conn.php';
 
         <div class="container">
             <div class="jumbotron text-center">
+                <form action="../../includes/php/gerarBoletim.php" method="post" role="form" class="form-horizontal " style="display: none;" id="gerarBoletim">
+                    <input type="hidden" name="aluno-pdf" id="aluno-pdf" value="" />
+                    <input type="hidden" name="turma-pdf" id="turma-pdf" value="" />
+                    <input type="hidden" name="historico-pdf" id="historico-pdf" value="boletim" />
+                </form>
+                
+                <a href='#' class='historico' id="<?php echo $user->aluno.'.'.$user->id; ?>">Baixar histórico completo do aluno</a> <p/>
+                
                 <strong>Minhas turmas</strong><p/>
 
                 <?php
+                
+                $usuarioQuery = $db->query("select * from aluno where usuario=$user->id");
+                $usuario = $usuarioQuery->fetch(PDO::FETCH_OBJ);
 
                 $turmasQuery = $db->query("select turma from nota_por_aluno where aluno=$user->aluno group by turma");
                 $turmas = $turmasQuery->fetchAll(PDO::FETCH_OBJ);
                 
                 foreach ($turmas as $turma) {
-                    echo pegarTurma($turma->turma).'<br/>';
+                    $turmaAtual = ($usuario->turma === $turma->turma) ? ' (<b>atual</b>) ' : '';
+                    
+                    echo pegarTurma($turma->turma) . ' ' . $turmaAtual;
+                    echo "<button class='btn btn-sm btn-info baixar' id='$user->aluno.$turma->turma'>
+                                <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
+                            </button>";
+                    echo '<br/>';
+                    
                     $notasQuery = $db->query("select * from nota_por_aluno where aluno=$user->aluno and turma=$turma->turma order by disciplina");
                     $notas = $notasQuery->fetchAll(PDO::FETCH_OBJ);
                     
@@ -95,7 +134,7 @@ include '../../includes/php/conn.php';
                         echo '<td>'.$nota->rec4.'</td>';
                         echo "<td>
                             <button class='btn btn-sm btn-info faltas' data-toggle='modal' data-target='#modalExemplo' id='$user->aluno.$turma->turma.$nota->disciplina'>
-                                Faltas
+                                <span class='glyphicon glyphicon-eye-open'></span> Visualizar faltas
                             </button>
                         </td>";
                         echo '</tr>';

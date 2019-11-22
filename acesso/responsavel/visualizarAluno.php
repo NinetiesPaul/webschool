@@ -25,6 +25,7 @@ include '../../includes/php/conn.php';
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link href="../../../includes/css/css.css" rel="stylesheet">
         <link href="../../../includes/css/navbar.css" rel="stylesheet">
+        <link href="../../../includes/css/glyphicons.css" rel="stylesheet">
         <script src="../../../includes/js/jquery.js"></script>
         <script src="../../../includes/js/detect.js"></script>
         <script>
@@ -48,6 +49,27 @@ include '../../includes/php/conn.php';
                 disciplina = dado[2];
                 pesquisarFaltas(aluno,turma,disciplina);
                 
+            });
+
+            $(".baixar").click(function(){
+                dado = this.id;
+                dado = dado.split('.');
+                aluno = dado[0];
+                turma = dado[1];
+                console.log(dado);
+                $("#aluno-pdf").val(aluno);
+                $("#turma-pdf").val(turma);
+                $("#historico-pdf").val('boletim');
+                $("#gerarBoletim").submit();
+            });
+
+            $(".historico").click(function(){
+                aluno = this.id;
+                console.log(aluno);
+                $("#aluno-pdf").val(aluno);
+                $("#turma-pdf").val('');
+                $("#historico-pdf").val('historico');
+                $("#gerarBoletim").submit();
             });
         });
         </script>
@@ -80,6 +102,14 @@ include '../../includes/php/conn.php';
 
         <div class="container">
             <div class="jumbotron text-center">
+                <form action="../../../includes/php/gerarBoletim.php" method="post" role="form" class="form-horizontal " style="display: none;" id="gerarBoletim">
+                    <input type="hidden" name="aluno-pdf" id="aluno-pdf" value="" />
+                    <input type="hidden" name="turma-pdf" id="turma-pdf" value="" />
+                    <input type="hidden" name="historico-pdf" id="historico-pdf" value="false" />
+                </form>
+                
+                <a href='#' class='historico' id="<?php echo $aluno.'.'.pegarIdDeUsuarioDoAluno($aluno); ?>">Baixar histórico completo do aluno</a> <p/>
+
                 <strong>Detalhes do Aluno</strong><p/>
 
                 <?php
@@ -92,6 +122,14 @@ include '../../includes/php/conn.php';
                 }
 
                 foreach ($turmas as $turma) {
+                    $turmaAtual = (pegarIdDaTurmaDoAluno($aluno) === $turma->turma) ? ' (<b>atual</b>) ' : '';
+                    
+                    echo pegarTurma($turma->turma) . ' ' . $turmaAtual;
+                    echo "<button class='btn btn-sm btn-info baixar' id='$aluno.$turma->turma'>
+                                <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
+                            </button>";
+                    echo '<br/>';
+                    
                     echo pegarTurma($turma->turma).'<br/>';
                     $notasQuery = $db->query("select * from nota_por_aluno where aluno=$aluno and turma=$turma->turma order by disciplina");
                     $notas = $notasQuery->fetchAll(PDO::FETCH_OBJ);
