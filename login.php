@@ -35,9 +35,9 @@ if (!empty($_POST)) {
                 $user->endereco = $endereco;
             }
             
-            echo "<pre>";
+            /*echo "<pre>";
             print_r($user);
-            echo "</pre>";
+            echo "</pre>";*/
             
             session_start();
             $_SESSION['user'] = $user;
