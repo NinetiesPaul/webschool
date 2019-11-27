@@ -6,3 +6,4 @@ nbproject/
 vendor/
 composer.lock
 includes/php/conn.php
+phinx.yml
