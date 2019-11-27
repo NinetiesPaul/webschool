@@ -10,7 +10,7 @@ if (!$tipo || $tipo !== 'admin') {
 
 include '../../../includes/php/conn.php';
 
-if(sizeof($_POST) < 3) {
+if (sizeof($_POST) < 3) {
     header("Location: ../professor");
     exit();
 }
@@ -46,7 +46,7 @@ foreach ($alunos as $aluno) {
         'idAluno' => $aluno->id,
         'idDisciplina' => $disciplina->disciplina,
         'idTurma' => $turma,
-    ]);    
+    ]);
 }
 
 header("Location: ../professor");

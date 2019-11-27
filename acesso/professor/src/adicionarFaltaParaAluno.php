@@ -12,7 +12,6 @@ include '../../../includes/php/functions.php';
 include '../../../includes/php/conn.php';
 
 if (!empty($_GET)) {
-
     $ano = $_GET['ano'];
     $mes = $_GET['mes'];
     $dia = $_GET['dia'];
@@ -52,7 +51,7 @@ if (!empty($_GET)) {
     } else {
         $presenca = $diario->presenca;
 
-        if ($presenca == False) {
+        if ($presenca == false) {
             $presenca = 1;
         } else {
             $presenca = 0;
