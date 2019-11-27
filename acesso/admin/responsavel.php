@@ -17,10 +17,8 @@ if (empty($_GET)) {
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">        
         <link href="../../includes/css/glyphicons.css" rel="stylesheet">
         <link href="../../includes/css/navbar.css" rel="stylesheet">
-        <link href="../../includes/css/datatables.css" rel="stylesheet">
         <script src="../../includes/js/jquery.js"></script>
         <script>
         function verificarLogin(val) {
@@ -47,15 +45,6 @@ if (empty($_GET)) {
 
         $(document).ready(function(){
            $("#disponibilidade").hide();
-        });
-        
-        $(document).ready( function () {
-            $('#tableResponsaveis').DataTable({
-                "paging": true,
-                "language": {
-                    "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"
-                }
-            });
         });
 
 
@@ -120,8 +109,7 @@ if (empty($_GET)) {
 
                 ?>
                 
-                <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table hover" id="tableResponsaveis">
-                    <thead><tr><td>Nome</td><td>Turma</td><td>Editar</td></tr></thead><tbody>
+                <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
                     <?php
                     
                     foreach ($responsaveis as $responsavel) {
@@ -131,7 +119,6 @@ if (empty($_GET)) {
                     }
                     
                     ?>
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -139,8 +126,6 @@ if (empty($_GET)) {
         <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>		
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
-        <script type="application/json" charset="utf8" src="https://cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"></script>
     </body>
 </html>
 	
