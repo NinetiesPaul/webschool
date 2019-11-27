@@ -12,8 +12,6 @@ include '../../../includes/php/functions.php';
 include '../../../includes/php/conn.php';
 
 if (!empty($_POST)) {
-    
-    
     $dataComentario = $_POST['data'];
     
     $arquivos = false;
@@ -75,7 +73,7 @@ if (!empty($_POST)) {
             move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $path . $file_name_thumb);
 
             $urlFinal = '../uploads/images/'.$file_name;
-            $urlThumbFinal = '../uploads/images/thumbs/'.$file_name_thumb;    
+            $urlThumbFinal = '../uploads/images/thumbs/'.$file_name_thumb;
         }
     }
     
@@ -103,7 +101,6 @@ if (!empty($_POST)) {
     ]);
     
     if ($arquivos) {
-
         $id = (int) $db->lastInsertId();
         
         $fileQuery = $db->prepare("
@@ -116,7 +113,7 @@ if (!empty($_POST)) {
             'endereco' => $urlFinal,
             'data' => $dataComentario,
         ]);
-    } 
+    }
     
     header("Location: ../comentario/$return[0]/$return[1]/$return[2]/$aluno/$disciplina/$turma");
 }

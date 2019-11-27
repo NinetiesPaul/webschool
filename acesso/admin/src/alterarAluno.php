@@ -62,7 +62,7 @@ foreach ($disciplinas as $disciplina) {
     $checkDisciplinaQuery = $db->query("SELECT id FROM nota_por_aluno WHERE turma = $turma and aluno = $idAluno and disciplina = $disciplina->disciplina");
     $checkDisciplina = $checkDisciplinaQuery->fetchAll(PDO::FETCH_OBJ);
     
-    if (empty($checkDisciplina)) {        
+    if (empty($checkDisciplina)) {
         $nota = $db->prepare("INSERT INTO nota_por_aluno (aluno, disciplina, turma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, 0, 0, 0, 0, 0, 0, 0, 0)");
 
         $nota->execute([
@@ -75,7 +75,7 @@ foreach ($disciplinas as $disciplina) {
     $checkDiarioQuery = $db->query("SELECT id FROM diario_de_classe WHERE turma = $turma and aluno = $idAluno and disciplina = $disciplina->disciplina");
     $checkDiario = $checkDiarioQuery->fetchAll(PDO::FETCH_OBJ);
 
-    if (empty($checkDiario)) {        
+    if (empty($checkDiario)) {
         $diario = $db->prepare("INSERT INTO diario_de_classe (aluno, disciplina, turma, data, presenca, contexto) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), 0, 'presenca')");
 
         $diario->execute([
