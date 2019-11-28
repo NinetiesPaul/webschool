@@ -1,8 +1,5 @@
-RewriteEngine On
-
-
-RewriteRule ^home?$ index.php
-
-RewriteRule ^login?$ login.php
-
-RewriteRule ^logout?$ logout.php
+RewriteEngine on
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-l
+RewriteRule ^(.*)$ index.php/$1
