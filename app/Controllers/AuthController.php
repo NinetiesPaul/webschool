@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\DB\DB;
+use App\Templates;
 
 /**
  * Description of AuthController
@@ -21,24 +22,28 @@ class AuthController {
     
     protected $connection;
     
+    protected $template;
+    
     public function __construct() {
         $this->connection = new DB();
+        $this->template = new Templates();
     }
     
     public function login()
     {
-        echo self::connection;exit;
-        
         $data = json_decode(json_encode($_POST), true);
         
-        $tipo = $_POST['tipo'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];
+        $tipo = $data['tipo'];
+        $email = $data['email'];
+        $password = $data['password'];
     
-    
-        $user = $usersQuery->fetchObject();
+        $usersQuery = $this->connection->query("
+            SELECT usuario.*, $tipo.id AS $tipo FROM usuario, $tipo
+            WHERE usuario.id=$tipo.usuario
+            AND usuario.email='$email'
+            ");
 
-        echo $user; exit;
+        $user = $usersQuery->fetchObject();
         
         $msg = '';
         $redirect = '';
@@ -50,7 +55,7 @@ class AuthController {
             if ($password == $actualPassword) {
 
                 if ($user->endereco) {
-                    $enderecoQuery = $db->query("
+                    $enderecoQuery = $this->connection->query("
                         SELECT * from endereco where id = $user->endereco
                     ");
 
@@ -58,54 +63,35 @@ class AuthController {
                     $user->endereco = $endereco;
                 }
 
-                /*echo "<pre>";
-                print_r($user);
-                echo "</pre>";*/
-
                 session_start();
                 $_SESSION['user'] = $user;
                 $_SESSION['tipo'] = $tipo;
 
+                $url = "$tipo/home";
+                
                 $msg = 'Bem-vindo!';
-                $redirect = "<p/><a href='home'>Ir</a> para minha tela inicial.";
+                $redirect = "<p/><a href='$url'>Ir</a> para minha tela inicial.";
             } else {
                 $msg = 'Usuário não cadastrado ou senha incorreta!';
-                $redirect = "<p/><a href='home'>Voltar</a>";
+                $redirect = "<p/><a href='/'>Voltar</a>";
             }
 
-
             $arrTags = array(
-                'status'=> $status
+                'msg' => $msg,
+                'redirect' => $redirect
             );
 
-            $template = self::getTemplate('login.html');
-            $templateFinal 	= self::parseTemplate( $template, $arrTags );
+            $template = $this->template->getTemplate('login.html');
+            $templateFinal = $this->template->parseTemplate( $template, $arrTags );
 
             echo $templateFinal;
         }
     }
     
-    private function getTemplate( $template, $folder = "web/" ) 
+    public function logout()
     {
-        $arqTemp = $folder.$template; // criando var com caminho do arquivo
-        $content = '';
-
-        if ( is_file( $arqTemp ) ) // verificando se o arq existe
-            $content = file_get_contents( $arqTemp ); // retornando conteúdo do arquivo
-
-        return $content;
-    }
-    
-    private function parseTemplate( $template, $array ) 
-    {
-        foreach ($array as $a => $b) {// recebemos um array com as tags 
-            if (strpos ($a, 'list')) {
-                $template = str_replace( '{'.$a.'}', json_encode($b), $template );
-            } else {
-                $template = str_replace( '{'.$a.'}', $b, $template );
-            }
-        }
-
-        return $template; // retorno o html com conteúdo final
+        session_start();
+        session_destroy();
+        header('Location: /webschool/');
     }
 }

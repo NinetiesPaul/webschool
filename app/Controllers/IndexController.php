@@ -8,6 +8,8 @@
 
 namespace App\Controllers;
 
+use App\Templates;
+
 /**
  * Description of IndexController
  *
@@ -16,11 +18,33 @@ namespace App\Controllers;
 class IndexController {
     //put your code here
     
-    public function __construct() {}
+    protected $template;
+
+    public function __construct() {
+        $this->template = new Templates();
+    }
     
     public function index()
     {
-        $templateFinal 	= $this->getTemplate('index.html');
+        session_start();
+        
+        if (isset($_SESSION['tipo'])) {
+            $tipo = $_SESSION['tipo'];
+            if ($tipo == "admin") {
+                header('Location: admin/home');
+            }
+            if ($tipo == "responsavel") {
+                header('Location: responsavel/home');
+            }
+            if ($tipo == "professor") {
+                header('Location: professor/home');
+            }
+            if ($tipo == "aluno") {
+                header('Location: aluno/home');
+            }
+        }
+        
+        $templateFinal 	= $this->template->getTemplate('index.html');
         
         echo $templateFinal;
     }
