@@ -1,26 +1,80 @@
 <?php
 
 use Pecee\SimpleRouter\SimpleRouter;
-use App\Controllers\IndexController as Index;
-use App\Controllers\AuthController as Auth;
+use App\Controllers\IndexController;
+use App\Controllers\AuthController;
+
+//index
 
 SimpleRouter::get('/webschool/', function() {
-    Index::index();
+    $index = new IndexController;
+    $index->index();
 });
 
-SimpleRouter::get('/webschool/listing', function() {
-    Index::list();
+//admin
+
+SimpleRouter::get('/webschool/admin/home', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->index();
 });
 
-SimpleRouter::get('/webschool/form', function() {
-    Index::form();
+
+SimpleRouter::get('/webschool/admin/alunos', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->alunos();
 });
 
-SimpleRouter::post('/webschool/fromForm', function() {
-    Index::fromForm();
+
+SimpleRouter::get('/webschool/admin/professores', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->professores();
 });
+
+
+SimpleRouter::get('/webschool/admin/responsaveis', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->responsaveis();
+});
+
+
+SimpleRouter::get('/webschool/admin/disciplinas', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->materias();
+});
+
+SimpleRouter::get('/webschool/admin/turmas', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->verTurmas();
+});
+
+SimpleRouter::get('/webschool/admin/turma/{idTurma}', function($idTurma) {
+    $admin = new App\Controllers\AdminController();
+    $admin->verTurma($idTurma);
+});
+
+SimpleRouter::delete('/webschool/admin/turma/{idTurma}/delete', function($idTurma) {
+    $admin = new App\Controllers\AdminController();
+    $admin->removerTurma($idTurma);
+});
+
+SimpleRouter::put('/webschool/admin/turma', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->atualizarTurma();
+});
+
+SimpleRouter::post('/webschool/admin/turma', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->adicionarTurma();
+});
+
+//auth
 
 SimpleRouter::post('/webschool/login', function() {
-    Auth::login();
+    $auth = new AuthController;
+    $auth->login();
 });
 
+SimpleRouter::get('/webschool/logout', function() {
+    $auth = new AuthController;
+    $auth->logout();
+});
