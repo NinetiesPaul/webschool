@@ -39,7 +39,27 @@ SimpleRouter::get('/webschool/admin/responsaveis', function() {
 
 SimpleRouter::get('/webschool/admin/disciplinas', function() {
     $admin = new App\Controllers\AdminController();
-    $admin->materias();
+    $admin->verMaterias();
+});
+
+SimpleRouter::get('/webschool/admin/disciplina/{idDisciplina}', function($idDisciplina) {
+    $admin = new App\Controllers\AdminController();
+    $admin->verMateria($idDisciplina);
+});
+
+SimpleRouter::delete('/webschool/admin/disciplina/{idDisciplina}/delete', function($idDisciplina) {
+    $admin = new App\Controllers\AdminController();
+    $admin->removerMateria($idDisciplina);
+});
+
+SimpleRouter::put('/webschool/admin/disciplina', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->atualizarMateria();
+});
+
+SimpleRouter::post('/webschool/admin/disciplina', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->adicionarMateria();
 });
 
 SimpleRouter::get('/webschool/admin/turmas', function() {

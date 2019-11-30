@@ -44,19 +44,19 @@ class AdminController {
     public function verTurmas()
     {
         $turmaQuery = $this->connection->query("select * from turma order by serie");
-        $turmas = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
+        $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
         
-        $alunos = '';
+        $turmas = '';
         
-        foreach ($turmas as $turma) {
-            $alunos .= 
+        foreach ($turmaQuery as $turma) {
+            $turmas .= 
              "<tr id='row-$turma->id'><td>$turma->serie º Série $turma->nome</td>
              <td><a href='turma/$turma->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>
              <td><button class='btn btn-danger btn-sm' id='deletar' value='$turma->id'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
         }
         
         $args = [
-          'ALUNOS' => $alunos  
+          'ALUNOS' => $turmas  
         ];
         
         $template 	= $this->template->getTemplate('admin/turmas.html');
@@ -122,7 +122,7 @@ class AdminController {
     }
     
     public function removerTurma(int $turma)
-    {        
+    {
         $user = $this->connection->prepare("DELETE FROM turma WHERE id=:id");
 
         $user->execute([
@@ -130,9 +130,88 @@ class AdminController {
         ]);
     }
     
-    public function materias()
+    public function verMaterias()
     {
-        $templateFinal 	= $this->template->getTemplate('admin/index.html');
+
+        $disciplinaQuery = $this->connection->query("select * from disciplina");
+        $disciplinaQuery = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
+        
+        $disciplinas = '';
+        
+        foreach ($disciplinaQuery as $disciplina) {
+            $disciplinas .= 
+             "<tr id='row-$disciplina->id'><td>$disciplina->nome</td>
+             <td><a href='disciplina/$disciplina->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>
+             <td><button class='btn btn-danger btn-sm' id='deletar' value='$disciplina->id'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
+        }
+        
+        $args = [
+          'DISCIPLINAS' => $disciplinas  
+        ];
+        
+        $template 	= $this->template->getTemplate('admin/disciplinas.html');
+        $templateFinal = $this->template->parseTemplate($template, $args);
         echo $templateFinal;
+    }
+    
+    public function verMateria(int $materia)
+    {
+        $disciplinaQuery = $this->connection->query("select * from disciplina where id = $materia");
+        $disciplina = $disciplinaQuery->fetch(PDO::FETCH_OBJ);
+        
+        $args = [
+            'ID' => $disciplina->id,
+            'NOME' => $disciplina->nome,
+        ];
+        
+        $template 	= $this->template->getTemplate('admin/disciplina.html');
+        $templateFinal = $this->template->parseTemplate($template, $args);
+        echo $templateFinal;              
+    }
+    
+    public function adicionarMateria()
+    {
+         $data = json_decode(json_encode($_POST), true);
+        
+        $nome = $data['nome'];
+
+        $user = $this->connection->prepare("INSERT INTO disciplina (nome)
+                VALUES (:nome)");
+
+        $user->execute([
+            'nome' => $nome,
+        ]);
+        
+        header('Location: /webschool/admin/disciplinas');       
+    }
+    
+    public function atualizarMateria()
+    {
+        $data = json_decode(json_encode($_POST), true);
+
+        $disciplina = $data['id'];
+        $nome = $data['nome'];
+
+        $user = $this->connection->prepare("
+            UPDATE disciplina
+            SET nome=:nome
+            where id=:disciplina
+            ");
+
+        $user->execute([
+            'nome' => $nome,
+            'disciplina' => $disciplina,
+        ]);
+        
+        header('Location: /webschool/admin/disciplinas');        
+    }
+    
+    public function removerMateria(int $disciplina)
+    {
+        $user = $this->connection->prepare("DELETE FROM disciplina WHERE id=:id");
+
+        $user->execute([
+            'id' => $disciplina,
+        ]);
     }
 }
