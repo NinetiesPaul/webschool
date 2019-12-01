@@ -3,6 +3,7 @@
 use Pecee\SimpleRouter\SimpleRouter;
 use App\Controllers\IndexController;
 use App\Controllers\AuthController;
+use App\Util;
 
 //index
 
@@ -30,12 +31,44 @@ SimpleRouter::get('/webschool/admin/professores', function() {
     $admin->professores();
 });
 
+//admin - responsaveis
 
 SimpleRouter::get('/webschool/admin/responsaveis', function() {
     $admin = new App\Controllers\AdminController();
-    $admin->responsaveis();
+    $admin->verResponsaveis();
 });
 
+SimpleRouter::get('/webschool/admin/responsavel/{idResponsavel}', function($idResponsavel) {
+    $admin = new App\Controllers\AdminController();
+    $admin->verResponsavel($idResponsavel);
+});
+
+SimpleRouter::delete('/webschool/admin/responsavel/{idResponsavel}/delete', function($idResponsavel) {
+    $admin = new App\Controllers\AdminController();
+    $admin->removerResponsavel($idResponsavel);
+});
+
+SimpleRouter::put('/webschool/admin/responsavel', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->atualizarResponsavel();
+});
+
+SimpleRouter::post('/webschool/admin/responsavel', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->adicionarResponsavel();
+});
+
+SimpleRouter::post('/webschool/admin/alunoPorResponsavel', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->adicionarAlunoPorResponsavel();
+});
+
+SimpleRouter::delete('/webschool/admin/alunoPorResponsavel/{id}', function($id) {
+    $admin = new App\Controllers\AdminController();
+    $admin->removerAlunoPorResponsavel($id);
+});
+
+//admin - disciplinas
 
 SimpleRouter::get('/webschool/admin/disciplinas', function() {
     $admin = new App\Controllers\AdminController();
@@ -62,6 +95,8 @@ SimpleRouter::post('/webschool/admin/disciplina', function() {
     $admin->adicionarMateria();
 });
 
+//admin - turmas
+
 SimpleRouter::get('/webschool/admin/turmas', function() {
     $admin = new App\Controllers\AdminController();
     $admin->verTurmas();
@@ -87,7 +122,7 @@ SimpleRouter::post('/webschool/admin/turma', function() {
     $admin->adicionarTurma();
 });
 
-//auth
+//auth e logout
 
 SimpleRouter::post('/webschool/login', function() {
     $auth = new AuthController;
@@ -97,4 +132,9 @@ SimpleRouter::post('/webschool/login', function() {
 SimpleRouter::get('/webschool/logout', function() {
     $auth = new AuthController;
     $auth->logout();
+});
+
+SimpleRouter::post('/webschool/verificarLogin', function() {
+    $util = new Util;
+    $util->loginTakenAjax();
 });
