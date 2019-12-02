@@ -1,3 +1,11 @@
-#Simple web system in pure PHP for small school management
+#Simple web system for small school management
 
-Project running on PHP 7.2 and MySQL
+Project running on:
+* PHP 7.2
+* MySQL 5.2
+
+Composer packages:
+* Phinx
+* PHP-Cs-Fixer
+* Simple-PHP-Router
+ 
