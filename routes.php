@@ -50,7 +50,37 @@ SimpleRouter::post('/webschool/admin/aluno', function() {
 
 SimpleRouter::get('/webschool/admin/professores', function() {
     $admin = new App\Controllers\AdminController();
-    $admin->professores();
+    $admin->verProfessores();
+});
+
+SimpleRouter::get('/webschool/admin/professor/{idProfessor}', function($idProfessor) {
+    $admin = new App\Controllers\AdminController();
+    $admin->verProfessor($idProfessor);
+});
+
+SimpleRouter::delete('/webschool/admin/professor/{idProfessor}/delete', function($idProfessor) {
+    $admin = new App\Controllers\AdminController();
+    $admin->removerProfessor($idProfessor);
+});
+
+SimpleRouter::put('/webschool/admin/professor', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->atualizarProfessor();
+});
+
+SimpleRouter::post('/webschool/admin/professor', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->adicionarProfessor();
+});
+
+SimpleRouter::post('/webschool/admin/professorPorMateria', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->adicionarProfessorPorMateria();
+});
+
+SimpleRouter::delete('/webschool/admin/professorPorMateria/{id}', function($id) {
+    $admin = new App\Controllers\AdminController();
+    $admin->removerProfessorPorMateria($id);
 });
 
 //admin - responsaveis

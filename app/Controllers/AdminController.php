@@ -259,10 +259,244 @@ class AdminController {
         ]);
     }
     
-    public function professores()
+    public function verProfessores()
     {
-        $templateFinal 	= $this->template->getTemplate('admin/professores.html');
+        $professorQuery= $this->connection->query("select usuario.*,professor.id as professor from usuario, professor where usuario.id = professor.usuario");
+        $professorQuery = $professorQuery->fetchAll(PDO::FETCH_OBJ);
+        
+        $professores = '';
+        $professores_select = '';
+        $professor_array = [];
+        
+        foreach ($professorQuery as $professor) {
+            $is_deleted = ($professor->is_deleted) ? "<span class='glyphicon glyphicon-remove'></span> " : "<span class='glyphicon glyphicon-ok'></span> ";
+            $professores .= 
+            "<tr id='row-$professor->id'><td>$professor->nome </td>
+            <td>$is_deleted</td><td><a href='professor/$professor->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a> </td>
+            <td><button class='btn btn-danger btn-sm' id='deletar' value='$professor->id'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
+            $professores_select .= "<option value='$professor->professor'>$professor->nome</option>";
+            $professor_array[$professor->professor] = $professor->nome;
+        }
+        
+        $turmaQuery = $this->connection->query("select * from turma order by serie");
+        $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
+        
+        $turmas = '';
+        $turma_array = [];
+        
+        foreach ($turmaQuery as $turma) {
+            $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
+            $turma_array[$turma->id] = "$turma->serie º Série $turma->nome";
+        }
+
+        $disciplinaQuery = $this->connection->query("select * from disciplina");
+        $disciplinaQuery = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
+        
+        $disciplinas = '';
+        $disciplina_array = [];
+        
+        foreach ($disciplinaQuery as $disciplina) {
+            $disciplinas .= "<option value='$disciplina->id'>$disciplina->nome</option>";
+            $disciplina_array[$disciplina->id] = $disciplina->nome;
+        }
+
+        $disciplinaPorProfessorQuery = $this->connection->query("select * from disciplina_por_professor order by turma");
+        $disciplinaPorProfessorQuery = $disciplinaPorProfessorQuery->fetchAll(PDO::FETCH_OBJ);
+        
+        $disciplinasProProfessor = '';          
+        
+        foreach ($disciplinaPorProfessorQuery as $disciplinaProProfessor) {
+            $dpp = $disciplinaProProfessor->professor;
+            $dpd = $disciplinaProProfessor->disciplina;
+            $dpt = $disciplinaProProfessor->turma;
+            $disciplinasProProfessor .= 
+            "<tr id='row-dpp-$disciplinaProProfessor->id'><td> $professor_array[$dpp] </td>
+            <td>$disciplina_array[$dpd]</td><td>$turma_array[$dpt]</td>
+            <td><button class='btn btn-danger btn-sm' id='deletar-dpp' value='$disciplinaProProfessor->id'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
+        }
+        
+        $args = [
+            'PROFESSORES' => $professores,
+            'PROFESSORES_SELECT' => $professores_select,
+            'TURMAS_SELECT' => $turmas,
+            'DISCIPLINAS_SELECT' => $disciplinas,
+            'DISCIPLINAS_POR_PROFESSOR' => $disciplinasProProfessor
+        ];
+        
+        $template 	= $this->template->getTemplate('admin/professores.html');
+        $templateFinal = $this->template->parseTemplate($template, $args);
         echo $templateFinal;
+    }
+    
+    public function verProfessor(int $idProfessor)
+    {
+        $professorQuery = $this->connection->query("select usuario.*,professor.id as professor from usuario, professor where usuario.id = professor.usuario and professor.usuario = $idProfessor");
+        $professor = $professorQuery->fetch(PDO::FETCH_OBJ);
+
+        $alunosQuery = $this->connection->query("select usuario.* from usuario, aluno where usuario.id = aluno.usuario");
+        $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+        
+        $args = [
+            'ID' => $professor->id,
+            'NOME' => $professor->nome,
+            'SALT' => $professor->salt,
+            'EMAIL' => $professor->email
+        ];
+        
+        $template = $this->template->getTemplate('admin/professor.html');
+        $templateFinal = $this->template->parseTemplate($template, $args);
+        echo $templateFinal;
+    }
+    
+    public function adicionarProfessor()
+    {   
+        $data = json_decode(json_encode($_POST), true);
+        
+        $email = $data['email'];
+        $nome = $data['nome'];
+        $password = $data['password'];
+        $salt = time() + rand(100, 1000);
+        $password = md5($password . $salt);
+        
+        if ($this->util->loginTakenBackEnd($email, "professor")) {
+            header('Location: /webschool/admin/professores');
+            exit;
+        }
+        
+        $endereco = $this->connection->prepare("INSERT INTO endereco (estado) VALUES (:estado)");
+
+        $endereco->execute([
+            'estado' => 1,
+        ]);
+
+        $idEndereco = (int) $this->connection->lastInsertId();
+
+        $user = $this->connection->prepare("INSERT INTO usuario (nome, email, pass, salt, endereco)
+                VALUES (:name, :email, :password, :salt, :endereco)");
+
+        $user->execute([
+            'name' => $nome,
+            'email' => $email,
+            'password' => $password,
+            'salt' => $salt,
+            'endereco' => $idEndereco,
+        ]);
+
+        $userId = (int) $this->connection->lastInsertId();
+
+        $responsavel = $this->connection->prepare("INSERT INTO professor (usuario) VALUES (:idUusuario)");
+        $responsavel->execute([
+            'idUusuario' => $userId,
+        ]);
+
+        $avatar = $this->connection->prepare("INSERT INTO fotos_de_avatar (usuario) VALUES (:idUusuario)");
+        $avatar->execute([
+            'idUusuario' => $userId,
+        ]);
+
+        header('Location: /webschool/admin/professores');
+    }
+    
+    public function atualizarProfessor()
+    {
+        $data = json_decode(json_encode($_POST), true);
+
+        $userId = $data['id'];
+        $nome = $data['nome'];
+        $email = $data['email'];
+        $password = $data['password'];
+        $salt = $data['salt'];
+        $newPassword = md5($password);
+        
+        if ($this->util->loginTakenBackEnd($email, "professor", $userId)) {
+            header('Location: /webschool/admin/professores');
+            exit;
+        }
+
+        $sql = "
+            UPDATE usuario
+            SET nome=:nome, email=:email
+            ";
+
+        $fields = [
+            'nome' => $nome,
+            'email' => $email,
+        ];
+
+        if (strlen($password) > 0) {
+            $password = $data['password'];
+            $password = md5($password . $salt);
+
+            $sql .= ' ,pass=:pass';
+            $fields['pass'] = $password;
+        }
+
+        $sql .= ' where id=:userId';
+        $fields['userId'] = $userId;
+
+        $user = $this->connection->prepare($sql);
+        $user->execute($fields);
+        
+        header('Location: /webschool/admin/professores');
+    }
+    
+    public function removerProfessor(int $idProfessor)
+    {
+        $user = $this->connection->prepare("UPDATE usuario SET is_deleted = 1 WHERE id = :id");
+
+        $user->execute([
+            'id' => $idProfessor,
+        ]);
+    }
+    
+    public function adicionarProfessorPorMateria()
+    {
+        $data = json_decode(json_encode($_POST), true);
+        
+        $disciplina = $data['disciplina'];
+        $turma = $data['turma'];
+        $professor = $data['professor'];
+
+        $user = $this->connection->prepare("INSERT INTO disciplina_por_professor (professor, disciplina, turma)
+                VALUES (:idProfessor, :idDisciplina, :idTurma)");
+
+        $count = $user->execute([
+            'idProfessor' => $professor,
+            'idDisciplina' => $disciplina,
+            'idTurma' => $turma,
+        ]);
+
+        $alunosQuery = $this->connection->query("SELECT * FROM aluno where turma = $turma");
+        $alunos = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+
+        foreach ($alunos as $aluno) {
+            $nota = $this->connection->prepare("INSERT INTO nota_por_aluno (aluno, disciplina, turma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, 0, 0, 0, 0, 0, 0, 0, 0)");
+
+            $nota->execute([
+                'idAluno' => $aluno->id,
+                'idDisciplina' => $disciplina,
+                'idTurma' => $turma,
+            ]);
+
+            $diario = $this->connection->prepare("INSERT INTO diario_de_classe (aluno, disciplina, turma, data, contexto, presenca) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), 'presenca', 0)");
+
+            $diario->execute([
+                'idAluno' => $aluno->id,
+                'idDisciplina' => $disciplina,
+                'idTurma' => $turma,
+            ]);
+        }
+
+        header("Location: /webschool/admin/professores");
+    }
+    
+    public function removerProfessorPorMateria(int $id)
+    {
+        $user = $this->connection->prepare("DELETE from disciplina_por_professor WHERE id = :id");
+
+        $user->execute([
+            'id' => $id,
+        ]);
     }
     
     public function verResponsaveis()
@@ -465,7 +699,7 @@ class AdminController {
     }
     
     public function verTurmas()
-    {   
+    {
         $turmaQuery = $this->connection->query("select * from turma order by serie");
         $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
         
@@ -555,7 +789,6 @@ class AdminController {
     
     public function verMaterias()
     {
-
         $disciplinaQuery = $this->connection->query("select * from disciplina");
         $disciplinaQuery = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
         
