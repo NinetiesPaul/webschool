@@ -19,12 +19,34 @@ SimpleRouter::get('/webschool/admin/home', function() {
     $admin->index();
 });
 
+//admin - alunos
 
 SimpleRouter::get('/webschool/admin/alunos', function() {
     $admin = new App\Controllers\AdminController();
-    $admin->alunos();
+    $admin->verAlunos();
 });
 
+SimpleRouter::get('/webschool/admin/aluno/{idAluno}', function($idAluno) {
+    $admin = new App\Controllers\AdminController();
+    $admin->verAluno($idAluno);
+});
+
+SimpleRouter::delete('/webschool/admin/aluno/{idAluno}/delete', function($idAluno) {
+    $admin = new App\Controllers\AdminController();
+    $admin->removerAluno($idAluno);
+});
+
+SimpleRouter::put('/webschool/admin/aluno', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->atualizarAluno();
+});
+
+SimpleRouter::post('/webschool/admin/aluno', function() {
+    $admin = new App\Controllers\AdminController();
+    $admin->adicionarAluno();
+});
+
+// admin - professores
 
 SimpleRouter::get('/webschool/admin/professores', function() {
     $admin = new App\Controllers\AdminController();
