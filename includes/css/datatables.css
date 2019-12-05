@@ -6,6 +6,14 @@
     font-size: 14px;
 }
 
+#tableProfessores_info {
+    font-size: 14px;
+}
+
+#tableProfessores_paginate {
+    font-size: 14px;
+}
+
 #tableAlunos_length {
     font-size: 14px;
 }
@@ -14,10 +22,26 @@
     font-size: 14px;
 }
 
+#tableAlunos_info {
+    font-size: 14px;
+}
+
+#tableAlunos_paginate {
+    font-size: 14px;
+}
+
 #tableResponsaveis_length {
     font-size: 14px;
 }
 
 #tableResponsaveis_filter {
+    font-size: 14px;
+}
+
+#tableResponsaveis_info {
+    font-size: 14px;
+}
+
+#tableResponsaveis_paginate {
     font-size: 14px;
 }
