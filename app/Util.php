@@ -93,4 +93,20 @@ class Util {
 
         return $nomeTurma;        
     }
+    
+    public function pegarTurmaDoAlunoPorTurma(int $id)
+    {
+        $turmaQuery = $this->connection->query("select * from turma where id = $id");
+        $turmaQuery = $turmaQuery->fetchObject();
+
+        return $turmaQuery->serie.'º Série '.$turmaQuery->nome;        
+    }
+    
+    public function pegarNomeDaDisciplina(int $id)
+    {
+        $disciplinaQuery = $this->connection->query("select nome from disciplina where id = $id");
+        $disciplina = $disciplinaQuery->fetchObject();
+
+        return $disciplina->nome;        
+    }
 }
