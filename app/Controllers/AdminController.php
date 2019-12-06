@@ -7,8 +7,8 @@ use App\DB\DB;
 use PDO;
 use App\Util;
 
-class AdminController {
-    
+class AdminController
+{
     protected $template;
     
     protected $connection;
@@ -38,16 +38,16 @@ class AdminController {
         
         foreach ($turmaQuery as $turma) {
             $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
-        }     
+        }
         
         $alunoQuery = $this->connection->query("select usuario.* from usuario, aluno where usuario.id=aluno.usuario");
         $alunoQuery = $alunoQuery->fetchAll(PDO::FETCH_OBJ);
         
-        $alunos = '';  
+        $alunos = '';
         
         foreach ($alunoQuery as $aluno) {
             $is_deleted = ($aluno->is_deleted) ? "<span class='glyphicon glyphicon-remove'></span> " : "<span class='glyphicon glyphicon-ok'></span> ";
-            $alunos .= 
+            $alunos .=
             "<tr id='row-$aluno->id'><td>$aluno->nome </td>
             <td>".$this->util->pegarTurmaDoAlunoPorUsuario($aluno->id)."</td>
             <td>$is_deleted</td><td><a href='aluno/$aluno->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a> </td>
@@ -56,7 +56,7 @@ class AdminController {
         
         $args = [
             'TURMAS' => $turmas,
-            'ALUNOS' => $alunos  
+            'ALUNOS' => $alunos
         ];
         
         $template 	= $this->template->getTemplate('admin/alunos.html');
@@ -73,7 +73,7 @@ class AdminController {
         
         foreach ($turmaQuery as $turma) {
             $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
-        }        
+        }
         
         $alunoQuery = $this->connection->query("select usuario.*,aluno.id as aluno from usuario, aluno where usuario.id=aluno.usuario and aluno.usuario = $idAluno");
         $aluno = $alunoQuery->fetch(PDO::FETCH_OBJ);
@@ -219,7 +219,6 @@ class AdminController {
         $disciplinas = $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
 
         foreach ($disciplinas as $disciplina) {
-            
             $checkDisciplinaQuery = $this->connection->query("SELECT id FROM nota_por_aluno WHERE turma = $turma and aluno = $idAluno and disciplina = $disciplina->disciplina");
             $checkDisciplina = $checkDisciplinaQuery->fetchAll(PDO::FETCH_OBJ);
 
@@ -270,7 +269,7 @@ class AdminController {
         
         foreach ($professorQuery as $professor) {
             $is_deleted = ($professor->is_deleted) ? "<span class='glyphicon glyphicon-remove'></span> " : "<span class='glyphicon glyphicon-ok'></span> ";
-            $professores .= 
+            $professores .=
             "<tr id='row-$professor->id'><td>$professor->nome </td>
             <td>$is_deleted</td><td><a href='professor/$professor->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a> </td>
             <td><button class='btn btn-danger btn-sm' id='deletar' value='$professor->id'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
@@ -303,13 +302,13 @@ class AdminController {
         $disciplinaPorProfessorQuery = $this->connection->query("select * from disciplina_por_professor order by turma");
         $disciplinaPorProfessorQuery = $disciplinaPorProfessorQuery->fetchAll(PDO::FETCH_OBJ);
         
-        $disciplinasProProfessor = '';          
+        $disciplinasProProfessor = '';
         
         foreach ($disciplinaPorProfessorQuery as $disciplinaProProfessor) {
             $dpp = $disciplinaProProfessor->professor;
             $dpd = $disciplinaProProfessor->disciplina;
             $dpt = $disciplinaProProfessor->turma;
-            $disciplinasProProfessor .= 
+            $disciplinasProProfessor .=
             "<tr id='row-dpp-$disciplinaProProfessor->id'><td> $professor_array[$dpp] </td>
             <td>$disciplina_array[$dpd]</td><td>$turma_array[$dpt]</td>
             <td><button class='btn btn-danger btn-sm' id='deletar-dpp' value='$disciplinaProProfessor->id'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
@@ -349,7 +348,7 @@ class AdminController {
     }
     
     public function adicionarProfessor()
-    {   
+    {
         $data = json_decode(json_encode($_POST), true);
         
         $email = $data['email'];
@@ -504,18 +503,18 @@ class AdminController {
         $responsavelQuery = $this->connection->query("select usuario.* from usuario, responsavel where usuario.id=responsavel.usuario");
         $responsavelQuery = $responsavelQuery->fetchAll(PDO::FETCH_OBJ);
         
-        $responsaveis = ''; 
+        $responsaveis = '';
         
         foreach ($responsavelQuery as $responsavel) {
             $is_deleted = ($responsavel->is_deleted) ? "<span class='glyphicon glyphicon-remove'></span> " : "<span class='glyphicon glyphicon-ok'></span> ";
-            $responsaveis .= 
+            $responsaveis .=
              "<tr id='row-$responsavel->id'><td>$responsavel->nome </td>
              <td>$is_deleted</td><td><a href='responsavel/$responsavel->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a> </td>
              <td><button class='btn btn-danger btn-sm' id='deletar' value='$responsavel->id'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
         }
         
         $args = [
-          'RESPONSAVEIS' => $responsaveis  
+          'RESPONSAVEIS' => $responsaveis
         ];
         
         $template 	= $this->template->getTemplate('admin/responsaveis.html');
@@ -565,7 +564,7 @@ class AdminController {
     }
     
     public function adicionarResponsavel()
-    {   
+    {
         $data = json_decode(json_encode($_POST), true);
         
         $email = $data['email'];
@@ -706,14 +705,14 @@ class AdminController {
         $turmas = '';
         
         foreach ($turmaQuery as $turma) {
-            $turmas .= 
+            $turmas .=
              "<tr id='row-$turma->id'><td>$turma->serie º Série $turma->nome</td>
              <td><a href='turma/$turma->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>
              <td><button class='btn btn-danger btn-sm' id='deletar' value='$turma->id'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
         }
         
         $args = [
-          'ALUNOS' => $turmas  
+          'ALUNOS' => $turmas
         ];
         
         $template = $this->template->getTemplate('admin/turmas.html');
@@ -795,14 +794,14 @@ class AdminController {
         $disciplinas = '';
         
         foreach ($disciplinaQuery as $disciplina) {
-            $disciplinas .= 
+            $disciplinas .=
              "<tr id='row-$disciplina->id'><td>$disciplina->nome</td>
              <td><a href='disciplina/$disciplina->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>
              <td><button class='btn btn-danger btn-sm' id='deletar' value='$disciplina->id'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
         }
         
         $args = [
-          'DISCIPLINAS' => $disciplinas  
+          'DISCIPLINAS' => $disciplinas
         ];
         
         $template 	= $this->template->getTemplate('admin/disciplinas.html');
@@ -822,12 +821,12 @@ class AdminController {
         
         $template 	= $this->template->getTemplate('admin/disciplina.html');
         $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;              
+        echo $templateFinal;
     }
     
     public function adicionarMateria()
     {
-         $data = json_decode(json_encode($_POST), true);
+        $data = json_decode(json_encode($_POST), true);
         
         $nome = $data['nome'];
 
@@ -838,7 +837,7 @@ class AdminController {
             'nome' => $nome,
         ]);
         
-        header('Location: /webschool/admin/disciplinas');       
+        header('Location: /webschool/admin/disciplinas');
     }
     
     public function atualizarMateria()
@@ -859,7 +858,7 @@ class AdminController {
             'disciplina' => $disciplina,
         ]);
         
-        header('Location: /webschool/admin/disciplinas');        
+        header('Location: /webschool/admin/disciplinas');
     }
     
     public function removerMateria(int $disciplina)

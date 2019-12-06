@@ -18,13 +18,14 @@ use App\Templates;
  *
  * @author Paul Richard
  */
-class AuthController {
-    
+class AuthController
+{
     protected $connection;
     
     protected $template;
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->connection = new DB();
         $this->template = new Templates();
     }
@@ -53,7 +54,6 @@ class AuthController {
             $password = md5($password . $user->salt);
 
             if ($password == $actualPassword) {
-
                 if ($user->endereco) {
                     $enderecoQuery = $this->connection->query("
                         SELECT * from endereco where id = $user->endereco
@@ -82,7 +82,7 @@ class AuthController {
             );
 
             $template = $this->template->getTemplate('login.html');
-            $templateFinal = $this->template->parseTemplate( $template, $arrTags );
+            $templateFinal = $this->template->parseTemplate($template, $arrTags);
 
             echo $templateFinal;
         }

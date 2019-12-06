@@ -7,8 +7,8 @@ use App\DB\DB;
 use PDO;
 use App\Util;
 
-class AlunoController {
-    
+class AlunoController
+{
     protected $template;
     
     protected $connection;

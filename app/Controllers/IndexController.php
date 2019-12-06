@@ -15,12 +15,14 @@ use App\Templates;
  *
  * @author Paul Richard
  */
-class IndexController {
+class IndexController
+{
     //put your code here
     
     protected $template;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->template = new Templates();
     }
     
