@@ -6,6 +6,7 @@ use App\Controllers\AuthController;
 use App\Controllers\AlunoController;
 use App\Controllers\AdminController;
 use App\Controllers\GeneralController;
+use App\Controllers\ResponsavelController;
 use App\Util;
 
 //general
@@ -42,7 +43,29 @@ SimpleRouter::get('/webschool/aluno/turmas', function() {
     $aluno->verTurmas();
 });
 
+//responsavel
+
+SimpleRouter::get('/webschool/responsavel/home', function() {
+    $responsavel = new ResponsavelController();
+    $responsavel->index();
+});
+
+SimpleRouter::get('/webschool/responsavel/alunos', function() {
+    $responsavel = new ResponsavelController();
+    $responsavel->verAlunos();
+});
+
+SimpleRouter::get('/webschool/responsavel/aluno/{idAluno}', function($idAluno) {
+    $responsavel = new ResponsavelController();
+    $responsavel->verAluno($idAluno);
+});
+
 //admin - alunos
+
+SimpleRouter::get('/webschool/admin/home', function() {
+    $admin = new AdminController();
+    $admin->index();
+});
 
 SimpleRouter::get('/webschool/admin/alunos', function() {
     $admin = new AdminController();
