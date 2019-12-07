@@ -527,7 +527,7 @@ class AdminController
         $responsavelQuery = $this->connection->query("select usuario.*,responsavel.id as responsavel from usuario, responsavel where usuario.id=responsavel.usuario and responsavel.usuario = $idResponsavel");
         $responsavel = $responsavelQuery->fetch(PDO::FETCH_OBJ);
 
-        $alunosQuery = $this->connection->query("select usuario.* from usuario, aluno where usuario.id = aluno.usuario");
+        $alunosQuery = $this->connection->query("select usuario.* from usuario, aluno where usuario.id = aluno.usuario order by nome");
         $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
 
         $alunos = '';
@@ -545,7 +545,7 @@ class AdminController
 
         $filhos = '';
         foreach ($usersQuery as $user) {
-            $filhos .= "<tr id='row-$user->rpa'><td>$user->nome.'</td><td>".$this->util->pegarTurmaDoAlunoPorUsuario($user->id)."</td>
+            $filhos .= "<tr id='row-$user->rpa'><td>$user->nome</td><td>".$this->util->pegarTurmaDoAlunoPorUsuario($user->id)."</td>
             <td><button class='btn btn-danger btn-sm' id='deletar' value='$user->rpa'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
         }
         
