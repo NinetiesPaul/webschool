@@ -73,7 +73,7 @@ class ResponsavelController
 
             $notas .= $this->util->pegarTurmaDoAlunoPorTurma($turma->turma) . ' ' . $turmaAtual;
             
-            $notas .= 
+            $notas .=
                 "<button class='btn btn-sm btn-info boletim' id='$idAluno.$turma->turma'>
                     <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
                 </button><br/>";
@@ -112,6 +112,6 @@ class ResponsavelController
         
         $template = $this->template->getTemplate('responsavel/aluno.html');
         $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;        
+        echo $templateFinal;
     }
 }
