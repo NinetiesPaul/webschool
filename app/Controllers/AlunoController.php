@@ -53,7 +53,7 @@ class AlunoController
             $minhasTurmas .= $this->util->pegarTurmaDoAlunoPorTurma($turma->turma) . ' ' . $turmaAtual;
             
             $minhasTurmas .=
-                "<button class='btn btn-sm btn-info boletim' id='$user->aluno.$turma->turma'>
+                "<br/><button class='btn btn-sm btn-info boletim' id='$user->aluno.$turma->turma'>
                     <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
                 </button><br/>";
 
@@ -75,7 +75,7 @@ class AlunoController
                 <td>$nota->rec4</td>
                 <td>
                     <button class='btn btn-sm btn-info faltas' data-toggle='modal' data-target='#modalExemplo' id='$user->aluno.$turma->turma.$nota->disciplina'>
-                        <span class='glyphicon glyphicon-eye-open'></span> Visualizar faltas
+                        <span class='glyphicon glyphicon-eye-open'></span> Diario de Classe
                     </button>
                 </td>
                 </tr>";
