@@ -109,4 +109,20 @@ class Util {
 
         return $disciplina->nome;        
     }
+    
+    public function pegarNomeDoAlunoPorAlunoId(int $id)
+    {
+        $userQuery = $this->connection->query("select usuario.* from usuario,aluno where usuario.id=aluno.usuario and aluno.id=$id");
+        $user = $userQuery->fetchObject();
+
+        return $user->nome;
+    }
+    
+    public function pegarIdDaTurmaDoAlunoPorAlunoId(int $id)
+    {
+        $turmaQuery = $this->connection->query("select turma from aluno where id=$id");
+        $turma = $turmaQuery->fetchObject();
+
+        return $turma->turma;
+    }
 }
