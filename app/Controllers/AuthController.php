@@ -73,7 +73,7 @@ class AuthController
                 $redirect = "<p/><a href='$url'>Ir</a> para minha tela inicial.";
             } else {
                 $msg = 'Usuário não cadastrado ou senha incorreta!';
-                $redirect = "<p/><a href='/'>Voltar</a>";
+                $redirect = "<p/><a href='../webschool/'>Voltar</a>";
             }
 
             $arrTags = array(
