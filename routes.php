@@ -7,6 +7,7 @@ use App\Controllers\AlunoController;
 use App\Controllers\AdminController;
 use App\Controllers\GeneralController;
 use App\Controllers\ResponsavelController;
+use App\Controllers\ProfessorController;
 use App\Util;
 
 //general
@@ -58,6 +59,63 @@ SimpleRouter::get('/webschool/responsavel/alunos', function() {
 SimpleRouter::get('/webschool/responsavel/aluno/{idAluno}', function($idAluno) {
     $responsavel = new ResponsavelController();
     $responsavel->verAluno($idAluno);
+});
+
+//professor
+
+SimpleRouter::get('/webschool/professor/home', function() {
+    $professor = new ProfessorController();
+    $professor->index();
+});
+
+SimpleRouter::get('/webschool/professor/turmas', function() {
+    $professor = new ProfessorController();
+    $professor->verTurmas();
+});
+
+SimpleRouter::get('/webschool/professor/turma/{idTurma}', function($idTurma) {
+    $professor = new ProfessorController();
+    $professor->verTurma($idTurma);
+});
+
+SimpleRouter::get('/webschool/professor/diariodeclasse/{idTurma}', function($idTurma) {
+    $professor = new ProfessorController();
+    $professor->verDiarioDeClasse($idTurma);
+});
+
+SimpleRouter::post('/webschool/professor/inserirNota', function() {
+    $professor = new ProfessorController();
+    $professor->inserirNota();
+});
+
+SimpleRouter::post('/webschool/professor/pesquisarFrequencia', function() {
+    $professor = new ProfessorController();
+    $professor->pesquisarFrequencia();
+});
+
+SimpleRouter::post('/webschool/professor/alterarFrequencia', function() {
+    $professor = new ProfessorController();
+    $professor->alterarFrequencia();
+});
+
+SimpleRouter::post('/webschool/professor/visualizarComentarios', function() {
+    $professor = new ProfessorController();
+    $professor->verComentarios();
+});
+
+SimpleRouter::post('/webschool/professor/comentario', function() {
+    $professor = new ProfessorController();
+    $professor->adicionarComentario();
+});
+
+SimpleRouter::delete('/webschool/professor/comentario/{idComentario}', function($idComentario) {
+    $professor = new ProfessorController();
+    $professor->deletarComentario($idComentario);
+});
+
+SimpleRouter::delete('/webschool/professor/arquivo/{idArquivo}', function($idArquivo) {
+    $professor = new ProfessorController();
+    $professor->deletarArquivoDeComentario($idArquivo);
 });
 
 //admin - alunos
