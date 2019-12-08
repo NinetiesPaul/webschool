@@ -53,7 +53,7 @@ class ProfessorController
         
         $turmas = '';
         
-        foreach ($disciplinas as $disciplina){
+        foreach ($disciplinas as $disciplina) {
             $turmas .= $this->util->pegarNomeDaDisciplina($disciplina->disciplina).', '.$this->util->pegarNomeDaTurmaPorIdTurma($disciplina->turma);
             $turmas .= "<a href='turma/$disciplina->id' class='btn-sm btn-info' id='btn_disciplina' '><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a>";
 
@@ -116,7 +116,7 @@ class ProfessorController
 
         $detalhes .= "<table style='margin-left: auto; margin-right: auto; font-size: 13;' class='table table-sm table-hover table-striped'>
         <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2:</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th></tr></thead><tbody>";
-        foreach ($alunosQuery as $aluno){
+        foreach ($alunosQuery as $aluno) {
             $detalhes .= "<tr><td>$aluno->nome</td>
             <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."nota1'>$aluno->nota1</a> </td>
             <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."rec1'>$aluno->rec1</a> </td>
@@ -299,18 +299,18 @@ class ProfessorController
             ]);
             
             echo "<span class='glyphicon glyphicon-ok'></span>";
-            
-            
         } else {
             $presenca = $diario->presenca;
 
             $span = '';
             if ($presenca == false) {
                 $presenca = 1;
-                $span = "<span class='glyphicon glyphicon-ok'></span>";;
+                $span = "<span class='glyphicon glyphicon-ok'></span>";
+                ;
             } else {
                 $presenca = 0;
-                $span = "<span class='glyphicon glyphicon-remove'></span>";;
+                $span = "<span class='glyphicon glyphicon-remove'></span>";
+                ;
             }
 
             $user = $this->connection->prepare("UPDATE diario_de_classe SET presenca = :presenca WHERE id=:id");
@@ -345,7 +345,7 @@ class ProfessorController
 
         $data = $ano.'-'.$mes.'-'.$dia;
         
-         $comentarioQuery = $this->connection->query("
+        $comentarioQuery = $this->connection->query("
             select *
             from diario_de_classe
             where aluno = $aluno
@@ -388,7 +388,7 @@ class ProfessorController
     }
     
     public function adicionarComentario()
-    {   
+    {
         $user = $_SESSION['user'];
         
         $data = json_decode(json_encode($_POST), true);
@@ -415,7 +415,6 @@ class ProfessorController
         $file_name = '';
         
         if (empty($_FILES['file_btn']['error'])) {
-
             $arquivos = true;
             $file = $_FILES["file_btn"]["name"];
             $file = str_replace(" ", "_", $file);
