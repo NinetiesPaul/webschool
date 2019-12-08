@@ -125,4 +125,12 @@ class Util {
 
         return $turma->turma;
     }
+    
+    public function pegarNomeDaTurmaPorIdTurma(int $id)
+    {
+        $turmaQuery = $this->connection->query("select * from turma where id=$id");
+        $turma = $turmaQuery->fetchObject();
+
+        return $turma->serie.'º Série '.$turma->nome;   
+    }
 }
