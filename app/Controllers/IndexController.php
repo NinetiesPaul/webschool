@@ -10,11 +10,6 @@ namespace App\Controllers;
 
 use App\Templates;
 
-/**
- * Description of IndexController
- *
- * @author Paul Richard
- */
 class IndexController
 {
     //put your code here

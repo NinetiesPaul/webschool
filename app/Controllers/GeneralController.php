@@ -12,12 +12,8 @@ use App\DB\DB;
 use PDO;
 use App\Util;
 use tFPDF;
+use DateTime;
 
-/**
- * Description of GeneralController
- *
- * @author Paul Richard
- */
 class GeneralController
 {
     protected $connection;

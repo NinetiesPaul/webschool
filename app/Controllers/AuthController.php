@@ -13,11 +13,6 @@ namespace App\Controllers;
 use App\DB\DB;
 use App\Templates;
 
-/**
- * Description of AuthController
- *
- * @author Paul Richard
- */
 class AuthController
 {
     protected $connection;
