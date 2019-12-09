@@ -1,8 +1,0 @@
-<?php
-
-$localhost_db = '';
-$dbname_db = '';
-$user_db = '';
-$password_db = '';
-
-$db = new PDO("mysql:host=$localhost_db; dbname=$dbname_db", "$user_db", "$password_db");
