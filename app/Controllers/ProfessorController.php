@@ -55,7 +55,7 @@ class ProfessorController
         
         foreach ($disciplinas as $disciplina) {
             $turmas .= $this->util->pegarNomeDaDisciplina($disciplina->disciplina).', '.$this->util->pegarNomeDaTurmaPorIdTurma($disciplina->turma);
-            $turmas .= "<a href='turma/$disciplina->id' class='btn-sm btn-info' id='btn_disciplina' '><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a>";
+            $turmas .= "<p/><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a><br/>";
 
             $alunosQuery = $this->connection->query("
                 select distinct usuario.* from usuario, aluno, turma, disciplina_por_professor
@@ -72,7 +72,7 @@ class ProfessorController
             if (!empty($alunosQuery)) {
                 $text = '';
                 foreach ($alunosQuery as $aluno) {
-                    $text .= '<br/>'.$aluno->nome;
+                    $text .= $aluno->nome . '<br/>';
                 }
             }
             
@@ -101,8 +101,8 @@ class ProfessorController
 
         $detalhes = '';
         
-        $detalhes .= $this->util->pegarNomeDaDisciplina($disciplina).', '.$this->util->pegarNomeDaTurmaPorIdTurma($turma).'<br/>';
-        $detalhes .= "<a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn-sm btn-info' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a><p/>";
+        $detalhes .= $this->util->pegarNomeDaDisciplina($disciplina).', '.$this->util->pegarNomeDaTurmaPorIdTurma($turma).'<p/>';
+        $detalhes .= "<a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a><p/>";        
 
         $alunosQuery = $this->connection->query("
             select usuario.id, usuario.nome, aluno.id as aluno, nota_por_aluno.nota1, nota_por_aluno.nota2, nota_por_aluno.nota3, nota_por_aluno.nota4, nota_por_aluno.rec1, nota_por_aluno.rec2, nota_por_aluno.rec3, nota_por_aluno.rec4
@@ -306,11 +306,9 @@ class ProfessorController
             if ($presenca == false) {
                 $presenca = 1;
                 $span = "<span class='glyphicon glyphicon-ok'></span>";
-                ;
             } else {
                 $presenca = 0;
                 $span = "<span class='glyphicon glyphicon-remove'></span>";
-                ;
             }
 
             $user = $this->connection->prepare("UPDATE diario_de_classe SET presenca = :presenca WHERE id=:id");
@@ -375,9 +373,11 @@ class ProfessorController
                 $span = '';
                 $line = '';
                 foreach ($arquivos as $arquivo) {
+                    $nome = (strlen($arquivo->nome) > 30) ? substr($arquivo->nome, 0, 25) . '...' : $arquivo->nome;
+                    
                     $cellid = "id='cell-file-head-$arquivo->id'";
                     $line .= "
-                        <a href='../../../../../$arquivo->endereco'>$arquivo->nome</a></td>
+                        <a href='../../../../../$arquivo->endereco'>$nome</a></td>
                         <td id='cell-file-remove-$arquivo->id'><a href='#' class='deletar-arquivo' id='$arquivo->id'><span class='glyphicon glyphicon-trash'></span></a></td>
                     ";
                 }
@@ -489,10 +489,11 @@ class ProfessorController
             'professor' => $prof,
         ]);
         
+        //ajax response
+        
         $id_comentario = $this->connection->lastInsertId();
 
         $id_arquivo = '';
-        $endereco = '1';
         
         if ($arquivos) {
             $id = (int) $this->connection->lastInsertId();
@@ -524,14 +525,17 @@ class ProfessorController
         $line = 'Essa observação não contem arquivos anexados';
         $cellid = '';
         if (empty($_FILES['file_btn']['error'])) {
+            $nome = (strlen($arquivo->nome) > 30) ? substr($arquivo->nome, 0, 25) . '...' : $arquivo->nome;
+
             $span = '';
             $line = '';
             $cellid = "id='cell-file-head-$id_arquivo'";
             $line .= "
-                <a href='../../../../../$arquivo->endereco'>$arquivo->nome</a></td>
+                <a href='../../../../../$arquivo->endereco'>$nome</a></td>
                 <td id='cell-file-remove-$id_arquivo'><a href='#' class='deletar-arquivo' id='$id_arquivo'><span class='glyphicon glyphicon-trash'></span></a></td>
             ";
         }
+        
         echo "<td $span $cellid>$line</td>";
         echo "<td><a href='#' id='$id_comentario' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td></tr>";
     }

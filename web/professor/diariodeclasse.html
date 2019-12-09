@@ -66,12 +66,12 @@
         }
         
         $(document).on('click', '.alterar-presenca', function(){
-            alterarFrequencia(this.id)
+            alterarFrequencia(this.id);
         });
         
         $(document).on('click', '.comentarios', function(){
-            visualizarComentarios(this.id)
-            $("#dado").val(this.id)
+            visualizarComentarios(this.id);
+            $("#dado").val(this.id);
         });
         
         $(document).on('click', '.deletar-comentario', function(){
@@ -80,6 +80,12 @@
         
         $(document).on('click', '.deletar-arquivo', function(){
            deletarArquivo(this.id); 
+        });
+        
+        $(document).on('click', '#erase-fields', function(){    
+            $("#dado").val('');
+            $("#comentario").val('');
+            $("#file_btn").val('');
         });
         
         $(document).ready(function(){
@@ -185,7 +191,7 @@
                     <option value="12">Dezembro</option>
                 </select><p/>
                 
-                <button class="btn btn-primary btn-sm btn-sm" id="search"><span class='glyphicon glyphicon-search'></span> Pesquisar</button>
+                <button class="btn btn-primary btn-sm" id="search"><span class='glyphicon glyphicon-search'></span> Pesquisar</button>
                 
                 <div id="result">
                     Resultado aqui.
@@ -200,9 +206,6 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel"><strong>Comentários em classe</strong></h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
                     </div>
                     <div class="modal-body">
                         <form action="" method="post" role="form" class="form-horizontal" id="form-comentario">
@@ -218,7 +221,7 @@
                             </div>
                             <div class="form-group row justify-content-center">
                                 <div class="col-md-3">
-                                    <button type="submit" class="btn btn-primary btn-sm btn-sm" ><span class='glyphicon glyphicon-plus'></span> Salvar</button>
+                                    <button type="submit" class="btn btn-primary btn-sm"><span class='glyphicon glyphicon-plus'></span> Adicionar</button>
                                 </div>
                             </div>
                         <form>
@@ -235,7 +238,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="erase-fields">Ok</button>
                     </div>
                 </div>
             </div>
