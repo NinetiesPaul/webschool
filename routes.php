@@ -32,6 +32,16 @@ SimpleRouter::post('/webschool/pesquisarFaltas', function() {
     $general->pesquisarFaltas();
 });
 
+SimpleRouter::get('/webschool/perfil', function() {
+    $general = new GeneralController;
+    $general->visualizarPerfil();
+});
+
+SimpleRouter::put('/webschool/atualizarPerfil', function() {
+    $general = new GeneralController;
+    $general->alterarPerfil();
+});
+
 //alunos
 
 SimpleRouter::get('/webschool/aluno/home', function() {
