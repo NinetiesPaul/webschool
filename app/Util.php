@@ -131,6 +131,14 @@ class Util {
         $turmaQuery = $this->connection->query("select * from turma where id=$id");
         $turma = $turmaQuery->fetchObject();
 
-        return $turma->serie.'º Série '.$turma->nome;   
+        return $turma->serie.'º Série '.$turma->nome; 
+    }
+    
+    public function pegarEstadoPeloEstado(int $id)
+    {
+        $estadoQuery = $this->connection->query("select * from estado where id=$id");
+        $estado = $estadoQuery->fetchObject();
+
+        return $estado->nome.', '.$estado->sigla;
     }
 }
