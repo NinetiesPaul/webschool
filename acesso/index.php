@@ -1,8 +1,0 @@
-<?php
-
-header('Location: ../home');
-    
-?>
-
-
-	

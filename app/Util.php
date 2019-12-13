@@ -1,0 +1,145 @@
+<?php
+
+namespace App;
+
+use App\DB\DB;
+
+class Util
+{
+    protected $connection;
+    
+    public function __construct()
+    {
+        $this->connection = new DB();
+    }
+
+    public function userPermission(string $tipo)
+    {
+        session_start();
+        $session_type = (isset($_SESSION['tipo'])) ? $_SESSION['tipo'] : false;
+        
+        if (!$session_type || $session_type !== $tipo) {
+            header('Location: /webschool/');
+        }
+    }
+    
+    public function loginTakenAjax()
+    {
+        $data = json_decode(json_encode($_POST), true);
+        
+        $login = $data["login"];
+        $tipo = $data["tipo"];
+        $id = (isset($data["id"])) ? $data['id'] : null;
+        
+        $query = "
+            SELECT usuario.id FROM usuario,$tipo
+            WHERE usuario.id = $tipo.usuario
+            and usuario.email = '$login'
+        ";
+
+        if ($id) {
+            $query .= " and usuario.id != $id";
+        }
+
+        $cidadeQuery = $this->connection->query($query);
+        $cidadeQuery = $cidadeQuery->fetchObject();
+
+        $res = false;
+        if ($cidadeQuery) {
+            $res = true;
+        }
+
+        echo $res;
+    }
+
+    public function loginTakenBackEnd(string $login, string $tipo, $id = false)
+    {
+        $query = "
+            SELECT usuario.id FROM usuario,$tipo
+            WHERE usuario.id = $tipo.usuario
+            and usuario.email = '$login'
+        ";
+
+        if ($id) {
+            $query .= " and usuario.id != $id";
+        }
+
+        $userQuery = $this->connection->query($query);
+        $userQuery = $userQuery->fetchObject();
+
+        $res = false;
+        if ($userQuery) {
+            $res = true;
+        }
+
+        return $res;
+    }
+    
+    public function pegarTurmaDoAlunoPorUsuario(int $idUsuario)
+    {
+        $alunoQuery = $this->connection->query("
+            select * from aluno where usuario = $idUsuario
+        ");
+        $alunoQuery = $alunoQuery->fetchObject();
+
+        $turmaQuery = $this->connection->query("
+            select * from turma where id = $alunoQuery->turma
+        ");
+        $turmaQuery = $turmaQuery->fetchObject();
+
+        $nomeTurma = 'Sem turma';
+        if ($turmaQuery) {
+            $nomeTurma = " na " . $turmaQuery->serie.'º Série '.$turmaQuery->nome;
+        }
+
+        return $nomeTurma;
+    }
+    
+    public function pegarTurmaDoAlunoPorTurma(int $id)
+    {
+        $turmaQuery = $this->connection->query("select * from turma where id = $id");
+        $turmaQuery = $turmaQuery->fetchObject();
+
+        return $turmaQuery->serie.'º Série '.$turmaQuery->nome;
+    }
+    
+    public function pegarNomeDaDisciplina(int $id)
+    {
+        $disciplinaQuery = $this->connection->query("select nome from disciplina where id = $id");
+        $disciplina = $disciplinaQuery->fetchObject();
+
+        return $disciplina->nome;
+    }
+    
+    public function pegarNomeDoAlunoPorAlunoId(int $id)
+    {
+        $userQuery = $this->connection->query("select usuario.* from usuario,aluno where usuario.id=aluno.usuario and aluno.id=$id");
+        $user = $userQuery->fetchObject();
+
+        return $user->nome;
+    }
+    
+    public function pegarIdDaTurmaDoAlunoPorAlunoId(int $id)
+    {
+        $turmaQuery = $this->connection->query("select turma from aluno where id=$id");
+        $turma = $turmaQuery->fetchObject();
+
+        return $turma->turma;
+    }
+    
+    public function pegarNomeDaTurmaPorIdTurma(int $id)
+    {
+        $turmaQuery = $this->connection->query("select * from turma where id=$id");
+        $turma = $turmaQuery->fetchObject();
+
+        return $turma->serie.'º Série '.$turma->nome;
+    }
+    
+    public function pegarEstadoPeloEstado(int $id)
+    {
+        $estadoQuery = $this->connection->query("select * from estado where id=$id");
+        $estado = $estadoQuery->fetchObject();
+
+        return $estado->nome.', '.$estado->sigla;
+    }
+}

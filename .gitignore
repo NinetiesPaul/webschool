@@ -4,6 +4,6 @@ uploads/files/
 outros/
 nbproject/
 vendor/
-composer.lock
 includes/php/conn.php
 phinx.yml
+.env
