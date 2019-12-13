@@ -4,8 +4,8 @@ namespace App\DB;
 
 use PDO;
 
-class DB extends PDO {
-    
+class DB extends PDO
+{
     protected $conn;
     
     public function __construct()

@@ -4,11 +4,12 @@ namespace App;
 
 use App\DB\DB;
 
-class Util {
-    
+class Util
+{
     protected $connection;
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->connection = new DB();
     }
 
@@ -22,7 +23,7 @@ class Util {
         }
     }
     
-    public function loginTakenAjax() 
+    public function loginTakenAjax()
     {
         $data = json_decode(json_encode($_POST), true);
         
@@ -52,7 +53,7 @@ class Util {
     }
 
     public function loginTakenBackEnd(string $login, string $tipo, $id = false)
-    {       
+    {
         $query = "
             SELECT usuario.id FROM usuario,$tipo
             WHERE usuario.id = $tipo.usuario
@@ -91,7 +92,7 @@ class Util {
             $nomeTurma = " na " . $turmaQuery->serie.'º Série '.$turmaQuery->nome;
         }
 
-        return $nomeTurma;        
+        return $nomeTurma;
     }
     
     public function pegarTurmaDoAlunoPorTurma(int $id)
@@ -99,7 +100,7 @@ class Util {
         $turmaQuery = $this->connection->query("select * from turma where id = $id");
         $turmaQuery = $turmaQuery->fetchObject();
 
-        return $turmaQuery->serie.'º Série '.$turmaQuery->nome;        
+        return $turmaQuery->serie.'º Série '.$turmaQuery->nome;
     }
     
     public function pegarNomeDaDisciplina(int $id)
@@ -107,7 +108,7 @@ class Util {
         $disciplinaQuery = $this->connection->query("select nome from disciplina where id = $id");
         $disciplina = $disciplinaQuery->fetchObject();
 
-        return $disciplina->nome;        
+        return $disciplina->nome;
     }
     
     public function pegarNomeDoAlunoPorAlunoId(int $id)
@@ -131,7 +132,7 @@ class Util {
         $turmaQuery = $this->connection->query("select * from turma where id=$id");
         $turma = $turmaQuery->fetchObject();
 
-        return $turma->serie.'º Série '.$turma->nome; 
+        return $turma->serie.'º Série '.$turma->nome;
     }
     
     public function pegarEstadoPeloEstado(int $id)
