@@ -6,3 +6,4 @@ nbproject/
 vendor/
 includes/php/conn.php
 phinx.yml
+.env
