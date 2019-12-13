@@ -8,6 +8,8 @@ require_once 'helpers.php';
 require_once 'routes.php';
 require_once 'includes/php/lib/tfpdf/tfpdf.php';
 
-SimpleRouter::setDefaultNamespace('Controllers');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
+SimpleRouter::setDefaultNamespace('Controllers');
 SimpleRouter::start();
