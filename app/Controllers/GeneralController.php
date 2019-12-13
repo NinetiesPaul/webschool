@@ -9,8 +9,9 @@
 namespace App\Controllers;
 
 use App\DB\DB;
-use PDO;
+use App\Templates;
 use App\Util;
+use PDO;
 use tFPDF;
 use DateTime;
 
@@ -19,11 +20,15 @@ class GeneralController
     protected $connection;
     
     protected $util;
+    
+    protected $template;
 
     public function __construct()
     {
         $this->connection = new DB;
         $this->util = new Util();
+        $this->template = new Templates();
+        session_start();
     }
     
     public function gerarBoletim()
@@ -176,5 +181,245 @@ class GeneralController
             $data = new DateTime($comentario->data);
             echo $data->format('d/m/Y') . "<br/>$comentario->observacao<br/>";
         }
+    }
+    
+    public function visualizarPerfil()
+    {
+        $user = $_SESSION['user'];
+        
+        $tipo = (isset($user->aluno)) ? 'aluno' : ((isset($user->professor) > 0) ? 'professor' : 'responsavel');
+        
+        $estadoQuery = $this->connection->query("select * from estado order by nome");
+        $estadoQuery = $estadoQuery->fetchAll(PDO::FETCH_OBJ);
+        
+        $estados = '';
+        foreach ($estadoQuery as $estado) {
+            $estados .= "<option value='".$estado->id."'>".$estado->nome."</option>";
+        }
+        
+        $avatarQuery = $this->connection->query("select * from fotos_de_avatar where usuario=$user->id");
+        $avatar = $avatarQuery->fetchObject();
+
+        $img = "<img src='uploads/default_avatar.jpg' />";
+        if (isset($avatar->endereco)) {
+            $img = "<img src='".$avatar->endereco_thumb."' />";
+        }
+        
+        $msg = '';
+        if (isset($_SESSION['msg'])) {
+            $msg = $_SESSION['msg'];
+            unset($_SESSION['msg']);
+        }
+        
+        $args = [
+            'MSG' => $msg,
+            'AVATAR' => $img,
+            'TIPO' => $tipo,
+            'ID' => $user->id,
+            'NOME' => $user->nome,
+            'EMAIL' => $user->email,
+            'TELEFONE1' => $user->telefone1,
+            'TELEFONE2' => $user->telefone2,
+            'SALT' => $user->salt,
+            'ENDERECO_ID' => $user->endereco->id,
+            'ENDERECO_BAIRRO' => $user->endereco->bairro,
+            'ENDERECO_CEP' => $user->endereco->cep,
+            'ENDERECO_CIDADE' => $user->endereco->cidade,
+            'ENDERECO_ESTADO' => $user->endereco->estado,
+            'ENDERECO_NUMERO' => $user->endereco->numero,
+            'ENDERECO_RUA' => $user->endereco->rua,
+            'ENDERECO_COMPLEMENTO' => $user->endereco->complemento,
+            'LOGADO' => $user->nome,
+            'ESTADOS' => $estados,
+            'ESTADO_ATUAL' => $this->util->pegarEstadoPeloEstado($user->endereco->estado)
+        ];
+        
+        $template 	= $this->template->getTemplate('perfil.html');
+        $templateFinal = $this->template->parseTemplate($template, $args);
+        echo $templateFinal;
+    }
+    
+    public function alterarPerfil()
+    {
+        $tipo = (isset($_POST['tipo_update'])) ? $_POST['tipo_update'] : false;
+
+        switch ($tipo) {
+            case 'usuario':
+                $userId = $_POST['id'];
+                $nome = $_POST['nome'];
+                $email = $_POST['email'];
+                $password = $_POST['senha'];
+                $newPassword = md5($password);
+                $tel1 = $_POST['telefone1'];
+                $tel2 = $_POST['telefone2'];
+                $tipo = $_POST['tipo'];
+                $salt = $_POST['salt'];
+
+                if ($this->util->loginTakenBackEnd($email, $tipo, (int) $userId)) {
+                    $msg = $_SESSION['msg'] = 'E-mail já está em uso';
+                    header('Location: /webschool/perfil');
+                    exit;
+                }
+                
+                $updateQuery = "
+                    UPDATE usuario
+                    SET nome=:nome, email=:email, telefone1=:tel1, telefone2=:tel2
+                ";
+                
+                $fields = [
+                    'nome' => $nome,
+                    'email' => $email,
+                    'tel1' => $tel1,
+                    'tel2' => $tel2,
+                ];
+                
+                if (strlen($password) > 0) {
+                    $password = md5($password . $salt);
+
+                    $updateQuery .= ' ,pass=:pass';
+                    $fields['pass'] = $password;
+                }
+                
+                $updateQuery .= " where id=:userId";
+                $fields['userId'] = $userId;
+                
+                $user = $this->connection->prepare($updateQuery);
+
+                $user->execute($fields);
+
+                $currentUser = $_SESSION['user'];
+                
+                $endereco = $currentUser->endereco;
+                $role_id = $currentUser->$tipo;
+                
+                unset($_POST['tipo_update']);
+                unset($_POST['_method']);
+                unset($_POST['tipo']);
+                
+                $user = (object) $_POST;
+                $user->endereco = $endereco;
+                $user->$tipo = $role_id;
+                
+                $_SESSION['user'] = $user;
+                break;
+
+            case 'endereco':
+                $rua = $_POST['rua'];
+                $numero = $_POST['numero'];
+                $bairro = $_POST['bairro'];
+                $complemento = $_POST['complemento'];
+                $cidade = $_POST['cidade'];
+                $cep = $_POST['cep'];
+                $estado = $_POST['estado'];
+                $endereco = $_POST['id'];
+
+                $user = $this->connection->prepare("
+                    UPDATE endereco
+                    SET rua=:rua, numero=:numero, bairro=:bairro, complemento=:complemento, cidade=:cidade, cep=:cep, estado=:estado
+                    where id=:endereco
+                ");
+
+                $user->execute([
+                    'rua' => $rua,
+                    'numero' => $numero,
+                    'bairro' => $bairro,
+                    'complemento' => $complemento,
+                    'cidade' => $cidade,
+                    'cep' => $cep,
+                    'estado' => $estado,
+                    'endereco' => $endereco,
+                ]);
+
+                unset($_POST['tipo_update']);
+                unset($_POST['_method']);
+                $endereco = (object) $_POST;
+
+                $user = $_SESSION['user'];
+                $user->endereco = $endereco;
+                $_SESSION['user'] = $user;
+
+                break;
+
+            case 'avatar':
+                $userId = $_POST['usuario'];
+
+                $file = $_FILES["fileToUpload"]["name"];
+                $file = str_replace(" ", "_", $file);
+
+                $imageFileType = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                $types = ['jpg', 'gif', 'jpeg'];
+
+                if (!in_array($imageFileType, $types)) {
+                    session_start();
+                    $_SESSION['msg'] = "Erro! O arquivo '" . $file . "' está em formato inválido (apenas JPG, JPEG e GIF são aceitos)";
+                    header('Location: perfil');
+                    exit();
+                }
+
+                $path='uploads/images/';
+                $pathThumb='uploads/images/thumbs/';
+
+                if (!file_exists($path)) {
+                    mkdir($path);
+                }
+                if (!file_exists($pathThumb)) {
+                    mkdir($pathThumb);
+                }
+
+                $data = getdate();
+                $long = $data[0];
+                $file_name=$long.'-'.$file;
+                $file_name_thumb=$long.'-thumbs-'.$file;
+
+                $images = $_FILES["fileToUpload"]["tmp_name"];
+                $new_images = $long.'-thumbs-'.$file;
+                $width=200;
+                $size=GetimageSize($images);
+                $height=round($width*$size[1]/$size[0]);
+                $images_orig = ImageCreateFromJPEG($images);
+                $photoX = ImagesX($images_orig);
+                $photoY = ImagesY($images_orig);
+                $images_fin = ImageCreateTrueColor($width, $height);
+                ImageCopyResampled($images_fin, $images_orig, 0, 0, 0, 0, $width+1, $height+1, $photoX, $photoY);
+                ImageJPEG($images_fin, $pathThumb.$new_images);
+                ImageDestroy($images_orig);
+                ImageDestroy($images_fin);
+                move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $path . $file_name);
+                move_uploaded_file($_FILES['fileToUpload']['tmp_name'], $path . $file_name_thumb);
+
+                $urlFinal = 'uploads/images/'.$file_name;
+                $urlThumbFinal = 'uploads/images/thumbs/'.$file_name_thumb;
+
+                $avatarQuery = $this->connection->query("select * from fotos_de_avatar where usuario=$userId");
+                $avatar = $avatarQuery->fetchObject();
+
+                if ($avatar) {
+                    unlink($avatar->endereco_thumb);
+                    unlink($avatar->endereco);
+
+                    $deleteAvatar = $this->connection->prepare("DELETE FROM fotos_de_avatar WHERE usuario=:idUsuario");
+
+                    $deleteAvatar->execute([
+                        'idUsuario' => $userId,
+                    ]);
+                }
+
+                $user = $this->connection->prepare("
+                    INSERT INTO fotos_de_avatar (endereco_thumb, endereco, usuario) VALUES (:imagemThumbUrl, :imagemUrl, :idUsuario)
+                ");
+
+                $user->execute([
+                    'imagemThumbUrl' => $urlThumbFinal,
+                    'imagemUrl' => $urlFinal,
+                    'idUsuario' => $userId,
+                ]);
+                die();
+                break;
+
+            case false:
+                break;
+        }
+        
+        header('Location: perfil');
     }
 }
