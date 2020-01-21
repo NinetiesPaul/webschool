@@ -4,7 +4,7 @@
 namespace App\DB;
 
 
-class AdminStorage
+class AdminStorage extends DB
 {
     public function verAlunos()
     {
@@ -77,56 +77,6 @@ class AdminStorage
     }
 
     public function removerResponsavel()
-    {
-
-    }
-
-    public function verTurmas()
-    {
-
-    }
-
-    public function verTurma()
-    {
-
-    }
-
-    public function adicionarTurma()
-    {
-
-    }
-
-    public function alterarTurma()
-    {
-
-    }
-
-    public function removerTurma()
-    {
-
-    }
-
-    public function verMaterias()
-    {
-
-    }
-
-    public function verMateria()
-    {
-
-    }
-
-    public function adicionarMateria()
-    {
-
-    }
-
-    public function alterarKMateria()
-    {
-
-    }
-
-    public function removerMateria()
     {
 
     }
