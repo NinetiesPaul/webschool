@@ -17,4 +17,9 @@ class DB extends PDO
         parent::__construct("mysql:host=$localhost_db; dbname=$dbname_db", $user_db, $password_db, []);
         $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
+    
+    public function connect()
+    {
+        return new DB();
+    }
 }
