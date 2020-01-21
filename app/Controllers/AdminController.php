@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\DB\Storage\AlunoStorage;
 use App\Templates;
 use App\DB\DB;
 use PDO;
@@ -30,6 +31,7 @@ class AdminController
         $this->util->userPermission('admin');
         $this->turmaStorage = new TurmaStorage();
         $this->materiaStorage = new MateriaStorage();
+        $this->alunoStorage = new AlunoStorage();
     }
     
     public function index()
@@ -40,8 +42,7 @@ class AdminController
     
     public function verAlunos()
     {
-        $turmaQuery = $this->connection->query("select * from turma order by serie");
-        $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
+        $turmaQuery = $this->turmaStorage->verTurmas();
         
         $turmas = '';
         
@@ -49,8 +50,7 @@ class AdminController
             $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
         }
         
-        $alunoQuery = $this->connection->query("select usuario.* from usuario, aluno where usuario.id=aluno.usuario");
-        $alunoQuery = $alunoQuery->fetchAll(PDO::FETCH_OBJ);
+        $alunoQuery = $this->alunoStorage->verAlunos();
         
         $alunos = '';
         
@@ -75,8 +75,7 @@ class AdminController
     
     public function verAluno(int $idAluno)
     {
-        $turmaQuery = $this->connection->query("select * from turma order by serie");
-        $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
+        $turmaQuery = $this->turmaStorage->verTurmas();
         
         $turmas = '';
         
@@ -84,8 +83,7 @@ class AdminController
             $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
         }
         
-        $alunoQuery = $this->connection->query("select usuario.*,aluno.id as aluno from usuario, aluno where usuario.id=aluno.usuario and aluno.usuario = $idAluno");
-        $aluno = $alunoQuery->fetch(PDO::FETCH_OBJ);
+        $aluno = $this->alunoStorage->verAluno($idAluno);
         
         $args = [
             'ID' => $aluno->id,
