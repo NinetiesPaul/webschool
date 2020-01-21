@@ -7,6 +7,9 @@ use App\DB\DB;
 use PDO;
 use App\Util;
 
+use App\DB\Storage\TurmaStorage;
+use App\DB\Storage\MateriaStorage;
+
 class AdminController
 {
     protected $template;
@@ -14,6 +17,10 @@ class AdminController
     protected $connection;
     
     protected $util;
+    
+    protected $turmaStorage;
+    
+    protected $materiaStorage;
 
     public function __construct()
     {
@@ -21,6 +28,8 @@ class AdminController
         $this->connection = new DB;
         $this->util = new Util();
         $this->util->userPermission('admin');
+        $this->turmaStorage = new TurmaStorage();
+        $this->materiaStorage = new MateriaStorage();
     }
     
     public function index()
@@ -699,12 +708,11 @@ class AdminController
     
     public function verTurmas()
     {
-        $turmaQuery = $this->connection->query("select * from turma order by serie");
-        $turmaQuery = $turmaQuery->fetchAll(PDO::FETCH_OBJ);
+        $turmasQuery = $this->turmaStorage->verTurmas();
         
         $turmas = '';
         
-        foreach ($turmaQuery as $turma) {
+        foreach ($turmasQuery as $turma) {
             $turmas .=
              "<tr id='row-$turma->id'><td>$turma->serie º Série $turma->nome</td>
              <td><a href='turma/$turma->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>
@@ -722,8 +730,7 @@ class AdminController
     
     public function verTurma(int $turma)
     {
-        $turmaQuery = $this->connection->query("select * from turma where id = $turma");
-        $turma = $turmaQuery->fetch(PDO::FETCH_OBJ);
+        $turma = $this->turmaStorage->verTurma($turma);
         
         $args = [
             'ID' => $turma->id,
@@ -738,58 +745,24 @@ class AdminController
     
     public function adicionarTurma()
     {
-        $data = json_decode(json_encode($_POST), true);
-        
-        $serie = $data['serie'];
-        $nome = $data['nome'];
-
-        $user = $this->connection->prepare("INSERT INTO turma (nome, serie)
-                VALUES (:nome, :serie)");
-
-        $user->execute([
-            'nome' => $nome,
-            'serie' => $serie,
-        ]);
-        
+        $this->turmaStorage->adicionarTurma(json_decode(json_encode($_POST), true));
         header('Location: /webschool/admin/turmas');
     }
     
     public function atualizarTurma()
-    {
-        $data = json_decode(json_encode($_POST), true);
-
-        $turma = $data['id'];
-        $nome = $data['nome'];
-        $serie = $data['serie'];
-
-        $user = $this->connection->prepare("
-            UPDATE turma
-            SET serie=:serie, nome=:nome
-            where id=:turma
-            ");
-
-        $user->execute([
-            'nome' => $nome,
-            'serie' => $serie,
-            'turma' => $turma,
-        ]);
-        
+    {  
+        $this->turmaStorage->alterarTurma(json_decode(json_encode($_POST), true));
         header('Location: /webschool/admin/turmas');
     }
     
     public function removerTurma(int $turma)
     {
-        $user = $this->connection->prepare("DELETE FROM turma WHERE id=:id");
-
-        $user->execute([
-            'id' => $turma,
-        ]);
+        $this->turmaStorage->removerTurma($turma);
     }
     
     public function verMaterias()
     {
-        $disciplinaQuery = $this->connection->query("select * from disciplina");
-        $disciplinaQuery = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
+        $disciplinaQuery = $this->materiaStorage->verMaterias();
         
         $disciplinas = '';
         
@@ -811,8 +784,7 @@ class AdminController
     
     public function verMateria(int $materia)
     {
-        $disciplinaQuery = $this->connection->query("select * from disciplina where id = $materia");
-        $disciplina = $disciplinaQuery->fetch(PDO::FETCH_OBJ);
+        $disciplina = $this->materiaStorage->verMateria($materia);
         
         $args = [
             'ID' => $disciplina->id,
@@ -825,48 +797,19 @@ class AdminController
     }
     
     public function adicionarMateria()
-    {
-        $data = json_decode(json_encode($_POST), true);
-        
-        $nome = $data['nome'];
-
-        $user = $this->connection->prepare("INSERT INTO disciplina (nome)
-                VALUES (:nome)");
-
-        $user->execute([
-            'nome' => $nome,
-        ]);
-        
+    {   
+        $this->materiaStorage->adicionarMateria(json_decode(json_encode($_POST), true));
         header('Location: /webschool/admin/disciplinas');
     }
     
     public function atualizarMateria()
-    {
-        $data = json_decode(json_encode($_POST), true);
-
-        $disciplina = $data['id'];
-        $nome = $data['nome'];
-
-        $user = $this->connection->prepare("
-            UPDATE disciplina
-            SET nome=:nome
-            where id=:disciplina
-            ");
-
-        $user->execute([
-            'nome' => $nome,
-            'disciplina' => $disciplina,
-        ]);
-        
+    {        
+        $this->materiaStorage->alterarMateria(json_decode(json_encode($_POST), true));           
         header('Location: /webschool/admin/disciplinas');
     }
     
     public function removerMateria(int $disciplina)
     {
-        $user = $this->connection->prepare("DELETE FROM disciplina WHERE id=:id");
-
-        $user->execute([
-            'id' => $disciplina,
-        ]);
+        $this->materiaStorage->removerMateria($disciplina);
     }
 }
