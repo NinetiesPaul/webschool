@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\DB\Storage\AlunoStorage;
 use App\Templates;
 use App\DB\DB;
 use PDO;
@@ -10,6 +9,9 @@ use App\Util;
 
 use App\DB\Storage\TurmaStorage;
 use App\DB\Storage\MateriaStorage;
+use App\DB\Storage\EnderecoStorage;
+use App\DB\Storage\AlunoStorage;
+use App\DB\Storage\UsuarioStorage;
 
 class AdminController
 {
@@ -22,6 +24,12 @@ class AdminController
     protected $turmaStorage;
     
     protected $materiaStorage;
+    
+    protected $alunoStorage;
+    
+    protected $enderecoStorage;
+    
+    protected $usuarioStorage;
 
     public function __construct()
     {
@@ -29,9 +37,12 @@ class AdminController
         $this->connection = new DB;
         $this->util = new Util();
         $this->util->userPermission('admin');
+        
         $this->turmaStorage = new TurmaStorage();
         $this->materiaStorage = new MateriaStorage();
         $this->alunoStorage = new AlunoStorage();
+        $this->enderecoStorage = new EnderecoStorage();
+        $this->usuarioStorage = new UsuarioStorage();
     }
     
     public function index()
@@ -75,23 +86,25 @@ class AdminController
     
     public function verAluno(int $idAluno)
     {
+        $aluno = $this->alunoStorage->verAluno($idAluno);
+        $turmaAtual = $this->util->pegarIdDaTurmaDoAlunoPorAlunoId($aluno->aluno);
         $turmaQuery = $this->turmaStorage->verTurmas();
         
         $turmas = '';
         
         foreach ($turmaQuery as $turma) {
-            $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
+            $selected = ($turmaAtual == $turma->id)? 'selected' : '';
+            $turmas .= "<option value='$turma->id' $selected>$turma->serie º Série $turma->nome</option>";
         }
         
-        $aluno = $this->alunoStorage->verAluno($idAluno);
         
         $args = [
             'ID' => $aluno->id,
             'IDALUNO' => $aluno->aluno,
             'NOME' => $aluno->nome,
             'SALT' => $aluno->salt,
+            'TURMAATUAL' =>  $turmaAtual,
             'EMAIL' => $aluno->email,
-            'TURMA' => $this->util->pegarTurmaDoAlunoPorUsuario($aluno->id),
             'TURMAS' => $turmas
         ];
         
@@ -102,167 +115,19 @@ class AdminController
     
     public function adicionarAluno()
     {
-        $data = json_decode(json_encode($_POST), true);
-        
-        $email = $data['email'];
-        $nome = $data['nome'];
-        $password = $data['password'];
-        $salt = time() + rand(100, 1000);
-        $password = md5($password . $salt);
-        $turma = $data['turma'];
-        
-        if ($this->util->loginTakenBackEnd($email, "aluno")) {
-            header('Location: /webschool/admin/alunos');
-            exit;
-        }
-
-        $endereco = $this->connection->prepare("INSERT INTO endereco (estado)
-            VALUES (:estado)");
-
-        $endereco->execute([
-            'estado' => 1,
-        ]);
-
-        $idEndereco = (int) $this->connection->lastInsertId();
-
-        $user = $this->connection->prepare("
-            INSERT INTO usuario (nome, email, pass, endereco, salt)
-            VALUES (:name, :email, :password, :endereco, :salt)
-        ");
-
-        $user->execute([
-            'name' => $nome,
-            'email' => $email,
-            'password' => $password,
-            'endereco' => $idEndereco,
-            'salt' => $salt,
-        ]);
-
-        $userId = (int) $this->connection->lastInsertId();
-
-        $avatar = $this->connection->prepare("INSERT INTO fotos_de_avatar (usuario) VALUES (:idUusuario)");
-        $avatar->execute([
-            'idUusuario' => $userId,
-        ]);
-
-        $aluno = $this->connection->prepare("INSERT INTO aluno (usuario, turma) VALUES (:idUusuario, :idTurma)");
-        $aluno->execute([
-            'idUusuario' => $userId,
-            'idTurma' => $turma,
-        ]);
-
-        $lastid = (int) $this->connection->lastInsertId();
-
-        $disciplinasQuery = $this->connection->query("SELECT * FROM disciplina_por_professor where turma = $turma");
-        $disciplinas = $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
-
-        foreach ($disciplinas as $disciplina) {
-            $nota = $this->connection->prepare("INSERT INTO nota_por_aluno (aluno, disciplina, turma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, 0, 0, 0, 0, 0, 0, 0, 0)");
-
-            $nota->execute([
-                'idAluno' => $lastid,
-                'idDisciplina' => $disciplina->disciplina,
-                'idTurma' => $turma,
-            ]);
-
-            $diario = $this->connection->prepare("INSERT INTO diario_de_classe (aluno, disciplina, turma, data, contexto, presenca) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), 'presenca', 0)");
-
-            $diario->execute([
-                'idAluno' => $lastid,
-                'idDisciplina' => $disciplina->disciplina,
-                'idTurma' => $turma,
-            ]);
-        }
-
+        $this->alunoStorage->adicionarAluno(json_decode(json_encode($_POST), true));
         header('Location: /webschool/admin/alunos');
     }
     
     public function atualizarAluno()
-    {
-        $data = json_decode(json_encode($_POST), true);
-        
-        $userId = $data['id'];
-        $idAluno = $data['idAluno'];
-        $nome = $data['nome'];
-        $email = $data['email'];
-        $password = $data['password'];
-        $salt = $data['salt'];
-        $turma = $data['turma'];
-        
-        if ($this->util->loginTakenBackEnd($email, "aluno", $userId)) {
-            header('Location: /webschool/admin/alunos');
-            exit;
-        }
-
-        $sql = 'UPDATE usuario
-            SET nome=:nome, email=:email';
-
-        $fields = [
-            'nome' => $nome,
-            'email' => $email,
-        ];
-
-        if (strlen($password) > 0) {
-            $password = $_POST['password'];
-            $password = md5($password . $salt);
-
-            $sql .= ' ,pass=:pass';
-            $fields['pass'] = $password;
-        }
-
-        $sql .= ' where id=:userId';
-        $fields['userId'] = $userId;
-
-        $alunoQuery = $this->connection->prepare($sql);
-        $alunoQuery->execute($fields);
-
-        $turmaQuery = $this->connection->prepare("UPDATE aluno SET turma=:idTurma WHERE usuario=:idUusuario");
-        $turmaQuery->execute([
-            'idTurma' => $turma,
-            'idUusuario' => $userId,
-        ]);
-
-        $disciplinasQuery = $this->connection->query("SELECT * FROM disciplina_por_professor where turma = $turma");
-        $disciplinas = $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
-
-        foreach ($disciplinas as $disciplina) {
-            $checkDisciplinaQuery = $this->connection->query("SELECT id FROM nota_por_aluno WHERE turma = $turma and aluno = $idAluno and disciplina = $disciplina->disciplina");
-            $checkDisciplina = $checkDisciplinaQuery->fetchAll(PDO::FETCH_OBJ);
-
-            if (empty($checkDisciplina)) {
-                $nota = $this->connection->prepare("INSERT INTO nota_por_aluno (aluno, disciplina, turma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, 0, 0, 0, 0, 0, 0, 0, 0)");
-
-                $nota->execute([
-                    'idAluno' => $idAluno,
-                    'idDisciplina' => $disciplina->disciplina,
-                    'idTurma' => $turma,
-                ]);
-            }
-
-            $checkDiarioQuery = $this->connection->query("SELECT id FROM diario_de_classe WHERE turma = $turma and aluno = $idAluno and disciplina = $disciplina->disciplina");
-            $checkDiario = $checkDiarioQuery->fetchAll(PDO::FETCH_OBJ);
-
-            if (empty($checkDiario)) {
-                $diario = $this->connection->prepare("INSERT INTO diario_de_classe (aluno, disciplina, turma, data, presenca, contexto) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), 0, 'presenca')");
-
-                $diario->execute([
-                    'idAluno' => $idAluno,
-                    'idDisciplina' => $disciplina->disciplina,
-                    'idTurma' => $turma,
-                ]);
-            }
-        }
-
+    {   
+        $this->alunoStorage->alterarAluno(json_decode(json_encode($_POST), true));
         header('Location: /webschool/admin/alunos');
     }
     
     public function removerAluno($idAluno)
-    {
-        $user = $this->connection->prepare("UPDATE usuario SET is_deleted = 1 WHERE id = :id");
-
-        $user->execute([
-            'id' => $idAluno,
-        ]);
+    {   
+        $this->alunoStorage->removerAluno($idAluno);
     }
     
     public function verProfessores()
