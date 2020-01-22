@@ -65,6 +65,7 @@
                     <input type="hidden" name="id" id="id" value="{ID}" />
                     <input type="hidden" name="idAluno" id="idAluno" value="{IDALUNO}" />
                     <input type="hidden" name="salt" value="{SALT}" />
+                    <input type="hidden" name="turmaAtual" value="{TURMAATUAL}" />
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
                         <div class="col-md-3">
@@ -92,7 +93,6 @@
                             <select name="turma" class="form-control form-control-sm ">
                                 {TURMAS}
                             </select>
-                            <small id="avisoTurma" class="form-text text-muted">(Atualmente {TURMA})</small>
                         </div>
                     </div>
                     <button type="submit" id="btn" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
