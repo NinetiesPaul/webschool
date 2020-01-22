@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\DB;
-
 
 class AdminStorage extends DB
 {
