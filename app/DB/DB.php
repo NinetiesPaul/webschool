@@ -3,11 +3,17 @@
 namespace App\DB;
 
 use PDO;
+use App\Util;
+use App\DB\Storage\AlunoStorage;
+use App\DB\Storage\EnderecoStorage;
+use App\DB\Storage\UsuarioStorage;
+use App\DB\Storage\AvatarStorage;
+use App\DB\Storage\MateriaStorage;
+use App\DB\Storage\NotaStorage;
+use App\DB\Storage\DiarioDeClasseStorage;
 
 class DB extends PDO
 {
-    protected $conn;
-    
     public function __construct()
     {
         $localhost_db = getenv('DB_HOST');
@@ -21,5 +27,40 @@ class DB extends PDO
     public function connect()
     {
         return new DB();
+    }
+    
+    public function util()
+    {
+        return new Util();
+    }
+    
+    public function endereco()
+    {
+        return new EnderecoStorage();
+    }
+    
+    public function usuario()
+    {
+        return new UsuarioStorage();
+    }
+    
+    public function avatar()
+    {
+        return new AvatarStorage();
+    }
+    
+    public function materia()
+    {
+        return new MateriaStorage;
+    }
+    
+    public function nota()
+    {
+        return new NotaStorage();
+    }
+    
+    public function diario()
+    {
+        return new DiarioDeClasseStorage();
     }
 }
