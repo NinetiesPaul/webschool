@@ -1,20 +1,10 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\DB\Storage;
 
 use App\DB\DB;
 use PDO;
-/**
- * Description of MateriaStorage
- *
- * @author Paul Richard
- */
+
 class MateriaStorage extends DB
 {    
     public function verMaterias()
@@ -64,5 +54,11 @@ class MateriaStorage extends DB
         $user->execute([
             'id' => $materia,
         ]);
+    }
+    
+    public function verMateriaPorProfessorPorTurma($turma)
+    {
+        $disciplinasQuery = $this->connect()->query("SELECT * FROM disciplina_por_professor where turma = $turma");
+        return $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
     }
 }
