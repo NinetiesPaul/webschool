@@ -11,6 +11,7 @@ use App\DB\Storage\AvatarStorage;
 use App\DB\Storage\MateriaStorage;
 use App\DB\Storage\NotaStorage;
 use App\DB\Storage\DiarioDeClasseStorage;
+use App\DB\Storage\TurmaStorage;
 
 class DB extends PDO
 {
@@ -62,5 +63,10 @@ class DB extends PDO
     public function diario()
     {
         return new DiarioDeClasseStorage();
+    }
+    
+    public function turma()
+    {
+        return new TurmaStorage();
     }
 }
