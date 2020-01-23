@@ -56,6 +56,12 @@ class MateriaStorage extends DB
         ]);
     }
     
+    public function verMateriaPorProfessor()
+    {
+        $disciplinasQuery = $this->connect()->query("select * from disciplina_por_professor order by turma");
+        return $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
+    }
+    
     public function verMateriaPorProfessorPorTurma($turma)
     {
         $disciplinasQuery = $this->connect()->query("SELECT * FROM disciplina_por_professor where turma = $turma");
