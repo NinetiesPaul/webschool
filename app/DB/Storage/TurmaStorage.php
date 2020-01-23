@@ -61,4 +61,10 @@ class TurmaStorage extends DB {
             'id' => $turma,
         ]);
     }
+    
+    public function verAlunosDaTurma($turma)
+    {
+        $alunosQuery = $this->connect()->query("SELECT * FROM aluno where turma = $turma");
+        return $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+    }
 }
