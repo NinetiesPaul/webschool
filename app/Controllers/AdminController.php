@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Templates;
-use App\DB\DB;
 use PDO;
 use App\Util;
 
@@ -13,13 +12,12 @@ use App\DB\Storage\EnderecoStorage;
 use App\DB\Storage\AlunoStorage;
 use App\DB\Storage\UsuarioStorage;
 use App\DB\Storage\ProfessorStorage;
+use App\DB\Storage\ResponsavelStorage;
 
 class AdminController
 {
     protected $template;
-    
-    protected $connection;
-    
+        
     protected $util;
     
     protected $turmaStorage;
@@ -33,11 +31,12 @@ class AdminController
     protected $usuarioStorage;
     
     protected $professorStorage;
+    
+    protected $responsavelStorage;
 
     public function __construct()
     {
         $this->template = new Templates();
-        $this->connection = new DB;
         $this->util = new Util();
         $this->util->userPermission('admin');
         
@@ -47,6 +46,7 @@ class AdminController
         $this->enderecoStorage = new EnderecoStorage();
         $this->usuarioStorage = new UsuarioStorage();
         $this->professorStorage = new ProfessorStorage();
+        $this->responsavelStorage = new ResponsavelStorage();
     }
     
     public function index()
@@ -244,9 +244,8 @@ class AdminController
     }
     
     public function verResponsaveis()
-    {
-        $responsavelQuery = $this->connection->query("select usuario.* from usuario, responsavel where usuario.id=responsavel.usuario");
-        $responsavelQuery = $responsavelQuery->fetchAll(PDO::FETCH_OBJ);
+    {   
+        $responsavelQuery = $this->responsavelStorage->verResponsaveis();
         
         $responsaveis = '';
         
@@ -269,27 +268,19 @@ class AdminController
     
     public function verResponsavel(int $idResponsavel)
     {
-        $responsavelQuery = $this->connection->query("select usuario.*,responsavel.id as responsavel from usuario, responsavel where usuario.id=responsavel.usuario and responsavel.usuario = $idResponsavel");
-        $responsavel = $responsavelQuery->fetch(PDO::FETCH_OBJ);
-
-        $alunosQuery = $this->connection->query("select usuario.* from usuario, aluno where usuario.id = aluno.usuario order by nome");
-        $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+        $responsavel = $this->responsavelStorage->verResponsavel($idResponsavel);
+        
+        $alunosQuery = $this->alunoStorage->verAlunos();
 
         $alunos = '';
         foreach ($alunosQuery as $aluno) {
-            $alunos .= "<option value='$aluno->id'>$aluno->nome (".$this->util->pegarTurmaDoAlunoPorUsuario($aluno->id).")</option>";
+            $alunos .= "<option value='$aluno->aluno'>$aluno->nome (".$this->util->pegarTurmaDoAlunoPorUsuario($aluno->id).")</option>";
         }
-
-        $usersQuery = $this->connection->query("
-            select distinct usuario.*, responsavel_por_aluno.id as rpa from usuario, aluno, responsavel_por_aluno
-            where aluno.usuario = usuario.id
-            and aluno.id = responsavel_por_aluno.aluno
-            and responsavel_por_aluno.responsavel = $responsavel->responsavel
-        ");
-        $usersQuery = $usersQuery->fetchAll(PDO::FETCH_OBJ);
+        
+        $alunosDoResponsavel = $this->alunoStorage->verAlunosDoResponsavel($responsavel->responsavel);
 
         $filhos = '';
-        foreach ($usersQuery as $user) {
+        foreach ($alunosDoResponsavel as $user) {
             $filhos .= "<tr id='row-$user->rpa'><td>$user->nome</td><td>".$this->util->pegarTurmaDoAlunoPorUsuario($user->id)."</td>
             <td><button class='btn btn-danger btn-sm' id='deletar' value='$user->rpa'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
         }
@@ -298,6 +289,7 @@ class AdminController
             'ID' => $responsavel->id,
             'NOME' => $responsavel->nome,
             'SALT' => $responsavel->salt,
+            'RESPONSAVEL' => $responsavel->responsavel,
             'EMAIL' => $responsavel->email,
             'ALUNOS' => $alunos,
             'FILHOS' => $filhos
@@ -309,137 +301,31 @@ class AdminController
     }
     
     public function adicionarResponsavel()
-    {
-        $data = json_decode(json_encode($_POST), true);
-        
-        $email = $data['email'];
-        $nome = $data['nome'];
-        $password = $data['password'];
-        $salt = time() + rand(100, 1000);
-        $password = md5($password . $salt);
-        
-        if ($this->util->loginTakenBackEnd($email, "responsavel")) {
-            header('Location: /webschool/admin/responsaveis');
-            exit;
-        }
-        
-        $endereco = $this->connection->prepare("INSERT INTO endereco (estado) VALUES (:estado)");
-
-        $endereco->execute([
-            'estado' => 1,
-        ]);
-
-        $idEndereco = (int) $this->connection->lastInsertId();
-
-        $user = $this->connection->prepare("INSERT INTO usuario (nome, email, pass, salt, endereco)
-                VALUES (:name, :email, :password, :salt, :endereco)");
-
-        $user->execute([
-            'name' => $nome,
-            'email' => $email,
-            'password' => $password,
-            'salt' => $salt,
-            'endereco' => $idEndereco,
-        ]);
-
-        $userId = (int) $this->connection->lastInsertId();
-
-        $responsavel = $this->connection->prepare("INSERT INTO responsavel (usuario) VALUES (:idUusuario)");
-        $responsavel->execute([
-            'idUusuario' => $userId,
-        ]);
-
-        $avatar = $this->connection->prepare("INSERT INTO fotos_de_avatar (usuario) VALUES (:idUusuario)");
-        $avatar->execute([
-            'idUusuario' => $userId,
-        ]);
-
+    {       
+        $this->responsavelStorage->adicionarResponsavel(json_decode(json_encode($_POST), true));
         header('Location: /webschool/admin/responsaveis');
     }
     
     public function atualizarResponsavel()
     {
-        $data = json_decode(json_encode($_POST), true);
-
-        $userId = $data['id'];
-        $nome = $data['nome'];
-        $email = $data['email'];
-        $password = $data['password'];
-        $salt = $data['salt'];
-        $newPassword = md5($password);
-        
-        if ($this->util->loginTakenBackEnd($email, "responsavel", $userId)) {
-            header('Location: /webschool/admin/responsaveis');
-            exit;
-        }
-
-        $sql = "
-            UPDATE usuario
-            SET nome=:nome, email=:email
-            ";
-
-        $fields = [
-            'nome' => $nome,
-            'email' => $email,
-        ];
-
-        if (strlen($password) > 0) {
-            $password = $data['password'];
-            $password = md5($password . $salt);
-
-            $sql .= ' ,pass=:pass';
-            $fields['pass'] = $password;
-        }
-
-        $sql .= ' where id=:userId';
-        $fields['userId'] = $userId;
-
-        $user = $this->connection->prepare($sql);
-        $user->execute($fields);
-        
+        $this->responsavelStorage->alterarResponsavel(json_decode(json_encode($_POST), true));
         header('Location: /webschool/admin/responsaveis');
     }
     
     public function removerResponsavel(int $idResponsavel)
     {
-        $user = $this->connection->prepare("UPDATE usuario SET is_deleted = 1 WHERE id = :id");
-
-        $user->execute([
-            'id' => $idResponsavel,
-        ]);
+        $this->responsavelStorage->removerResponsavel($idResponsavel);
     }
     
     public function adicionarAlunoPorResponsavel()
     {
-        $data = json_decode(json_encode($_POST), true);
-        
-        $responsavel = $data['id'];
-        $aluno = $data['aluno'];
-
-        $responsavelQuery = $this->connection->query("select id from responsavel where usuario = $responsavel");
-        $responsavelQuery = $responsavelQuery->fetchObject();
-
-        $alunoQuery = $this->connection->query("select id from aluno where usuario = $aluno");
-        $alunoQuery = $alunoQuery->fetchObject();
-
-        $user = $this->connection->prepare("INSERT INTO responsavel_por_aluno (responsavel, aluno)
-                VALUES (:responsavel, :aluno)");
-
-        $count = $user->execute([
-            'responsavel' => $responsavelQuery->id,
-            'aluno' => $alunoQuery->id,
-        ]);
-
+        $responsavel = $this->responsavelStorage->adicionarAlunoPorResponsavel(json_decode(json_encode($_POST), true));
         header("Location: /webschool/admin/responsavel/$responsavel");
     }
     
     public function removerAlunoPorResponsavel(int $id)
     {
-        $user = $this->connection->prepare("DELETE from responsavel_por_aluno WHERE id = :id");
-
-        $user->execute([
-            'id' => $id,
-        ]);
+        $this->responsavelStorage->removerAlunoPorResponsavel($id);
     }
     
     public function verTurmas()
