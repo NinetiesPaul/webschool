@@ -16,7 +16,7 @@ class AlunoStorage extends DB
     
     public function verAlunos()
     {
-        $alunoQuery = $this->connect()->query("select usuario.* from usuario, aluno where usuario.id=aluno.usuario");
+        $alunoQuery = $this->connect()->query("select usuario.*,aluno.id as aluno from usuario, aluno where usuario.id=aluno.usuario");
         return $alunoQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
@@ -166,5 +166,16 @@ class AlunoStorage extends DB
         $user->execute([
             'id' => $aluno,
         ]);
+    }
+    
+    public function verAlunosDoResponsavel($responsavel)
+    {
+        $usersQuery = $this->connect()->query("
+            select distinct usuario.*, responsavel_por_aluno.id as rpa from usuario, aluno, responsavel_por_aluno
+            where aluno.usuario = usuario.id
+            and aluno.id = responsavel_por_aluno.aluno
+            and responsavel_por_aluno.responsavel = $responsavel
+        ");
+        return $usersQuery->fetchAll(PDO::FETCH_OBJ);        
     }
 }
