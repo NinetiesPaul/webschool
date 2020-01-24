@@ -12,6 +12,7 @@ use App\DB\Storage\MateriaStorage;
 use App\DB\Storage\NotaStorage;
 use App\DB\Storage\DiarioDeClasseStorage;
 use App\DB\Storage\TurmaStorage;
+use App\DB\Storage\ResponsavelStorage;
 
 class DB extends PDO
 {
@@ -68,5 +69,15 @@ class DB extends PDO
     public function turma()
     {
         return new TurmaStorage();
+    }
+    
+    public function responsavel()
+    {
+        return new ResponsavelStorage();
+    }
+    
+    public function aluno()
+    {
+        return new AlunoStorage();
     }
 }
