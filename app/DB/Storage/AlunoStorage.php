@@ -178,4 +178,10 @@ class AlunoStorage extends DB
         ");
         return $usersQuery->fetchAll(PDO::FETCH_OBJ);        
     }
+
+    public function verTurmaDoAluno($usuario)
+    {
+        $usuarioQuery = $this->connect()->query("select turma from aluno where usuario = $usuario");
+        return $usuarioQuery->fetch(PDO::FETCH_OBJ);
+    }
 }
