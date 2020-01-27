@@ -8,6 +8,8 @@
 
 namespace App\Controllers;
 
+use App\DB\Storage\MateriaStorage;
+use App\DB\Storage\ProfessorStorage;
 use App\Templates;
 use App\DB\DB;
 use PDO;
@@ -22,11 +24,17 @@ class ProfessorController
     
     protected $util;
 
+    protected $materiaStorage;
+
+    protected $professorStorage;
+
     public function __construct()
     {
         $this->template = new Templates();
         $this->connection = new DB;
         $this->util = new Util();
+        $this->materiaStorage = new MateriaStorage();
+        $this->professorStorage = new ProfessorStorage();
         $this->util->userPermission('professor');
     }
     
@@ -46,27 +54,16 @@ class ProfessorController
     public function verTurmas()
     {
         $user = $_SESSION['user'];
-        
-        $disciplinaQuery = $this->connection->query("select * from disciplina_por_professor where professor=$user->professor");
-        $disciplinas = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
 
-        
+        $disciplinas = $this->materiaStorage->verMateriaPorProfessorDoProfessor($user->professor);
+
         $turmas = '';
         
         foreach ($disciplinas as $disciplina) {
             $turmas .= $this->util->pegarNomeDaDisciplina($disciplina->disciplina).', '.$this->util->pegarNomeDaTurmaPorIdTurma($disciplina->turma);
             $turmas .= "<p/><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a><br/>";
 
-            $alunosQuery = $this->connection->query("
-                select distinct usuario.* from usuario, aluno, turma, disciplina_por_professor
-                where usuario.id=aluno.usuario
-                and aluno.turma=disciplina_por_professor.turma
-                and disciplina_por_professor.turma=$disciplina->turma
-                and disciplina_por_professor.disciplina=$disciplina->disciplina
-                and disciplina_por_professor.professor=$user->professor
-                order by usuario.nome
-            ");
-            $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+            $alunosQuery = $this->professorStorage->verMeusAlunos($disciplina->turma, $disciplina->disciplina, $user->professor);
 
             $text = '<br/>Sem alunos cadastrados nessa turma no momento';
             if (!empty($alunosQuery)) {
