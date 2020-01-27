@@ -149,4 +149,18 @@ class ProfessorStorage extends DB
             'id' => $id,
         ]);
     }
+
+    public function verMeusAlunos($turma, $disciplina, $professor)
+    {
+        $alunosQuery = $this->connect()->query("
+                select distinct usuario.* from usuario, aluno, turma, disciplina_por_professor
+                where usuario.id=aluno.usuario
+                and aluno.turma=disciplina_por_professor.turma
+                and disciplina_por_professor.turma=$turma
+                and disciplina_por_professor.disciplina=$disciplina
+                and disciplina_por_professor.professor=$professor
+                order by usuario.nome
+            ");
+        return $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+    }
 }
