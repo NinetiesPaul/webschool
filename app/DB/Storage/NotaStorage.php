@@ -24,4 +24,10 @@ class NotaStorage extends DB
         $exec = $this->connect()->query("select * from nota_por_aluno where aluno=$aluno and turma=$turma order by disciplina");
         return $exec->fetchAll(PDO::FETCH_OBJ);
     }
+
+    public function verTurmasdoAluno($idAluno)
+    {
+        $exec = $this->connect()->query("select turma from nota_por_aluno where aluno=$idAluno group by turma");
+        return $exec->fetchAll(PDO::FETCH_OBJ);
+    }
 }

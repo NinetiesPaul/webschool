@@ -128,4 +128,10 @@ class ResponsavelStorage extends DB
             'id' => $id,
         ]);
     }
+    
+    public function verAlunosDoResponsavel($responsavel)
+    {
+        $meusAlunosQuery = $this->connect()->query("select * from responsavel_por_aluno where responsavel = $responsavel");
+        return $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);
+    }
 }
