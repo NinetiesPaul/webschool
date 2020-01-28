@@ -52,4 +52,17 @@ class NotaStorage extends DB
             'idTurma' => $turma,
         ]);
     }
+
+    public function verNotasPorAlunosDaDisciplinaETurma($disciplina, $turma)
+    {
+        $alunosQuery = $this->connect()->query("
+            select usuario.id, usuario.nome, aluno.id as aluno, nota_por_aluno.nota1, nota_por_aluno.nota2, nota_por_aluno.nota3, nota_por_aluno.nota4, nota_por_aluno.rec1, nota_por_aluno.rec2, nota_por_aluno.rec3, nota_por_aluno.rec4
+            from usuario
+            inner join aluno on aluno.usuario = usuario.id
+            inner join nota_por_aluno on nota_por_aluno.aluno = aluno.id and nota_por_aluno.disciplina=$disciplina and nota_por_aluno.turma=$turma
+            group by usuario.nome
+            order by usuario.nome
+        ");
+        return $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+    }
 }
