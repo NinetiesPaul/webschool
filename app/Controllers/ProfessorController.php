@@ -101,9 +101,7 @@ class ProfessorController
     public function verTurma(int $id)
     {
         $user = $_SESSION['user'];
-        
-        $disciplinaQuery = $this->connection->query("select * from disciplina_por_professor where id=$id");
-        $result = $disciplinaQuery->fetchObject();
+        $result = $this->materiaStorage->verMateriaPorProfessorSingle($id);
 
         $disciplina = $result->disciplina;
         $turma = $result->turma;
@@ -113,15 +111,7 @@ class ProfessorController
         $detalhes .= $this->util->pegarNomeDaDisciplina($disciplina).', '.$this->util->pegarNomeDaTurmaPorIdTurma($turma).'<p/>';
         $detalhes .= "<a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a><p/>";
 
-        $alunosQuery = $this->connection->query("
-            select usuario.id, usuario.nome, aluno.id as aluno, nota_por_aluno.nota1, nota_por_aluno.nota2, nota_por_aluno.nota3, nota_por_aluno.nota4, nota_por_aluno.rec1, nota_por_aluno.rec2, nota_por_aluno.rec3, nota_por_aluno.rec4
-            from usuario
-            inner join aluno on aluno.usuario = usuario.id
-            inner join nota_por_aluno on nota_por_aluno.aluno = aluno.id and nota_por_aluno.disciplina=$disciplina and nota_por_aluno.turma=$turma
-            group by usuario.nome
-            order by usuario.nome
-        ");
-        $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+        $alunosQuery = $this->notaStorage->verNotasPorAlunosDaDisciplinaETurma($disciplina, $turma);
 
         $detalhes .= "<table style='margin-left: auto; margin-right: auto; font-size: 13;' class='table table-sm table-hover table-striped'>
         <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2:</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th></tr></thead><tbody>";
