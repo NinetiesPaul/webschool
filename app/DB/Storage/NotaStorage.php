@@ -30,4 +30,26 @@ class NotaStorage extends DB
         $exec = $this->connect()->query("select turma from nota_por_aluno where aluno=$idAluno group by turma");
         return $exec->fetchAll(PDO::FETCH_OBJ);
     }
+    
+    public function adicionarNota($data)
+    {
+        $aluno = $data['aluno'];
+        $turma = $data['turma'];
+        $disciplina = $data['disciplina'];
+        $notaNum = $data['tipo'];
+        $nota = $data['nota'];
+                
+        $user = $this->connect()->prepare("
+            UPDATE nota_por_aluno
+            SET ".$notaNum."=:nota
+            where aluno=:idAluno and disciplina=:idDisciplina and turma=:idTurma
+        ");
+
+        $user->execute([
+            'nota' => $nota,
+            'idAluno' => $aluno,
+            'idDisciplina' => $disciplina,
+            'idTurma' => $turma,
+        ]);
+    }
 }
