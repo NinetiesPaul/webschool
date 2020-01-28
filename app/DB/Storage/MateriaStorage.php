@@ -73,4 +73,10 @@ class MateriaStorage extends DB
         $disciplinaQuery = $this->connect()->query("select * from disciplina_por_professor where professor=$professor");
         return $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
     }
+
+    public function verMateriaPorProfessorSingle($id)
+    {
+        $disciplinaQuery = $this->connect()->query("select * from disciplina_por_professor where id=$id");
+        return $disciplinaQuery->fetchObject();
+    }
 }
