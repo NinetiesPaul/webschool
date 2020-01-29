@@ -22,9 +22,7 @@ use DateTime;
 class ProfessorController
 {
     protected $template;
-    
-    protected $connection;
-    
+        
     protected $util;
 
     protected $materiaStorage;
@@ -40,7 +38,6 @@ class ProfessorController
     public function __construct()
     {
         $this->template = new Templates();
-        $this->connection = new DB;
         $this->util = new Util();
         $this->materiaStorage = new MateriaStorage();
         $this->professorStorage = new ProfessorStorage();
@@ -433,49 +430,33 @@ class ProfessorController
     
     public function deletarComentario(int $idComentario)
     {
-        $arquivoQuery = $this->connection->query("
-        select *
-        from arquivos
-        where contexto = 'ddc'
-        and diario = $idComentario
-        ");
-        $arquivo = $arquivoQuery->fetch(PDO::FETCH_OBJ);
-
+        $arquivo = $this->arquivoStorage->verArquivoDoDiario($idComentario);
+        
         if ($arquivo) {
-            if ($arquivo->endereco_thumb) {
-                unlink('../' . $arquivo->endereco_thumb);
-            }
-            unlink('../' . $arquivo->endereco);
+            try {
+                if ($arquivo->endereco_thumb) {
+                    unlink('../' . $arquivo->endereco_thumb);
+                }
+                unlink('../' . $arquivo->endereco);
 
-            $statement = $this->connection->prepare("DELETE FROM arquivos where id=:id");
-            $statement->execute([
-                'id' => $arquivo->id,
-            ]);
+                $this->arquivoStorage->removerArquivoDoComentario($arquivo->id);
+            }catch (\Exception $ex) {
+                echo $ex->getMessage();
+            }
         }
         
-        $comentario = $this->connection->prepare("DELETE FROM diario_de_classe where contexto = 'observacao' and id=:id");
-        $comentario->execute([
-            'id' => $idComentario,
-        ]);
+        $this->diarioDeClasseStorage->removerComentario($idComentario);
     }
     
     public function deletarArquivoDeComentario($idArquivo)
     {
-        $arquivoQuery = $this->connection->query("
-        select *
-        from arquivos
-        where id = $idArquivo
-        ");
-        $arquivo = $arquivoQuery->fetch(PDO::FETCH_OBJ);
+        $arquivo = $this->arquivoStorage->verArquivoPorId($idArquivo);
 
         if ($arquivo->endereco_thumb) {
             unlink('../' . $arquivo->endereco_thumb);
         }
         unlink('../' . $arquivo->endereco);
 
-        $statement = $this->connection->prepare("DELETE FROM arquivos where id=:id");
-        $statement->execute([
-            'id' => $idArquivo,
-        ]);
+        $this->arquivoStorage->removerArquivoDoComentario($idArquivo);
     }
 }
