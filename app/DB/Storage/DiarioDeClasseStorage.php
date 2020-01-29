@@ -105,4 +105,12 @@ class DiarioDeClasseStorage extends DB
         
         return $this->connection->lastInsertId();
     }
+    
+    public function removerComentario($idComentario)
+    {
+        $comentario = $this->connect()->prepare("DELETE FROM diario_de_classe where contexto = 'observacao' and id=:id");
+        $comentario->execute([
+            'id' => $idComentario,
+        ]);
+    }
 }
