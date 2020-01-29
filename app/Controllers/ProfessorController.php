@@ -8,6 +8,11 @@
 
 namespace App\Controllers;
 
+use App\DB\Storage\MateriaStorage;
+use App\DB\Storage\ProfessorStorage;
+use App\DB\Storage\DiarioDeClasseStorage;
+use App\DB\Storage\NotaStorage;
+use App\DB\Storage\ArquivoStorage;
 use App\Templates;
 use App\DB\DB;
 use PDO;
@@ -17,16 +22,28 @@ use DateTime;
 class ProfessorController
 {
     protected $template;
-    
-    protected $connection;
-    
+        
     protected $util;
+
+    protected $materiaStorage;
+
+    protected $professorStorage;
+    
+    protected $diarioDeClasseStorage;
+    
+    protected $arquivoStorage;
+    
+    protected $notaStorage;
 
     public function __construct()
     {
         $this->template = new Templates();
-        $this->connection = new DB;
         $this->util = new Util();
+        $this->materiaStorage = new MateriaStorage();
+        $this->professorStorage = new ProfessorStorage();
+        $this->diarioDeClasseStorage = new DiarioDeClasseStorage();
+        $this->arquivoStorage = new ArquivoStorage();
+        $this->notaStorage = new NotaStorage();
         $this->util->userPermission('professor');
     }
     
@@ -46,27 +63,16 @@ class ProfessorController
     public function verTurmas()
     {
         $user = $_SESSION['user'];
-        
-        $disciplinaQuery = $this->connection->query("select * from disciplina_por_professor where professor=$user->professor");
-        $disciplinas = $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
 
-        
+        $disciplinas = $this->materiaStorage->verMateriaPorProfessorDoProfessor($user->professor);
+
         $turmas = '';
         
         foreach ($disciplinas as $disciplina) {
             $turmas .= $this->util->pegarNomeDaDisciplina($disciplina->disciplina).', '.$this->util->pegarNomeDaTurmaPorIdTurma($disciplina->turma);
             $turmas .= "<p/><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a><br/>";
 
-            $alunosQuery = $this->connection->query("
-                select distinct usuario.* from usuario, aluno, turma, disciplina_por_professor
-                where usuario.id=aluno.usuario
-                and aluno.turma=disciplina_por_professor.turma
-                and disciplina_por_professor.turma=$disciplina->turma
-                and disciplina_por_professor.disciplina=$disciplina->disciplina
-                and disciplina_por_professor.professor=$user->professor
-                order by usuario.nome
-            ");
-            $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+            $alunosQuery = $this->professorStorage->verMeusAlunos($disciplina->turma, $disciplina->disciplina, $user->professor);
 
             $text = '<br/>Sem alunos cadastrados nessa turma no momento';
             if (!empty($alunosQuery)) {
@@ -92,9 +98,7 @@ class ProfessorController
     public function verTurma(int $id)
     {
         $user = $_SESSION['user'];
-        
-        $disciplinaQuery = $this->connection->query("select * from disciplina_por_professor where id=$id");
-        $result = $disciplinaQuery->fetchObject();
+        $result = $this->materiaStorage->verMateriaPorProfessorSingle($id);
 
         $disciplina = $result->disciplina;
         $turma = $result->turma;
@@ -104,15 +108,7 @@ class ProfessorController
         $detalhes .= $this->util->pegarNomeDaDisciplina($disciplina).', '.$this->util->pegarNomeDaTurmaPorIdTurma($turma).'<p/>';
         $detalhes .= "<a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a><p/>";
 
-        $alunosQuery = $this->connection->query("
-            select usuario.id, usuario.nome, aluno.id as aluno, nota_por_aluno.nota1, nota_por_aluno.nota2, nota_por_aluno.nota3, nota_por_aluno.nota4, nota_por_aluno.rec1, nota_por_aluno.rec2, nota_por_aluno.rec3, nota_por_aluno.rec4
-            from usuario
-            inner join aluno on aluno.usuario = usuario.id
-            inner join nota_por_aluno on nota_por_aluno.aluno = aluno.id and nota_por_aluno.disciplina=$disciplina and nota_por_aluno.turma=$turma
-            group by usuario.nome
-            order by usuario.nome
-        ");
-        $alunosQuery = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+        $alunosQuery = $this->notaStorage->verNotasPorAlunosDaDisciplinaETurma($disciplina, $turma);
 
         $detalhes .= "<table style='margin-left: auto; margin-right: auto; font-size: 13;' class='table table-sm table-hover table-striped'>
         <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2:</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th></tr></thead><tbody>";
@@ -177,16 +173,7 @@ class ProfessorController
 
         echo '<p/>';
 
-        $alunosQuery = $this->connection->query("
-            select diario_de_classe.*, usuario.nome
-            from usuario
-            inner join aluno on aluno.usuario = usuario.id
-            inner join diario_de_classe on diario_de_classe.aluno = aluno.id
-            and diario_de_classe.disciplina = $disc and diario_de_classe.turma = $turma
-            group by usuario.nome
-            order by usuario.nome 
-        ");
-        $alunos = $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+        $alunos = $this->diarioDeClasseStorage->verFaltasDoAlunoDaTurma($turma, $disc);
 
         echo "<table style='margin-left: auto; margin-right: auto; font-size: 13;' class='table table-striped table-responsive'>";
         echo "<thead class='thead-dark'>";
@@ -202,14 +189,7 @@ class ProfessorController
             echo "<tr>";
             echo "<td>$aluno->nome</td>";
             foreach ($dates as $date) {
-                $diarioQuery = $this->connection->query("
-                    select *
-                    from diario_de_classe
-                    where aluno = $aluno->aluno
-                    and diario_de_classe.disciplina = $disc and diario_de_classe.turma = $turma
-                    and data = '".$date->format('Y-m-d')."'
-                ");
-                $diario = $diarioQuery->fetch(PDO::FETCH_OBJ);
+                $diario = $this->diarioDeClasseStorage->verFaltasDoAlunoDaturmaPorData($aluno->aluno, $turma, $disc, $date->format('Y-m-d'));
 
                 $date = explode('-', $date->format('Y-m-d'));
 
@@ -234,26 +214,7 @@ class ProfessorController
     
     public function inserirNota()
     {
-        $data = json_decode(json_encode($_POST), true);
-        
-        $aluno = $data['aluno'];
-        $turma = $data['turma'];
-        $disciplina = $data['disciplina'];
-        $notaNum = $data['tipo'];
-        $nota = $data['nota'];
-                
-        $user = $this->connection->prepare("
-            UPDATE nota_por_aluno
-            SET ".$notaNum."=:nota
-            where aluno=:idAluno and disciplina=:idDisciplina and turma=:idTurma
-        ");
-
-        $user->execute([
-            'nota' => $nota,
-            'idAluno' => $aluno,
-            'idDisciplina' => $disciplina,
-            'idTurma' => $turma,
-        ]);
+        $this->notaStorage->adicionarNota(json_decode(json_encode($_POST), true));
     }
     
     public function alterarFrequencia()
@@ -275,28 +236,10 @@ class ProfessorController
 
         $data = $ano.'-'.$mes.'-'.$dia;
 
-        $diarioQuery = $this->connection->query("
-        select id, presenca
-        from diario_de_classe
-        where aluno = $aluno
-        and disciplina = $disciplina
-        and turma = $turma
-        and data = '$data'
-        ");
-        $diario = $diarioQuery->fetch(PDO::FETCH_OBJ);
+        $diario = $this->diarioDeClasseStorage->verFaltasDoAlunoDaturmaPorData($aluno, $turma, $disciplina, $data);
 
         if (!$diario) {
-            $user = $this->connection->prepare("
-                INSERT INTO diario_de_classe (aluno, disciplina, turma, data, presenca, contexto) 
-                values (:aluno, :disciplina, :turma, :data, 1, 'presenca')
-            ");
-
-            $user->execute([
-                'aluno' => $aluno,
-                'disciplina' => $disciplina,
-                'turma' => $turma,
-                'data' => $data,
-            ]);
+            $this->diarioDeClasseStorage->adicionarFalta($aluno, $turma, $disciplina, $data);
             
             echo "<span class='glyphicon glyphicon-ok'></span>";
         } else {
@@ -310,13 +253,8 @@ class ProfessorController
                 $presenca = 0;
                 $span = "<span class='glyphicon glyphicon-remove'></span>";
             }
-
-            $user = $this->connection->prepare("UPDATE diario_de_classe SET presenca = :presenca WHERE id=:id");
-
-            $user->execute([
-                'presenca' => $presenca,
-                'id' => $diario->id,
-            ]);
+            
+            $this->diarioDeClasseStorage->alterarFalta($presenca, $diario->id);
             
             echo $span;
         }
@@ -343,28 +281,12 @@ class ProfessorController
 
         $data = $ano.'-'.$mes.'-'.$dia;
         
-        $comentarioQuery = $this->connection->query("
-            select *
-            from diario_de_classe
-            where aluno = $aluno
-            and disciplina = $disciplina
-            and turma = $turma
-            and data = '$data'
-            and professor = $user->professor
-            and contexto = 'observacao'
-        ");
-        $comentarios = $comentarioQuery->fetchAll(PDO::FETCH_OBJ);
+        $comentarios = $this->diarioDeClasseStorage->verComentariosDoAlunoDaTurma($aluno, $disciplina, $turma, $data, $user->professor);
 
         foreach ($comentarios as $comentario) {
             echo "<tr id='row-comentario-$comentario->id'><td>$comentario->observacao</td>";
-
-            $arquivoQuery = $this->connection->query("
-                select *
-                from arquivos
-                where contexto = 'ddc'
-                and diario = $comentario->id
-            ");
-            $arquivos = $arquivoQuery->fetchAll(PDO::FETCH_OBJ);
+            
+            $arquivos = $this->arquivoStorage->verArquivosDoDiario($comentario->id);
 
             $span = 'colspan=2';
             $line = 'Essa observação não contem arquivos anexados';
@@ -473,50 +395,16 @@ class ProfessorController
         }
         
         $prof = $user->professor;
-
-        $user = $this->connection->prepare("
-            INSERT INTO diario_de_classe
-            (turma, aluno, disciplina, observacao, data, professor, contexto) VALUES
-            (:turma, :aluno, :disciplina, :mensagem, :data, :professor, 'observacao')
-        ");
-
-        $user->execute([
-            'turma' => $turma,
-            'aluno' => $aluno,
-            'disciplina' => $disciplina,
-            'mensagem' => $mensagem,
-            'data' => $dataComentario,
-            'professor' => $prof,
-        ]);
         
-        //ajax response
-        
-        $id_comentario = $this->connection->lastInsertId();
+        $id_comentario = $this->diarioDeClasseStorage->adicionarComentario($turma, $aluno, $disciplina, $mensagem, $dataComentario, $prof);
 
         $id_arquivo = '';
         
         if ($arquivos) {
-            $id = (int) $this->connection->lastInsertId();
-
-            $fileQuery = $this->connection->prepare("
-                INSERT INTO arquivos (nome, endereco_thumb, endereco, contexto, diario, descricao, data) VALUES (:nome, :endereco_thumb, :endereco, 'ddc', $id, '', :data)
-            ");
-
-            $fileQuery->execute([
-                'nome' => $file_name,
-                'endereco_thumb' => $urlThumbFinal,
-                'endereco' => $urlFinal,
-                'data' => $dataComentario,
-            ]);
             
-            $id_arquivo = $this->connection->lastInsertId();
+            $id_arquivo = $this->arquivoStorage->adicionarArquivo($file_name, $urlThumbFinal, $urlFinal, $dataComentario, $id_comentario);
             
-            $arquivoQuery = $this->connection->query("
-                select endereco, nome
-                from arquivos
-                where id = $id_arquivo
-            ");
-            $arquivo = $arquivoQuery->fetch(PDO::FETCH_OBJ);
+            $arquivo = $this->arquivoStorage->verEnderecoNomeDoArquivo($id_arquivo);
         }
         
         echo "<tr id='row-comentario-$id_comentario'><td>$mensagem</td>";
@@ -542,49 +430,33 @@ class ProfessorController
     
     public function deletarComentario(int $idComentario)
     {
-        $arquivoQuery = $this->connection->query("
-        select *
-        from arquivos
-        where contexto = 'ddc'
-        and diario = $idComentario
-        ");
-        $arquivo = $arquivoQuery->fetch(PDO::FETCH_OBJ);
-
+        $arquivo = $this->arquivoStorage->verArquivoDoDiario($idComentario);
+        
         if ($arquivo) {
-            if ($arquivo->endereco_thumb) {
-                unlink('../' . $arquivo->endereco_thumb);
-            }
-            unlink('../' . $arquivo->endereco);
+            try {
+                if ($arquivo->endereco_thumb) {
+                    unlink('../' . $arquivo->endereco_thumb);
+                }
+                unlink('../' . $arquivo->endereco);
 
-            $statement = $this->connection->prepare("DELETE FROM arquivos where id=:id");
-            $statement->execute([
-                'id' => $arquivo->id,
-            ]);
+                $this->arquivoStorage->removerArquivoDoComentario($arquivo->id);
+            }catch (\Exception $ex) {
+                echo $ex->getMessage();
+            }
         }
         
-        $comentario = $this->connection->prepare("DELETE FROM diario_de_classe where contexto = 'observacao' and id=:id");
-        $comentario->execute([
-            'id' => $idComentario,
-        ]);
+        $this->diarioDeClasseStorage->removerComentario($idComentario);
     }
     
     public function deletarArquivoDeComentario($idArquivo)
     {
-        $arquivoQuery = $this->connection->query("
-        select *
-        from arquivos
-        where id = $idArquivo
-        ");
-        $arquivo = $arquivoQuery->fetch(PDO::FETCH_OBJ);
+        $arquivo = $this->arquivoStorage->verArquivoPorId($idArquivo);
 
         if ($arquivo->endereco_thumb) {
             unlink('../' . $arquivo->endereco_thumb);
         }
         unlink('../' . $arquivo->endereco);
 
-        $statement = $this->connection->prepare("DELETE FROM arquivos where id=:id");
-        $statement->execute([
-            'id' => $idArquivo,
-        ]);
+        $this->arquivoStorage->removerArquivoDoComentario($idArquivo);
     }
 }

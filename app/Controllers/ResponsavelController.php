@@ -6,21 +6,26 @@ use App\Templates;
 use App\DB\DB;
 use PDO;
 use App\Util;
+use App\DB\Storage\ResponsavelStorage;
+use App\DB\Storage\NotaStorage;
 
 class ResponsavelController
 {
     protected $template;
-    
-    protected $connection;
-    
+        
     protected $util;
+    
+    protected $responsavelStorage;
+    
+    protected $notaStorage;
 
     public function __construct()
     {
         $this->template = new Templates();
-        $this->connection = new DB;
         $this->util = new Util();
         $this->util->userPermission('responsavel');
+        $this->responsavelStorage = new ResponsavelStorage();
+        $this->notaStorage = new NotaStorage();
     }
     
     public function index()
@@ -40,11 +45,9 @@ class ResponsavelController
     {
         $user = $_SESSION['user'];
         
-        $meusAlunosQuery = $this->connection->query("select * from responsavel_por_aluno where responsavel = $user->responsavel");
-        $meusAlunosQuery = $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);
+        $meusAlunosQuery = $this->responsavelStorage->verAlunosDoResponsavel($user->responsavel);
         
         $alunos = '';
-
         foreach ($meusAlunosQuery as $aluno) {
             $alunos .= "<a href='aluno/$aluno->aluno'>".$this->util->pegarNomeDoAlunoPorAlunoId($aluno->aluno)."</a><br/>";
         }
@@ -63,8 +66,7 @@ class ResponsavelController
     {
         $user = $_SESSION['user'];
         
-        $turmasQuery = $this->connection->query("select turma from nota_por_aluno where aluno=$idAluno group by turma");
-        $turmas = $turmasQuery->fetchAll(PDO::FETCH_OBJ);
+        $turmas = $this->notaStorage->verTurmasdoAluno($idAluno);
 
         $notas = '';
         
@@ -78,8 +80,7 @@ class ResponsavelController
                     <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
                 </button><br/>";
             
-            $notasQuery = $this->connection->query("select * from nota_por_aluno where aluno=$idAluno and turma=$turma->turma order by disciplina");
-            $notasQuery = $notasQuery->fetchAll(PDO::FETCH_OBJ);
+            $notasQuery = $this->notaStorage->verNotasPorTruma($idAluno, $turma->turma);
 
             $notas .= "<table style='margin-left: auto; margin-right: auto; font-size: 13;' class='table'>
             <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th><th></th></tr></thead><tbody>";

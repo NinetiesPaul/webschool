@@ -2,6 +2,9 @@
 
 namespace App\Controllers;
 
+use App\DB\Storage\AlunoStorage;
+use App\DB\Storage\NotaStorage;
+use App\DB\Storage\TurmaStorage;
 use App\Templates;
 use App\DB\DB;
 use PDO;
@@ -10,17 +13,24 @@ use App\Util;
 class AlunoController
 {
     protected $template;
-    
-    protected $connection;
-    
+
     protected $util;
+
+    protected $alunoStorage;
+
+    protected $turmaStorage;
+
+    protected $notaStorage;
 
     public function __construct()
     {
         $this->template = new Templates();
-        $this->connection = new DB;
         $this->util = new Util();
         $this->util->userPermission('aluno');
+
+        $this->alunoStorage = new AlunoStorage();
+        $this->turmaStorage = new TurmaStorage();
+        $this->notaStorage = new NotaStorage();
     }
     
     public function index()
@@ -39,12 +49,10 @@ class AlunoController
     public function verTurmas()
     {
         $user = $_SESSION['user'];
-        
-        $usuarioQuery = $this->connection->query("select turma from aluno where usuario = $user->id");
-        $usuario = $usuarioQuery->fetch(PDO::FETCH_OBJ);
 
-        $turmasQuery = $this->connection->query("select turma from nota_por_aluno where aluno=$user->aluno group by turma");
-        $turmas = $turmasQuery->fetchAll(PDO::FETCH_OBJ);
+        $usuario = $this->alunoStorage->verTurmaDoAluno($user->id);
+
+        $turmas = $this->notaStorage->verTurmasComNotaDoAluno($user->aluno);
 
         $minhasTurmas = '';
         foreach ($turmas as $turma) {
@@ -57,8 +65,7 @@ class AlunoController
                     <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
                 </button><br/>";
 
-            $notasQuery = $this->connection->query("select * from nota_por_aluno where aluno=$user->aluno and turma=$turma->turma order by disciplina");
-            $notas = $notasQuery->fetchAll(PDO::FETCH_OBJ);
+            $notas = $this->notaStorage->verNotaPorTurma($user->aluno, $turma->turma);
 
             $minhasTurmas .= "<table style='margin-left: auto; margin-right: auto; font-size: 13;' class='table'>
             <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th><th></th></tr></thead><tbody>";
