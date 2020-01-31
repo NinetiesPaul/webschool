@@ -25,14 +25,8 @@ class ResponsavelStorage extends DB
         return $responsavelQuery->fetch(PDO::FETCH_OBJ);
     }
     
-    public function adicionarResponsavel($data)
-    {
-        $email = $data['email'];
-        $nome = $data['nome'];
-        $password = $data['password'];
-        $salt = time() + rand(100, 1000);
-        $password = md5($password . $salt);
-        
+    public function adicionarResponsavel($email, $nome, $password, $salt)
+    {   
         if ($this->util()->loginTakenBackEnd($email, "responsavel")) {
             return false;
         }
@@ -57,15 +51,8 @@ class ResponsavelStorage extends DB
         $this->avatar()->inserirAvatar($userId);
     }
     
-    public function alterarResponsavel($data)
-    {
-        $userId = $data['id'];
-        $nome = $data['nome'];
-        $email = $data['email'];
-        $password = $data['password'];
-        $salt = $data['salt'];
-        $newPassword = md5($password);
-        
+    public function alterarResponsavel($userId, $nome, $email, $password, $salt)
+    {   
         if ($this->util()->loginTakenBackEnd($email, "responsavel", $userId)) {
             return false;
         }
@@ -81,7 +68,6 @@ class ResponsavelStorage extends DB
         ];
 
         if (strlen($password) > 0) {
-            $password = $data['password'];
             $password = md5($password . $salt);
 
             $sql .= ' ,pass=:pass';
@@ -104,11 +90,8 @@ class ResponsavelStorage extends DB
         ]);
     }
     
-    public function adicionarAlunoPorResponsavel($data)
+    public function adicionarAlunoPorResponsavel($responsavel, $aluno, $id)
     {
-        $responsavel = $data['responsavel'];
-        $aluno = $data['aluno'];
-
         $user = $this->connect()->prepare("INSERT INTO responsavel_por_aluno (responsavel, aluno)
                 VALUES (:responsavel, :aluno)");
 
@@ -117,7 +100,7 @@ class ResponsavelStorage extends DB
             'aluno' => $aluno,
         ]);
         
-        return $data['id'];
+        return $id;
     }
     
     public function removerAlunoPorResponsavel($id)

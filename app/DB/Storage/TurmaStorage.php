@@ -19,27 +19,19 @@ class TurmaStorage extends DB {
         return $turma->fetch(PDO::FETCH_OBJ);
     }
 
-    public function adicionarTurma($data)
+    public function adicionarTurma($nome, $serie)
     {
-        $data = json_decode(json_encode($_POST), true);
-
         $user = $this->connect()->prepare("INSERT INTO turma (nome, serie)
                 VALUES (:nome, :serie)");
 
         $user->execute([
-            'nome' => $data['nome'],
-            'serie' => $data['serie'],
+            'nome' => $nome,
+            'serie' => $serie,
         ]);
     }
 
-    public function alterarTurma($data)
+    public function alterarTurma($nome, $serie, $turma)
     {
-        $data = json_decode(json_encode($_POST), true);
-
-        $turma = $data['id'];
-        $nome = $data['nome'];
-        $serie = $data['serie'];
-
         $user = $this->connect()->prepare("
             UPDATE turma
             SET serie=:serie, nome=:nome
