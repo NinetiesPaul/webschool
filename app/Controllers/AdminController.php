@@ -445,7 +445,7 @@ class AdminController
         
         $nome = $data['nome'];
         $serie = $data['serie'];
-        $turma = $data['turma'];
+        $turma = $data['id'];
         
         
         $this->turmaStorage->alterarTurma($nome, $serie, $turma);
