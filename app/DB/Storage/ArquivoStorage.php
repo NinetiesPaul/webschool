@@ -38,7 +38,7 @@ class ArquivoStorage extends DB
             where contexto = 'ddc'
             and diario = $comentario
         ");
-        return $arquivoQuery->fetchAll(PDO::FETCH_OBJ);
+        return $arquivoQuery->fetch(PDO::FETCH_OBJ);
     }
 
     public function verArquivoDoDiario($comentario)

@@ -70,13 +70,23 @@ class MateriaStorage extends DB
 
     public function verMateriaPorProfessorDoProfessor($professor)
     {
-        $disciplinaQuery = $this->connect()->query("select * from disciplina_por_professor where professor=$professor");
+        $disciplinaQuery = $this->connect()->query("
+            SELECT disciplina_por_professor.*, disciplina.nome as nomeDisciplina, turma.serie, turma.nome FROM disciplina_por_professor
+            INNER JOIN disciplina ON disciplina.id = disciplina_por_professor.disciplina
+            INNER JOIN turma ON turma.id = disciplina_por_professor.turma
+            WHERE professor=$professor
+        ");
         return $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verMateriaPorProfessorSingle($id)
     {
-        $disciplinaQuery = $this->connect()->query("select * from disciplina_por_professor where id=$id");
+        $disciplinaQuery = $this->connect()->query("
+            SELECT disciplina_por_professor.*, disciplina.nome as nomeDisciplina, turma.serie, turma.nome FROM disciplina_por_professor
+            INNER JOIN disciplina ON disciplina.id = disciplina_por_professor.disciplina
+            INNER JOIN turma ON turma.id = disciplina_por_professor.turma
+            WHERE disciplina_por_professor.id=$id
+        ");
         return $disciplinaQuery->fetchObject();
     }
 }
