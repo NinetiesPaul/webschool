@@ -23,7 +23,7 @@ class DiarioDeClasseStorage extends DB
     public function verFaltasDoAlunoDaTurma($turma, $disc)
     {
         $alunosQuery = $this->connect()->query("
-            select diario_de_classe.*, usuario.nome
+            select diario_de_classe.aluno, diario_de_classe.disciplina, diario_de_classe.turma, usuario.nome
             from usuario
             inner join aluno on aluno.usuario = usuario.id
             inner join diario_de_classe on diario_de_classe.aluno = aluno.id
