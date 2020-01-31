@@ -119,22 +119,22 @@ CREATE TABLE diario_de_classe (
 );
 
 CREATE TABLE fotos_de_avatar (
-    id int (11) AUTO_INCREMENT PRIMARY KEY,
-    endereco_thumb varchar (225),
-    endereco varchar (225),
-    usuario int (11),
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    endereco_thumb VARCHAR(255),
+    endereco VARCHAR(255),
+    usuario INT(11),
     FOREIGN KEY (usuario) REFERENCES usuario(id)
 );
 
 CREATE TABLE arquivos (
-    id INT (11) AUTO_INCREMENT PRIMARY KEY,
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255),
-    endereco_thumb VARCHAR (225),
-    endereco VARCHAR (225),
-    contexto VARCHAR (225),
-    diario INT (11),
-    conversa INT (11),
+    endereco_thumb VARCHAR(255),
+    endereco VARCHAR(255),
+    contexto VARCHAR(255),
+    diario INT(11),
+    conversa INT(11),
     descricao VARCHAR (255),
     DATA DATE,
     FOREIGN KEY (diario) REFERENCES diario_de_classe(id)
-); 
+);
