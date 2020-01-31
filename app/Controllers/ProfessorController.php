@@ -69,7 +69,7 @@ class ProfessorController
         $turmas = '';
         
         foreach ($disciplinas as $disciplina) {
-            $turmas .= $this->util->pegarNomeDaDisciplina($disciplina->disciplina).', '.$this->util->pegarNomeDaTurmaPorIdTurma($disciplina->turma);
+            $turmas .= $disciplina->nomeDisciplina.', '.$disciplina->serie.'º Série '.$disciplina->nome;
             $turmas .= "<p/><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a><br/>";
 
             $alunosQuery = $this->professorStorage->verMeusAlunos($disciplina->turma, $disciplina->disciplina, $user->professor);
@@ -83,16 +83,16 @@ class ProfessorController
             }
             
             $turmas .= $text;
-                    
-            $args = [
-                'LOGADO' => $user->nome,
-                'TURMAS' => $turmas
-            ];
-
-            $template 	= $this->template->getTemplate('professor/turmas.html');
-            $templateFinal = $this->template->parseTemplate($template, $args);
-            echo $templateFinal;
         }
+                    
+        $args = [
+            'LOGADO' => $user->nome,
+            'TURMAS' => $turmas
+        ];
+
+        $template 	= $this->template->getTemplate('professor/turmas.html');
+        $templateFinal = $this->template->parseTemplate($template, $args);
+        echo $templateFinal;
     }
     
     public function verTurma(int $id)
@@ -105,7 +105,7 @@ class ProfessorController
 
         $detalhes = '';
         
-        $detalhes .= $this->util->pegarNomeDaDisciplina($disciplina).', '.$this->util->pegarNomeDaTurmaPorIdTurma($turma).'<p/>';
+        $detalhes .= $result->nomeDisciplina.', '.$result->serie.'º Série '.$result->nome;
         $detalhes .= "<a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a><p/>";
 
         $alunosQuery = $this->notaStorage->verNotasPorAlunosDaDisciplinaETurma($disciplina, $turma);
@@ -286,23 +286,21 @@ class ProfessorController
         foreach ($comentarios as $comentario) {
             echo "<tr id='row-comentario-$comentario->id'><td>$comentario->observacao</td>";
             
-            $arquivos = $this->arquivoStorage->verArquivosDoDiario($comentario->id);
+            $arquivo = $this->arquivoStorage->verArquivosDoDiario($comentario->id);
 
             $span = 'colspan=2';
             $line = 'Essa observação não contem arquivos anexados';
             $cellid = '';
-            if ($arquivos) {
+            if ($arquivo) {
                 $span = '';
                 $line = '';
-                foreach ($arquivos as $arquivo) {
-                    $nome = (strlen($arquivo->nome) > 30) ? substr($arquivo->nome, 0, 25) . '...' : $arquivo->nome;
-                    
-                    $cellid = "id='cell-file-head-$arquivo->id'";
-                    $line .= "
-                        <a href='../../../../../$arquivo->endereco'>$nome</a></td>
-                        <td id='cell-file-remove-$arquivo->id'><a href='#' class='deletar-arquivo' id='$arquivo->id'><span class='glyphicon glyphicon-trash'></span></a></td>
-                    ";
-                }
+                $nome = (strlen($arquivo->nome) > 30) ? substr($arquivo->nome, 0, 25) . '...' : $arquivo->nome;
+
+                $cellid = "id='cell-file-head-$arquivo->id'";
+                $line .= "
+                    <a href='../../../../../$arquivo->endereco'>$nome</a></td>
+                    <td id='cell-file-remove-$arquivo->id'><a href='#' class='deletar-arquivo' id='$arquivo->id'><span class='glyphicon glyphicon-trash'></span></a></td>
+                ";
             }
             echo "<td $span $cellid>$line</td>";
             echo "<td><a href='#' id='$comentario->id' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td></tr>";
@@ -401,10 +399,7 @@ class ProfessorController
         $id_arquivo = '';
         
         if ($arquivos) {
-            
-            $id_arquivo = $this->arquivoStorage->adicionarArquivo($file_name, $urlThumbFinal, $urlFinal, $dataComentario, $id_comentario);
-            
-            $arquivo = $this->arquivoStorage->verEnderecoNomeDoArquivo($id_arquivo);
+            $id_arquivo = $this->arquivoStorage->adicionarArquivo($file_name, $urlThumbFinal, $urlFinal, $dataComentario, $id_comentario);            
         }
         
         echo "<tr id='row-comentario-$id_comentario'><td>$mensagem</td>";
@@ -413,13 +408,13 @@ class ProfessorController
         $line = 'Essa observação não contem arquivos anexados';
         $cellid = '';
         if (empty($_FILES['file_btn']['error'])) {
-            $nome = (strlen($arquivo->nome) > 30) ? substr($arquivo->nome, 0, 25) . '...' : $arquivo->nome;
+            $nome = (strlen($file_name) > 30) ? substr($file_name, 0, 25) . '...' : $file_name;
 
             $span = '';
             $line = '';
             $cellid = "id='cell-file-head-$id_arquivo'";
             $line .= "
-                <a href='../../../../../$arquivo->endereco'>$nome</a></td>
+                <a href='../../../../../$urlFinal'>$nome</a></td>
                 <td id='cell-file-remove-$id_arquivo'><a href='#' class='deletar-arquivo' id='$id_arquivo'><span class='glyphicon glyphicon-trash'></span></a></td>
             ";
         }
