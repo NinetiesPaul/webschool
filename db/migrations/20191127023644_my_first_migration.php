@@ -32,7 +32,7 @@ class MyFirstMigration extends AbstractMigration
 	
 	public function up(): void
 	{
-        $this->execute(file_get_contents(__DIR__ . '/schema.sql'));
+        $this->execute(file_get_contents(__DIR__ . '/schema_mysql.sql'));
         //$this->execute(file_get_contents(__DIR__ . '/data.sql'));
 	}
 }
