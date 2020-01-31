@@ -119,13 +119,32 @@ class AdminController
     
     public function adicionarAluno()
     {
-        $this->alunoStorage->adicionarAluno(json_decode(json_encode($_POST), true));
+        $data = json_decode(json_encode($_POST), true);
+        
+        $email = $data['email'];
+        $nome = $data['nome'];
+        $salt = time() + rand(100, 1000);
+        $password = $data['password'];
+        $password = md5($password . $salt);
+        $turma = $data['turma'];
+        
+        $this->alunoStorage->adicionarAluno($email, $nome, $password, $salt, $turma);
         header('Location: /webschool/admin/alunos');
     }
     
     public function atualizarAluno()
-    {   
-        $this->alunoStorage->alterarAluno(json_decode(json_encode($_POST), true));
+    {
+        $data = json_decode(json_encode($_POST), true);
+        
+        $userId = $data['id'];
+        $idAluno = $data['idAluno'];
+        $nome = $data['nome'];
+        $email = $data['email'];
+        $password = $data['password'];
+        $salt = $data['salt'];
+        $turma = $data['turma']; 
+        
+        $this->alunoStorage->alterarAluno($userId, $idAluno, $nome, $email, $password, $salt, $turma);
         header('Location: /webschool/admin/alunos');
     }
     
@@ -217,13 +236,29 @@ class AdminController
     
     public function adicionarProfessor()
     {
-        $this->professorStorage->adicionarProfessor(json_decode(json_encode($_POST), true));
+        $data = json_decode(json_encode($_POST), true);
+        
+        $email = $data['email'];
+        $nome = $data['nome'];
+        $salt = time() + rand(100, 1000);
+        $password = $data['password'];
+        $password = md5($password . $salt);
+        
+        $this->professorStorage->adicionarProfessor($email, $nome, $password, $salt);
         header('Location: /webschool/admin/professores');
     }
     
     public function atualizarProfessor()
     {
-        $this->professorStorage->alterarProfessor(json_decode(json_encode($_POST), true));
+        $data = json_decode(json_encode($_POST), true);
+        
+        $userId = $data['id'];
+        $nome = $data['nome'];
+        $email = $data['email'];
+        $password = $data['password'];
+        $salt = $data['salt'];
+        
+        $this->professorStorage->alterarProfessor($userId, $nome, $email, $password, $salt);
         header('Location: /webschool/admin/professores');
     }
     
@@ -234,7 +269,13 @@ class AdminController
     
     public function adicionarProfessorPorMateria()
     {
-        $this->professorStorage->adicionarMateriaPorProfessor(json_decode(json_encode($_POST), true));
+        $data = json_decode(json_encode($_POST), true);
+        
+        $disciplina = $data['disciplina'];
+        $turma = $data['turma'];
+        $professor = $data['professor'];
+        
+        $this->professorStorage->adicionarMateriaPorProfessor($disciplina, $turma, $professor);
         header("Location: /webschool/admin/professores");
     }
     
@@ -301,14 +342,30 @@ class AdminController
     }
     
     public function adicionarResponsavel()
-    {       
-        $this->responsavelStorage->adicionarResponsavel(json_decode(json_encode($_POST), true));
+    {
+        $data = json_decode(json_encode($_POST), true);
+        
+        $email = $data['email'];
+        $nome = $data['nome'];
+        $password = $data['password'];
+        $salt = time() + rand(100, 1000);
+        $password = md5($password . $salt);
+        
+        $this->responsavelStorage->adicionarResponsavel($email, $nome, $password, $salt);
         header('Location: /webschool/admin/responsaveis');
     }
     
     public function atualizarResponsavel()
     {
-        $this->responsavelStorage->alterarResponsavel(json_decode(json_encode($_POST), true));
+        $data = json_decode(json_encode($_POST), true);
+        
+        $userId = $data['id'];
+        $nome = $data['nome'];
+        $email = $data['email'];
+        $password = $data['password'];
+        $salt = $data['salt'];
+        
+        $this->responsavelStorage->alterarResponsavel($userId, $nome, $email, $password, $salt);
         header('Location: /webschool/admin/responsaveis');
     }
     
@@ -319,7 +376,13 @@ class AdminController
     
     public function adicionarAlunoPorResponsavel()
     {
-        $responsavel = $this->responsavelStorage->adicionarAlunoPorResponsavel(json_decode(json_encode($_POST), true));
+        $data = json_decode(json_encode($_POST), true);
+        
+        $responsavel = $data['responsavel'];
+        $aluno = $data['aluno'];
+        $id = $data['id'];
+        
+        $responsavel = $this->responsavelStorage->adicionarAlunoPorResponsavel($responsavel, $aluno, $id);
         header("Location: /webschool/admin/responsavel/$responsavel");
     }
     
@@ -366,14 +429,26 @@ class AdminController
     }
     
     public function adicionarTurma()
-    {
-        $this->turmaStorage->adicionarTurma(json_decode(json_encode($_POST), true));
+    {   
+        $data = json_decode(json_encode($_POST), true);
+        
+        $nome = $data['nome'];
+        $serie = $data['serie'];
+        
+        $this->turmaStorage->adicionarTurma($nome, $serie);
         header('Location: /webschool/admin/turmas');
     }
     
     public function atualizarTurma()
     {  
-        $this->turmaStorage->alterarTurma(json_decode(json_encode($_POST), true));
+        $data = json_decode(json_encode($_POST), true);
+        
+        $nome = $data['nome'];
+        $serie = $data['serie'];
+        $turma = $data['turma'];
+        
+        
+        $this->turmaStorage->alterarTurma($nome, $serie, $turma);
         header('Location: /webschool/admin/turmas');
     }
     
@@ -419,14 +494,23 @@ class AdminController
     }
     
     public function adicionarMateria()
-    {   
-        $this->materiaStorage->adicionarMateria(json_decode(json_encode($_POST), true));
+    {
+        $data = json_decode(json_encode($_POST), true);
+        
+        $nome = $data['nome'];
+        
+        $this->materiaStorage->adicionarMateria($nome);
         header('Location: /webschool/admin/disciplinas');
     }
     
     public function atualizarMateria()
-    {        
-        $this->materiaStorage->alterarMateria(json_decode(json_encode($_POST), true));           
+    {
+        $data = json_decode(json_encode($_POST), true);
+        
+        $nome = $data['nome'];
+        $id = $data['id'];
+        
+        $this->materiaStorage->alterarMateria($nome, $id);           
         header('Location: /webschool/admin/disciplinas');
     }
     

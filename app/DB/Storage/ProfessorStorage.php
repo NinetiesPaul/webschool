@@ -26,14 +26,8 @@ class ProfessorStorage extends DB
         return $professorQuery->fetch(PDO::FETCH_OBJ);
     }
 
-    public function adicionarProfessor($data)
+    public function adicionarProfessor($email, $nome, $password, $salt)
     {
-        $email = $data['email'];
-        $nome = $data['nome'];
-        $password = $data['password'];
-        $salt = time() + rand(100, 1000);
-        $password = md5($password . $salt);
-        
         if ($this->util()->loginTakenBackEnd($email, "professor")) {
             return false;
         }
@@ -58,15 +52,8 @@ class ProfessorStorage extends DB
         ]);
     }
     
-    public function alterarProfessor($data)
-    {
-        $userId = $data['id'];
-        $nome = $data['nome'];
-        $email = $data['email'];
-        $password = $data['password'];
-        $salt = $data['salt'];
-        $newPassword = md5($password);
-        
+    public function alterarProfessor($userId, $nome, $email, $password, $salt)
+    {   
         if ($this->util()->loginTakenBackEnd($email, "professor", $userId)) {
             return false;
         }
@@ -82,7 +69,6 @@ class ProfessorStorage extends DB
         ];
 
         if (strlen($password) > 0) {
-            $password = $data['password'];
             $password = md5($password . $salt);
 
             $sql .= ' ,pass=:pass';
@@ -105,12 +91,8 @@ class ProfessorStorage extends DB
         ]);
     }
     
-    public function adicionarMateriaPorProfessor($data)
+    public function adicionarMateriaPorProfessor($disciplina, $turma, $professor)
     {
-        $disciplina = $data['disciplina'];
-        $turma = $data['turma'];
-        $professor = $data['professor'];
-
         $user = $this->connect()->prepare("INSERT INTO disciplina_por_professor (professor, disciplina, turma)
                 VALUES (:idProfessor, :idDisciplina, :idTurma)");
 

@@ -19,22 +19,18 @@ class MateriaStorage extends DB
         return $disciplinaQuery->fetch(PDO::FETCH_OBJ);
     }
 
-    public function adicionarMateria($data)
-    {
-        $data = json_decode(json_encode($_POST), true);
-        
+    public function adicionarMateria($nome)
+    {   
         $user = $this->connect()->prepare("INSERT INTO disciplina (nome)
                 VALUES (:nome)");
 
         $user->execute([
-            'nome' => $data['nome'],
+            'nome' => $nome,
         ]);
     }
 
-    public function alterarMateria($data)
+    public function alterarMateria($nome, $id)
     {
-        $data = json_decode(json_encode($_POST), true);
-
         $user = $this->connect()->prepare("
             UPDATE disciplina
             SET nome=:nome
@@ -42,8 +38,8 @@ class MateriaStorage extends DB
             ");
 
         $user->execute([
-            'nome' => $data['nome'],
-            'disciplina' => $data['id'],
+            'nome' => $nome,
+            'disciplina' => $id,
         ]);
     }
 

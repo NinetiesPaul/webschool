@@ -26,15 +26,8 @@ class AlunoStorage extends DB
         return $alunoQuery->fetch(PDO::FETCH_OBJ);
     }
 
-    public function adicionarAluno($data)
-    {
-        $email = $data['email'];
-        $nome = $data['nome'];
-        $password = $data['password'];
-        $salt = time() + rand(100, 1000);
-        $password = md5($password . $salt);
-        $turma = $data['turma'];
-        
+    public function adicionarAluno($email, $nome, $password, $salt, $turma)
+    {   
         if ($this->util()->loginTakenBackEnd($email, "aluno")) {
             return false;
         }
@@ -83,19 +76,8 @@ class AlunoStorage extends DB
         }
     }
 
-    public function alterarAluno()
-    {
-        $data = json_decode(json_encode($_POST), true);
-        
-        $userId = $data['id'];
-        $idAluno = $data['idAluno'];
-        $nome = $data['nome'];
-        $email = $data['email'];
-        $password = $data['password'];
-        $salt = $data['salt'];
-        $turma = $data['turma'];
-        $turmaAtual = $data['turmaAtual'];
-        
+    public function alterarAluno($userId, $idAluno, $nome, $email, $password, $salt, $turma)
+    {   
         if ($this->util()->loginTakenBackEnd($email, "aluno", $userId)) {
             return false;
         }
@@ -109,7 +91,6 @@ class AlunoStorage extends DB
         ];
 
         if (strlen($password) > 0) {
-            $password = $_POST['password'];
             $password = md5($password . $salt);
 
             $sql .= ' ,pass=:pass';
