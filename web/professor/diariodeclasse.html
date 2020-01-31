@@ -9,127 +9,132 @@
         <link href="../../includes/css/navbar.css" rel="stylesheet">
         <script src="../../includes/js/jquery.js"></script>
         <script>
-        function pesquisarFrequencia(mes, ano, turma, disc, context) {
-            $.ajax({
-                type: "POST",
-                url: "../../professor/pesquisarFrequencia",
-                data:'mes='+mes+'&ano='+ano+'&turma='+turma+'&disc='+disc+'&context='+context,
-                success: function(data ){
-                    $("#result").html(data);
-                }
-            });
-        }
-        
-        function alterarFrequencia(dados) {
-            $.ajax({
-                type: "POST",
-                url: "../../professor/alterarFrequencia",
-                data: { dados : dados},
-                success: function(data){
-                    $("#"+dados).html(data);
-                }
-            });
-        }
-        
-        function visualizarComentarios(dados) {
-            $.ajax({
-                type: "POST",
-                url: "../../professor/visualizarComentarios",
-                data: { dados : dados},
-                success: function(data){
-                    $("#tabela-comentarios tbody").html(data);
-                }
-            });
-        }
-        
-        function deletarComentario(comentario) {
-            $.ajax({
-                type: "DELETE",
-                url: "../comentario/" + comentario,
-                success: function(data){
-                    $('#row-comentario-'+comentario).fadeOut(400, function(){
-                        remove();
-                    });
-                }
-            });
-        }
-        
-        function deletarArquivo(arquivo) {
-            $.ajax({
-                type: "DELETE",
-                url: "../arquivo/" + arquivo,
-                success: function(data){
-                    $('#cell-file-head-'+arquivo).text('Essa observação não contem arquivos anexados');
-                    $('#cell-file-remove-'+arquivo).text('');
-                }
-            });
-        }
-        
-        $(document).on('click', '.alterar-presenca', function(){
-            alterarFrequencia(this.id);
-        });
-        
-        $(document).on('click', '.comentarios', function(){
-            visualizarComentarios(this.id);
-            $("#dado").val(this.id);
-        });
-        
-        $(document).on('click', '.deletar-comentario', function(){
-           deletarComentario(this.id); 
-        });
-        
-        $(document).on('click', '.deletar-arquivo', function(){
-           deletarArquivo(this.id); 
-        });
-        
-        $(document).on('click', '#erase-fields', function(){    
-            $("#dado").val('');
-            $("#comentario").val('');
-            $("#file_btn").val('');
-        });
-        
-        $(document).ready(function(){
-            var date = new Date();
-            mes = date.getMonth()+1;
-            ano = date.getFullYear();
-            
-            $("#ano option").each(function(){
-                if ($(this).val() == ano) {
-                    $(this).attr('selected', true);
-                }
-            });
-            
-            $("#mes option").each(function(){
-                if ($(this).val() == mes) {
-                    $(this).attr('selected', true);
-                }
-            });
-            
-            $("#search").click(function(){
-                pesquisarFrequencia($("#mes").val(), $("#ano").val(), $("#turma").val(), $("#disc").val(), $("#context").val());
-            });
-            
-            $("#anexar").click(function(){
-                $("#file_btn").click();
-            });
-            
-            $("#form-comentario").on('submit', (function(e){
-                e.preventDefault();
+            function pesquisarFrequencia(mes, ano, turma, disc, context) {
                 $.ajax({
-                    type: 'POST',
-                    url: '../comentario',
-                    data: new FormData(this),
-                    contentType: false,
-                    cache: false,
-                    processData:false,
-                    beforeSend: function(){
-                    },
-                    success: function(response){ 
-                        $("#tabela-comentarios tbody").append(response);
+                    type: "POST",
+                    url: "../../professor/pesquisarFrequencia",
+                    data:'mes='+mes+'&ano='+ano+'&turma='+turma+'&disc='+disc+'&context='+context,
+                    success: function(data ){
+                        $("#search").removeClass('disabled');
+                        $("#result").html(data);
                     }
                 });
-            }));
-        });
+            }
+
+            function alterarFrequencia(dados) {
+                $.ajax({
+                    type: "POST",
+                    url: "../../professor/alterarFrequencia",
+                    data: { dados : dados},
+                    success: function(data){
+                        $("#"+dados).html(data);
+                    }
+                });
+            }
+
+            function visualizarComentarios(dados) {
+                $.ajax({
+                    type: "POST",
+                    url: "../../professor/visualizarComentarios",
+                    data: { dados : dados},
+                    success: function(data){
+                        $("#tabela-comentarios tbody").html(data);
+                    }
+                });
+            }
+
+            function deletarComentario(comentario) {
+                $.ajax({
+                    type: "DELETE",
+                    url: "../comentario/" + comentario,
+                    success: function(data){
+                        $('#row-comentario-'+comentario).fadeOut(400, function(){
+                            remove();
+                        });
+                    }
+                });
+            }
+
+            function deletarArquivo(arquivo) {
+                $.ajax({
+                    type: "DELETE",
+                    url: "../arquivo/" + arquivo,
+                    success: function(data){
+                        $('#cell-file-head-'+arquivo).text('Essa observação não contem arquivos anexados');
+                        $('#cell-file-remove-'+arquivo).text('');
+                    }
+                });
+            }
+
+            $(document).on('click', '.alterar-presenca', function(){
+                alterarFrequencia(this.id);
+            });
+
+            $(document).on('click', '.comentarios', function(){
+                visualizarComentarios(this.id);
+                $("#dado").val(this.id);
+            });
+
+            $(document).on('click', '.deletar-comentario', function(){
+               deletarComentario(this.id); 
+            });
+
+            $(document).on('click', '.deletar-arquivo', function(){
+               deletarArquivo(this.id); 
+            });
+
+            $(document).on('click', '#erase-fields', function(){    
+                $("#dado").val('');
+                $("#comentario").val('');
+                $("#file_btn").val('');
+            });
+
+            $(document).ready(function(){
+                var date = new Date();
+                mes = date.getMonth()+1;
+                ano = date.getFullYear();
+
+                $("#ano option").each(function(){
+                    if ($(this).val() == ano) {
+                        $(this).attr('selected', true);
+                    }
+                });
+
+                $("#mes option").each(function(){
+                    if ($(this).val() == mes) {
+                        $(this).attr('selected', true);
+                    }
+                });
+
+                $("#search").click(function(){
+                    if ($("#search").hasClass('disabled') === false) {
+                        pesquisarFrequencia($("#mes").val(), $("#ano").val(), $("#turma").val(), $("#disc").val(), $("#context").val());
+                        $("#search").addClass('disabled');
+                        $("#result").html('Pesquisando');
+                    }
+                });
+
+                $("#anexar").click(function(){
+                    $("#file_btn").click();
+                });
+
+                $("#form-comentario").on('submit', (function(e){
+                    e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: '../comentario',
+                        data: new FormData(this),
+                        contentType: false,
+                        cache: false,
+                        processData:false,
+                        beforeSend: function(){
+                        },
+                        success: function(response){ 
+                            $("#tabela-comentarios tbody").append(response);
+                        }
+                    });
+                }));
+            });
         </script>
         <title>Professor :: Home Page</title>
     </head>
@@ -191,10 +196,10 @@
                     <option value="12">Dezembro</option>
                 </select><p/>
                 
-                <button class="btn btn-primary btn-sm" id="search"><span class='glyphicon glyphicon-search'></span> Pesquisar</button>
+                <button class="btn btn-primary btn-sm" id="search" ><span class='glyphicon glyphicon-search'></span> Pesquisar</button>
                 
-                <div id="result">
-                    Resultado aqui.
+                <div id="result" >
+                    Selecione o mês e ano para pesquisar a frequencia da turma.
                 </div>
                 
             </div>
