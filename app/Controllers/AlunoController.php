@@ -65,7 +65,7 @@ class AlunoController
                     <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
                 </button><br/>";
 
-            $notas = $this->notaStorage->verNotaPorTurma($user->aluno, $turma->turma);
+            $notas = $this->notaStorage->verNotasPorTruma($user->aluno, $turma->turma);
 
             $minhasTurmas .= "<table style='margin-left: auto; margin-right: auto; font-size: 13;' class='table'>
             <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th><th></th></tr></thead><tbody>";
