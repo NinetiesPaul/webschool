@@ -25,6 +25,26 @@
                 }
             });
         }
+            
+        function deletarProfessor(val) {
+            $.ajax({
+                url: val + '/delete',
+                type: "DELETE",
+                success: function(data){
+                    console.log(data)
+                    window.location.href = '../professores'
+                }
+            });
+        }
+        
+        function formatjson() {
+            data = jQuery.parseJSON($("#footprint").text());
+            $("#footprint").text(JSON.stringify(data, undefined, 2))
+        }
+
+        $(document).on('click', '#deletar', function(){
+            deletarProfessor(this.value);
+        });
 
         $(document).on('focusout', '#email', function(){
               verificarLogin($("#email").val());
@@ -32,6 +52,7 @@
 
         $(document).ready(function(){
            $("#disponibilidade").hide();
+           formatjson();
         });
         </script>
         <title>webSchool :: Alteração de Professor</title>
@@ -87,6 +108,13 @@
                     </div>
                     <button type="submit" id="btn" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
                 </form>
+                
+                <hr>
+                <strong>Footprint</strong> <p/>
+                {BOTAO_DELETAR}
+                <pre id="footprint" class="text-left">
+                    {FOOTPRINT}
+                </pre>
             </div>
         </div>
 
