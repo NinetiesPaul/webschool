@@ -65,4 +65,12 @@ class NotaStorage extends DB
         ");
         return $alunosQuery->fetchAll(PDO::FETCH_OBJ);
     }
+    
+    public function verNotasPorAluno($aluno)
+    {
+        $alunosQuery = $this->connect()->query("
+            select * from nota_por_aluno where aluno = $aluno
+        ");
+        return $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+    }
 }
