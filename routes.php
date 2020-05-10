@@ -150,6 +150,11 @@ SimpleRouter::delete('/webschool/admin/aluno/{idAluno}/delete', function($idAlun
     $admin->removerAluno($idAluno);
 });
 
+SimpleRouter::put('/webschool/admin/aluno/{idAluno}/desativar', function($idAluno) {
+    $admin = new AdminController();
+    $admin->desativarAluno($idAluno);
+});
+
 SimpleRouter::put('/webschool/admin/aluno', function() {
     $admin = new AdminController();
     $admin->atualizarAluno();
@@ -170,6 +175,11 @@ SimpleRouter::get('/webschool/admin/professores', function() {
 SimpleRouter::get('/webschool/admin/professor/{idProfessor}', function($idProfessor) {
     $admin = new AdminController();
     $admin->verProfessor($idProfessor);
+});
+
+SimpleRouter::put('/webschool/admin/professor/{idProfessor}/desativar', function($idProfessor) {
+    $admin = new AdminController();
+    $admin->desativarProfessor($idProfessor);
 });
 
 SimpleRouter::delete('/webschool/admin/professor/{idProfessor}/delete', function($idProfessor) {
@@ -212,6 +222,11 @@ SimpleRouter::get('/webschool/admin/responsavel/{idResponsavel}', function($idRe
 SimpleRouter::delete('/webschool/admin/responsavel/{idResponsavel}/delete', function($idResponsavel) {
     $admin = new AdminController();
     $admin->removerResponsavel($idResponsavel);
+});
+
+SimpleRouter::put('/webschool/admin/responsavel/{idResponsavel}/desativar', function($idResponsavel) {
+    $admin = new AdminController();
+    $admin->desativarResponsavel($idResponsavel);
 });
 
 SimpleRouter::put('/webschool/admin/responsavel', function() {
