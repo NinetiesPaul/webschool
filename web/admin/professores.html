@@ -27,11 +27,11 @@
             });
         }
             
-        function deletarProfessor(val) {
+        function desativarProfessor(val) {
             $.ajax({
-                url: "professor/" + val + '/delete',
-                type: "DELETE",
-                success: function(data){
+                url: "professor/" + val + '/desativar',
+                type: "PUT",
+                success: function(){
                     /* $('#row-'+val).fadeOut(400, function(){
                         remove();
                     });
@@ -44,17 +44,16 @@
             $.ajax({
                 url: "professorPorMateria/" + val ,
                 type: "DELETE",
-                success: function(data){
+                success: function(){
                     $('#row-dpp-'+val).fadeOut(400, function(){
                         remove();
                     });
-                    console.log(data);
                 }
             });
         }
 
-        $(document).on('click', '#deletar', function(){
-            deletarProfessor(this.value);
+        $(document).on('click', '#desativar', function(){
+            desativarProfessor(this.value);
         });
 
         $(document).on('click', '#deletar-dpp', function(){

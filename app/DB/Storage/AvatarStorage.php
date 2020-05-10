@@ -14,4 +14,9 @@ class AvatarStorage extends DB
             'idUusuario' => $usuario,
         ]);        
     }
+    public function verAvatar($id)
+    {
+        $avatarQuery = $this->connect()->query("select * from fotos_de_avatar where usuario = $id");
+        return $avatarQuery->fetch(PDO::FETCH_OBJ);   
+    }
 }

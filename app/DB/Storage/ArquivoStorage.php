@@ -80,4 +80,24 @@ class ArquivoStorage extends DB
         ");
         return $arquivoQuery->fetch(PDO::FETCH_OBJ);
     }
+    
+    public function verArquivoPorAluno($aluno)
+    {
+        $arquivosQuery = $this->connect()->query("
+        select *
+        from arquivos
+        where diario in (SELECT id FROM diario_de_classe WHERE aluno = $aluno AND contexto = 'observacao')
+        ");
+        return $arquivosQuery->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    public function verArquivoPorProfessor($professor)
+    {
+        $arquivosQuery = $this->connect()->query("
+        select *
+        from arquivos
+        where diario in (SELECT id FROM diario_de_classe WHERE professor = $professor AND contexto = 'observacao')
+        ");
+        return $arquivosQuery->fetchAll(PDO::FETCH_OBJ);
+    }
 }

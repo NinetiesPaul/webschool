@@ -140,11 +140,80 @@ class AlunoStorage extends DB
         }
     }
 
-    public function removerAluno($aluno)
+    public function removerAluno($aluno, $usuario, $endereco, $footprint)
     {
-        $user = $this->connect()->prepare("UPDATE usuario SET is_deleted = 1 WHERE id = :id");
+        $user = $this->connect()->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");
 
         $user->execute([
+            'id' => $usuario,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM endereco WHERE id = :endereco;");
+
+        $user->execute([
+            'endereco' => $endereco,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM fotos_de_avatar WHERE usuario = :id;");
+
+        $user->execute([
+            'id' => $usuario,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM arquivos WHERE diario in (SELECT id FROM diario_de_classe WHERE aluno = :aluno AND contexto = 'observacao');");
+
+        $user->execute([
+            'aluno' => $aluno,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM responsavel_por_aluno WHERE aluno = :aluno;");
+
+        $user->execute([
+            'aluno' => $aluno,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM diario_de_classe WHERE aluno = :aluno;");
+
+        $user->execute([
+            'aluno' => $aluno,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM nota_por_aluno WHERE aluno = :aluno;");
+
+        $user->execute([
+            'aluno' => $aluno,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM aluno WHERE usuario = :id;");
+
+        $user->execute([
+            'id' => $usuario,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM usuario WHERE id = :id;");
+
+        $user->execute([
+            'id' => $usuario,
+        ]);
+        
+        $footprintBackup = $this->localConnection->prepare("INSERT INTO usuarios_deletados (tipo, nome, footprint, deletado_em) VALUES ('aluno', :nome, :footprint, NOW())");
+        $footprintBackup->execute([
+            'nome' => $footprint['usuario']->nome,
+            'footprint' => json_encode($footprint),
+        ]);
+    }
+
+    public function desativarAluno($aluno)
+    {
+        $alunoQuery = $this->connect()->query("select usuario.is_deleted from usuario, aluno where usuario.id=aluno.usuario and aluno.usuario = $aluno");
+        $is_deleted = $alunoQuery->fetch(PDO::FETCH_OBJ)->is_deleted;
+        
+        $is_deleted = ($is_deleted == 1) ? 0 : 1;
+        
+        $user = $this->connect()->prepare("UPDATE usuario SET is_deleted = :is_deleted WHERE id = :id");
+
+        $user->execute([
+            'is_deleted' => $is_deleted,
             'id' => $aluno,
         ]);
     }

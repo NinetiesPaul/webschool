@@ -24,4 +24,10 @@ class EnderecoStorage extends DB
 
         return (int) $this->localConnection->lastInsertId();
     }
+    
+    public function verEndereco($id)
+    {
+        $enderecoQuery = $this->connect()->query("select * from endereco where id = $id");
+        return $enderecoQuery->fetch(PDO::FETCH_OBJ);
+    }
 }
