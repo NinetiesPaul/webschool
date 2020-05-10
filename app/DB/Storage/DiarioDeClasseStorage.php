@@ -113,4 +113,28 @@ class DiarioDeClasseStorage extends DB
             'id' => $idComentario,
         ]);
     }
+    
+    public function verDiarioDeClassePorProfessor($professor)
+    {
+        $diarioQuery = $this->connect()->query("
+            select * from diario_de_classe where professor = $professor
+        ");
+        return $diarioQuery->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    public function verDiarioDeClassePorAluno($aluno)
+    {
+        $diarioQuery = $this->connect()->query("
+            select * from diario_de_classe where aluno = $aluno
+        ");
+        return $diarioQuery->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    public function verObservacaoPorAluno($aluno)
+    {
+        $diarioQuery = $this->connect()->query("
+            select id from diario_de_classe where aluno = $aluno and contexto = 'observacao' 
+        ");
+        return $diarioQuery->fetchAll(PDO::FETCH_OBJ);
+    }
 }
