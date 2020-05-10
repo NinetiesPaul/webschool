@@ -38,6 +38,25 @@
                 }
             });
         }
+            
+        function deletarResponsavel(val) {
+            $.ajax({
+                url: val + '/delete',
+                type: "DELETE",
+                success: function(){
+                    window.location.href = '../responsaveis'
+                }
+            });
+        }
+        
+        function formatjson() {
+            data = jQuery.parseJSON($("#footprint").text());
+            $("#footprint").text(JSON.stringify(data, undefined, 2))
+        }
+
+        $(document).on('click', '#deletar-responsavel', function(){
+            deletarResponsavel(this.value);
+        });
 
         $(document).on('click', '#deletar', function(){
             deletarResponsavelPorAluno(this.value);
@@ -49,6 +68,7 @@
 
         $(document).ready(function(){
            $("#disponibilidade").hide();
+           formatjson();
         });
         </script>
         <title>webSchool :: Alteração de Responsável</title>
@@ -129,6 +149,13 @@
                         {FILHOS}
                     </tbody>
                 </table>
+                
+                <hr>
+                <strong>Footprint</strong> <p/>
+                {BOTAO_DELETAR}
+                <pre id="footprint" class="text-left">
+                    {FOOTPRINT}
+                </pre>
             </div>
         </div>
 

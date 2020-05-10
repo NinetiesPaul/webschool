@@ -27,21 +27,17 @@
             });
         }             
             
-        function deletarResponsavel(val) {
+        function desativarResponsavel(val) {
             $.ajax({
-                url: "responsavel/" + val + '/delete',
-                type: "DELETE",
-                success: function(data){
-                    /* $('#row-'+val).fadeOut(400, function(){
-                        remove();
-                    });
-                    console.log(data); */
+                url: "responsavel/" + val + '/desativar',
+                type: "PUT",
+                success: function(){
                 }
             });
         }
 
-        $(document).on('click', '#deletar', function(){
-            deletarResponsavel(this.value);
+        $(document).on('click', '#desativar', function(){
+            desativarResponsavel(this.value);
         });
 
         $(document).on('focusout', '#email', function(){
