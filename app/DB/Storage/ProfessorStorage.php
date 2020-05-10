@@ -82,11 +82,74 @@ class ProfessorStorage extends DB
         $user->execute($fields);
     }
     
-    public function removerProfessor($idProfessor)
+    public function removerProfessor($professor, $usuario, $endereco, $footprint)
     {
-        $user = $this->connect()->prepare("UPDATE usuario SET is_deleted = 1 WHERE id = :id");
+        $user = $this->connect()->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");
 
         $user->execute([
+            'id' => $usuario,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM endereco WHERE id = :endereco;");
+
+        $user->execute([
+            'endereco' => $endereco,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM fotos_de_avatar WHERE usuario = :id;");
+
+        $user->execute([
+            'id' => $usuario,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM arquivos WHERE diario in (SELECT id FROM diario_de_classe WHERE professor = :professor AND contexto = 'observacao');");
+
+        $user->execute([
+            'professor' => $professor,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM diario_de_classe WHERE professor = :professor;");
+
+        $user->execute([
+            'professor' => $professor,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM disciplina_por_professor WHERE professor = :professor;");
+
+        $user->execute([
+            'professor' => $professor,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM professor WHERE usuario = :id;");
+
+        $user->execute([
+            'id' => $usuario,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM usuario WHERE id = :id;");
+
+        $user->execute([
+            'id' => $usuario,
+        ]);
+        
+        $footprintBackup = $this->localConnection->prepare("INSERT INTO usuarios_deletados (tipo, nome, footprint, deletado_em) VALUES ('professor', :nome, :footprint, NOW())");
+        $footprintBackup->execute([
+            'nome' => $footprint['usuario']->nome,
+            'footprint' => json_encode($footprint),
+        ]);
+    }
+    
+    public function desativarProfessor($idProfessor)
+    {
+        $alunoQuery = $this->connect()->query("select usuario.is_deleted from usuario, professor where usuario.id=professor.usuario and professor.usuario = $idProfessor");
+        $is_deleted = $alunoQuery->fetch(PDO::FETCH_OBJ)->is_deleted;
+        
+        $is_deleted = ($is_deleted == 1) ? 0 : 1;
+        
+        $user = $this->connect()->prepare("UPDATE usuario SET is_deleted = :is_deleted WHERE id = :id");
+
+        $user->execute([
+            'is_deleted' => $is_deleted,
             'id' => $idProfessor,
         ]);
     }
@@ -130,6 +193,12 @@ class ProfessorStorage extends DB
         $user->execute([
             'id' => $id,
         ]);
+    }
+    
+    public function verProfessorPorMateria($id)
+    {        
+        $professorQuery = $this->connect()->query("SELECT * from disciplina_por_professor WHERE professor = $id");
+        return $professorQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verMeusAlunos($turma, $disciplina, $professor)

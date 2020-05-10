@@ -33,7 +33,7 @@ class ResponsavelStorage extends DB
 
         $idEndereco = $this->endereco()->inserirEndereco();
 
-        $usario = [
+        $usuario = [
             'name' => $nome,
             'email' => $email,
             'password' => $password,
@@ -81,12 +81,48 @@ class ResponsavelStorage extends DB
         $user->execute($fields);
     }
     
-    public function removerResponsavel($idResponsavel)
+    public function removerResponsavel($responsavel, $usuario, $endereco, $footprint)
     {
-        $user = $this->connect()->prepare("UPDATE usuario SET is_deleted = 1 WHERE id = :id");
+        $user = $this->connect()->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");
 
         $user->execute([
-            'id' => $idResponsavel,
+            'id' => $usuario,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM endereco WHERE id = :endereco;");
+
+        $user->execute([
+            'endereco' => $endereco,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM fotos_de_avatar WHERE usuario = :id;");
+
+        $user->execute([
+            'id' => $usuario,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM responsavel_por_aluno WHERE responsavel = :aluno;");
+
+        $user->execute([
+            'aluno' => $responsavel,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM responsavel WHERE id = :responsavel;");
+
+        $user->execute([
+            'responsavel' => $responsavel,
+        ]);
+
+        $user = $this->connect()->prepare("DELETE FROM usuario WHERE id = :id;");
+
+        $user->execute([
+            'id' => $usuario,
+        ]);
+        
+        $footprintBackup = $this->localConnection->prepare("INSERT INTO usuarios_deletados (tipo, nome, footprint, deletado_em) VALUES ('responsavel', :nome, :footprint, NOW())");
+        $footprintBackup->execute([
+            'nome' => $footprint['usuario']->nome,
+            'footprint' => json_encode($footprint),
         ]);
     }
     
@@ -116,5 +152,26 @@ class ResponsavelStorage extends DB
     {
         $meusAlunosQuery = $this->connect()->query("select * from responsavel_por_aluno where responsavel = $responsavel");
         return $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);
+    }
+    
+    public function verAlunosDoResponsavelPorAluno($aluno)
+    {
+        $meusAlunosQuery = $this->connect()->query("select * from responsavel_por_aluno where aluno = $aluno");
+        return $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public function desativarResponsavel($responsavel)
+    {
+        $responsavelQuery = $this->connect()->query("select usuario.is_deleted from usuario, responsavel where usuario.id=responsavel.usuario and responsavel.usuario = $responsavel");
+        $is_deleted = $responsavelQuery->fetch(PDO::FETCH_OBJ)->is_deleted;
+        
+        $is_deleted = ($is_deleted == 1) ? 0 : 1;
+        
+        $user = $this->connect()->prepare("UPDATE usuario SET is_deleted = :is_deleted WHERE id = :id");
+
+        $user->execute([
+            'is_deleted' => $is_deleted,
+            'id' => $responsavel,
+        ]);
     }
 }
