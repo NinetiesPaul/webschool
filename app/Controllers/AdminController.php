@@ -503,7 +503,6 @@ class AdminController
             'responsavel_por' => $responsavel_por
         ];
         
-
         $this->responsavelStorage->removerResponsavel($responsavel->responsavel, $responsavel->id, $responsavel->endereco, $footprint);
     }
     
