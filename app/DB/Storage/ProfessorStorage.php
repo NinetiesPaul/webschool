@@ -9,9 +9,10 @@ class ProfessorStorage extends DB
 {
     public $localConnection;
     
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
-        $this->localConnection = $this->connect();   
+        $this->localConnection = $this->connect();
     }
     
     public function verProfessores()
@@ -53,7 +54,7 @@ class ProfessorStorage extends DB
     }
     
     public function alterarProfessor($userId, $nome, $email, $password, $salt)
-    {   
+    {
         if ($this->util()->loginTakenBackEnd($email, "professor", $userId)) {
             return false;
         }
@@ -167,7 +168,7 @@ class ProfessorStorage extends DB
         
         $alunos = $this->turma()->verAlunosDaTurma($turma);
 
-        foreach ($alunos as $aluno) {           
+        foreach ($alunos as $aluno) {
             $nota = [
                 'idAluno' => $aluno->id,
                 'idDisciplina' => $disciplina,
@@ -196,7 +197,7 @@ class ProfessorStorage extends DB
     }
     
     public function verProfessorPorMateria($id)
-    {        
+    {
         $professorQuery = $this->connect()->query("SELECT * from disciplina_por_professor WHERE professor = $id");
         return $professorQuery->fetchAll(PDO::FETCH_OBJ);
     }

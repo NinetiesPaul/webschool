@@ -6,10 +6,11 @@ use App\DB\DB;
 use PDO;
 
 class ArquivoStorage extends DB
-{    
+{
     public $connection;
     
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->connection = $this->connect();
     }
@@ -53,7 +54,7 @@ class ArquivoStorage extends DB
     }
     
     public function verEnderecoNomeDoArquivo($id_arquivo)
-    {           
+    {
         $arquivoQuery = $this->connect()->query("
             select endereco, nome
             from arquivos

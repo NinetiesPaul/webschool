@@ -9,14 +9,15 @@ class ResponsavelStorage extends DB
 {
     public $localConnection;
     
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
-        $this->localConnection = $this->connect();   
+        $this->localConnection = $this->connect();
     }
     public function verResponsaveis()
     {
         $responsavelQuery = $this->connect()->query("select usuario.* from usuario, responsavel where usuario.id=responsavel.usuario");
-        return $responsavelQuery->fetchAll(PDO::FETCH_OBJ);        
+        return $responsavelQuery->fetchAll(PDO::FETCH_OBJ);
     }
     
     public function verResponsavel($idResponsavel)
@@ -26,7 +27,7 @@ class ResponsavelStorage extends DB
     }
     
     public function adicionarResponsavel($email, $nome, $password, $salt)
-    {   
+    {
         if ($this->util()->loginTakenBackEnd($email, "responsavel")) {
             return false;
         }
@@ -52,7 +53,7 @@ class ResponsavelStorage extends DB
     }
     
     public function alterarResponsavel($userId, $nome, $email, $password, $salt)
-    {   
+    {
         if ($this->util()->loginTakenBackEnd($email, "responsavel", $userId)) {
             return false;
         }

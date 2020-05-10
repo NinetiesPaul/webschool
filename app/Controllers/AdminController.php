@@ -118,7 +118,7 @@ class AdminController
         $endereco = $this->enderecoStorage->verEndereco($aluno->endereco);
         $avatar = $this->avatarStorage->verAvatar($aluno->id);
         $diario_de_classe = $this->diarioStorage->verDiarioDeClassePorAluno($aluno->aluno);
-        $nota_por_aluno = $this->notaStorage->verNotasPorAluno($aluno->aluno);       
+        $nota_por_aluno = $this->notaStorage->verNotasPorAluno($aluno->aluno);
         $arquivos_do_diario = $this->arquivoStorage->verArquivoPorAluno($aluno->aluno);
         $filho_de = $this->responsavelStorage->verAlunosDoResponsavelPorAluno($aluno->aluno);
         
@@ -176,7 +176,7 @@ class AdminController
         $email = $data['email'];
         $password = $data['password'];
         $salt = $data['salt'];
-        $turma = $data['turma']; 
+        $turma = $data['turma'];
         
         $this->alunoStorage->alterarAluno($userId, $idAluno, $nome, $email, $password, $salt, $turma);
         header('Location: /webschool/admin/alunos');
@@ -189,7 +189,7 @@ class AdminController
         $endereco = $this->enderecoStorage->verEndereco($aluno->endereco);
         $avatar = $this->avatarStorage->verAvatar($aluno->id);
         $diario_de_classe = $this->diarioStorage->verDiarioDeClassePorAluno($aluno->aluno);
-        $nota_por_aluno = $this->notaStorage->verNotasPorAluno($aluno->aluno);       
+        $nota_por_aluno = $this->notaStorage->verNotasPorAluno($aluno->aluno);
         $arquivos_do_diario = $this->arquivoStorage->verArquivoPorAluno($aluno->aluno);
         $filho_de = $this->responsavelStorage->verAlunosDoResponsavelPorAluno($aluno->aluno);
         
@@ -203,7 +203,7 @@ class AdminController
             'filho_de' => $filho_de
         ];
         
-        $this->alunoStorage->removerAluno($aluno->aluno,$aluno->id,$aluno->endereco, $footprint);
+        $this->alunoStorage->removerAluno($aluno->aluno, $aluno->id, $aluno->endereco, $footprint);
     }
     
     public function desativarAluno($idAluno)
@@ -283,7 +283,7 @@ class AdminController
         $endereco = $this->enderecoStorage->verEndereco($professor->endereco);
         $avatar = $this->avatarStorage->verAvatar($professor->id);
         $diario_de_classe = $this->diarioStorage->verDiarioDeClassePorProfessor($professor->professor);
-        $disciplina = $this->professorStorage->verProfessorPorMateria($professor->professor);       
+        $disciplina = $this->professorStorage->verProfessorPorMateria($professor->professor);
         $arquivos_do_diario = $this->arquivoStorage->verArquivoPorProfessor($professor->professor);
         
         $footprint = [
@@ -346,7 +346,7 @@ class AdminController
         $endereco = $this->enderecoStorage->verEndereco($professor->endereco);
         $avatar = $this->avatarStorage->verAvatar($professor->id);
         $diario_de_classe = $this->diarioStorage->verDiarioDeClassePorProfessor($professor->professor);
-        $disciplina = $this->professorStorage->verProfessorPorMateria($professor->professor);       
+        $disciplina = $this->professorStorage->verProfessorPorMateria($professor->professor);
         $arquivos_do_diario = $this->arquivoStorage->verArquivoPorProfessor($professor->professor);
         
         $footprint = [
@@ -358,11 +358,7 @@ class AdminController
             'arquivos' => $arquivos_do_diario
         ];
         
-        try {
-        $this->professorStorage->removerProfessor($professor->professor,$professor->id,$professor->endereco, $footprint);
-        } catch (Exception $ex) {
-            echo json_encode($ex);
-        }
+        $this->professorStorage->removerProfessor($professor->professor, $professor->id, $professor->endereco, $footprint);
     }
     
     public function adicionarProfessorPorMateria()
@@ -388,7 +384,7 @@ class AdminController
     }
     
     public function verResponsaveis()
-    {   
+    {
         $responsavelQuery = $this->responsavelStorage->verResponsaveis();
         
         $responsaveis = '';
@@ -507,11 +503,8 @@ class AdminController
             'responsavel_por' => $responsavel_por
         ];
         
-        try{
-        $this->responsavelStorage->removerResponsavel($responsavel->responsavel,$responsavel->id,$responsavel->endereco, $footprint);
-        } catch (Exception $ex) {
-            echo json_encode($ex);
-        }
+
+        $this->responsavelStorage->removerResponsavel($responsavel->responsavel, $responsavel->id, $responsavel->endereco, $footprint);
     }
     
     public function adicionarAlunoPorResponsavel()
@@ -569,7 +562,7 @@ class AdminController
     }
     
     public function adicionarTurma()
-    {   
+    {
         $data = json_decode(json_encode($_POST), true);
         
         $nome = $data['nome'];
@@ -580,7 +573,7 @@ class AdminController
     }
     
     public function atualizarTurma()
-    {  
+    {
         $data = json_decode(json_encode($_POST), true);
         
         $nome = $data['nome'];
@@ -650,7 +643,7 @@ class AdminController
         $nome = $data['nome'];
         $id = $data['id'];
         
-        $this->materiaStorage->alterarMateria($nome, $id);           
+        $this->materiaStorage->alterarMateria($nome, $id);
         header('Location: /webschool/admin/disciplinas');
     }
     

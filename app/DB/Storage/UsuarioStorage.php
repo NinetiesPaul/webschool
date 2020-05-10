@@ -6,10 +6,11 @@ use App\DB\DB;
 use PDO;
 
 class UsuarioStorage extends DB
-{    
+{
     public $connection;
     
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->connection = $this->connect();
     }

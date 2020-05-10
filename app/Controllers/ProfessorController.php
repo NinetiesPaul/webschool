@@ -399,7 +399,7 @@ class ProfessorController
         $id_arquivo = '';
         
         if ($arquivos) {
-            $id_arquivo = $this->arquivoStorage->adicionarArquivo($file_name, $urlThumbFinal, $urlFinal, $dataComentario, $id_comentario);            
+            $id_arquivo = $this->arquivoStorage->adicionarArquivo($file_name, $urlThumbFinal, $urlFinal, $dataComentario, $id_comentario);
         }
         
         echo "<tr id='row-comentario-$id_comentario'><td>$mensagem</td>";
@@ -435,7 +435,7 @@ class ProfessorController
                 unlink('../' . $arquivo->endereco);
 
                 $this->arquivoStorage->removerArquivoDoComentario($arquivo->id);
-            }catch (\Exception $ex) {
+            } catch (\Exception $ex) {
                 echo $ex->getMessage();
             }
         }

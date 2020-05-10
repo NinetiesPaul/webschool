@@ -9,13 +9,14 @@ class EnderecoStorage extends DB
 {
     public $localConnection;
     
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
-        $this->localConnection = $this->connect();   
+        $this->localConnection = $this->connect();
     }
     
     public function inserirEndereco()
-    {   
+    {
         $endereco = $this->localConnection->prepare("INSERT INTO endereco (estado) VALUES (:estado)");
 
         $endereco->execute([

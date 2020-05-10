@@ -6,10 +6,11 @@ use App\DB\DB;
 use PDO;
 
 class DiarioDeClasseStorage extends DB
-{    
+{
     public $connection;
     
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->connection = $this->connect();
     }
@@ -68,7 +69,7 @@ class DiarioDeClasseStorage extends DB
         $user->execute([
             'presenca' => $presenca,
             'id' => $diario,
-        ]);        
+        ]);
     }
     
     public function verComentariosDoAlunoDaTurma($aluno, $disciplina, $turma, $data, $professor)

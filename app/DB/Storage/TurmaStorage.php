@@ -5,8 +5,8 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class TurmaStorage extends DB {
-
+class TurmaStorage extends DB
+{
     public function verTurmas()
     {
         $turmas = $this->connect()->query("select * from turma order by serie");

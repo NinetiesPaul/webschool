@@ -9,9 +9,10 @@ class AlunoStorage extends DB
 {
     public $localConnection;
     
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
-        $this->localConnection = $this->connect();   
+        $this->localConnection = $this->connect();
     }
     
     public function verAlunos()
@@ -27,7 +28,7 @@ class AlunoStorage extends DB
     }
 
     public function adicionarAluno($email, $nome, $password, $salt, $turma)
-    {   
+    {
         if ($this->util()->loginTakenBackEnd($email, "aluno")) {
             return false;
         }
@@ -52,12 +53,11 @@ class AlunoStorage extends DB
             'idTurma' => $turma,
         ]);
 
-        $lastid = (int) $this->localConnection->lastInsertId();        
+        $lastid = (int) $this->localConnection->lastInsertId();
         
         $disciplinas = $this->materia()->verMateriaPorProfessorPorTurma($turma);
 
         foreach ($disciplinas as $disciplina) {
-            
             $nota = [
                 'idAluno' => $lastid,
                 'idDisciplina' => $disciplina->disciplina,
@@ -77,7 +77,7 @@ class AlunoStorage extends DB
     }
 
     public function alterarAluno($userId, $idAluno, $nome, $email, $password, $salt, $turma)
-    {   
+    {
         if ($this->util()->loginTakenBackEnd($email, "aluno", $userId)) {
             return false;
         }
@@ -226,7 +226,7 @@ class AlunoStorage extends DB
             and aluno.id = responsavel_por_aluno.aluno
             and responsavel_por_aluno.responsavel = $responsavel
         ");
-        return $usersQuery->fetchAll(PDO::FETCH_OBJ);        
+        return $usersQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verTurmaDoAluno($usuario)

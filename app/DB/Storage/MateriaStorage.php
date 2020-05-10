@@ -6,7 +6,7 @@ use App\DB\DB;
 use PDO;
 
 class MateriaStorage extends DB
-{    
+{
     public function verMaterias()
     {
         $disciplinaQuery = $this->connect()->query("select * from disciplina");
@@ -20,7 +20,7 @@ class MateriaStorage extends DB
     }
 
     public function adicionarMateria($nome)
-    {   
+    {
         $user = $this->connect()->prepare("INSERT INTO disciplina (nome)
                 VALUES (:nome)");
 
