@@ -3,7 +3,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">        
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
         <link href="../includes/css/glyphicons.css" rel="stylesheet">
         <link href="../includes/css/navbar.css" rel="stylesheet">
         <link href="../includes/css/datatables.css" rel="stylesheet">
@@ -27,10 +27,10 @@
             });
         }             
             
-        function deletarAluno(val) {
+        function desativarAluno(val) {
             $.ajax({
-                url: "aluno/" + val + '/delete',
-                type: "DELETE",
+                url: "aluno/" + val + '/desativar',
+                type: "PUT",
                 success: function(data){
                     /* $('#row-'+val).fadeOut(400, function(){
                         remove();
@@ -40,8 +40,8 @@
             });
         }
 
-        $(document).on('click', '#deletar', function(){
-            deletarAluno(this.value);
+        $(document).on('click', '#desativar', function(){
+            desativarAluno(this.value);
         });
 
         $(document).on('focusout', '#email', function(){
