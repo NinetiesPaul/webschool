@@ -84,12 +84,13 @@ class AdminController
         
         $alunos = '';
         foreach ($alunoQuery as $aluno) {
-            $is_deleted = ($aluno->is_deleted) ? "<span class='glyphicon glyphicon-remove'></span> " : "<span class='glyphicon glyphicon-ok'></span> ";
+            $is_deleted = ($aluno->is_deleted) ? "<span class='label-status_$aluno->id label-success'>Ativo</span>" : "<span class='label-status_$aluno->id label-danger'>Inativo</span>";
             $alunos .=
             "<tr id='row-$aluno->id'><td>$aluno->nome </td>
             <td>".$this->util->pegarTurmaDoAlunoPorUsuario($aluno->id)."</td>
-            <td>$is_deleted</td><td><a href='aluno/$aluno->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a> </td>
-            <td><button class='btn btn-warning btn-sm' id='desativar' value='$aluno->id'><span class='glyphicon glyphicon-ban-circle'></span> Desativar</button></td></tr>";
+            <td>$is_deleted</td>
+            <td><a href='aluno/$aluno->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
+            <a href='#' class='btn desativar' id='$aluno->id'><span class='glyphicon glyphicon-ban-circle'></span> </a></td></tr>";
         }
         
         $args = [
@@ -220,11 +221,11 @@ class AdminController
         $professor_array = [];
         
         foreach ($professorQuery as $professor) {
-            $is_deleted = ($professor->is_deleted) ? "<span class='glyphicon glyphicon-remove'></span> " : "<span class='glyphicon glyphicon-ok'></span> ";
+            $is_deleted = ($professor->is_deleted) ? "<span class='label-status_$professor->id label-success'>Ativo</span>" : "<span class='label-status_$professor->id label-danger'>Inativo</span>";
             $professores .=
             "<tr id='row-$professor->id'><td>$professor->nome </td>
-            <td>$is_deleted</td><td><a href='professor/$professor->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a> </td>
-            <td><button class='btn btn-warning btn-sm' id='desativar' value='$professor->id'><span class='glyphicon glyphicon-ban-circle'></span> Desativar</button></td></tr>";
+            <td>$is_deleted</td><td><a href='professor/$professor->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
+            <a href='#' class='btn desativar' id='$professor->id'><span class='glyphicon glyphicon-ban-circle'></span></a></td></tr>";
             $professores_select .= "<option value='$professor->professor'>$professor->nome</option>";
             $professor_array[$professor->professor] = $professor->nome;
         }
@@ -390,11 +391,11 @@ class AdminController
         $responsaveis = '';
         
         foreach ($responsavelQuery as $responsavel) {
-            $is_deleted = ($responsavel->is_deleted) ? "<span class='glyphicon glyphicon-remove'></span> " : "<span class='glyphicon glyphicon-ok'></span> ";
+            $is_deleted = ($responsavel->is_deleted) ? "<span class='label-status_$responsavel->id label-success'>Ativo</span>" : "<span class='label-status_$responsavel->id label-danger'>Inativo</span>";
             $responsaveis .=
              "<tr id='row-$responsavel->id'><td>$responsavel->nome </td>
-             <td>$is_deleted</td><td><a href='responsavel/$responsavel->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a> </td>
-             <td><button class='btn btn-warning btn-sm' id='desativar' value='$responsavel->id'><span class='glyphicon glyphicon-ban-circle'></span> Desativar</button></td></tr>";
+             <td>$is_deleted</td><td><a href='responsavel/$responsavel->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
+             <a href='#' class='btn desativar' id='$responsavel->id' ><span class='glyphicon glyphicon-ban-circle'></span></a></td></tr>";
         }
         
         $args = [

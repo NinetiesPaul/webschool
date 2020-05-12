@@ -1,0 +1,15 @@
+.label-success{
+    color: white;
+    background-color: mediumseagreen;
+    padding: 0px 10px;
+    font-size: 10px;
+    border-radius: 2px;
+}
+
+.label-danger{
+    color: white;
+    background-color: lightcoral;
+    padding: 0px 10px;
+    font-size: 10px;
+    border-radius: 2px;
+}
