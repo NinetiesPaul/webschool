@@ -4,6 +4,7 @@
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">        
+        <link href="../includes/css/status.css" rel="stylesheet">
         <link href="../includes/css/glyphicons.css" rel="stylesheet">
         <link href="../includes/css/navbar.css" rel="stylesheet">
         <link href="../includes/css/datatables.css" rel="stylesheet">
@@ -32,12 +33,21 @@
                 url: "responsavel/" + val + '/desativar',
                 type: "PUT",
                 success: function(){
+                    if ($('.label-status_'+val).hasClass('label-success') == true) {
+                        $('.label-status_'+val).removeClass('label-success');
+                        $('.label-status_'+val).addClass('label-danger');
+                        $('.label-status_'+val).text('Inativo');
+                    } else {
+                        $('.label-status_'+val).removeClass('label-danger');
+                        $('.label-status_'+val).addClass('label-success');
+                        $('.label-status_'+val).text('Ativo');
+                    }
                 }
             });
         }
 
-        $(document).on('click', '#desativar', function(){
-            desativarResponsavel(this.value);
+        $(document).on('click', '.desativar', function(){
+            desativarResponsavel(this.id);
         });
 
         $(document).on('focusout', '#email', function(){
@@ -114,7 +124,7 @@
                 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table hover" id="tableResponsaveis">
                     <thead>
-                        <tr><td>Nome</td><td>Status</td><td>Editar</td><td>Remover</td></tr>
+                        <tr><td>Nome</td><td>Status</td><td>Opções</td></tr>
                     </thead>
                     <tbody>
                         {RESPONSAVEIS}
