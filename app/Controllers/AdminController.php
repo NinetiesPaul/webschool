@@ -204,7 +204,19 @@ class AdminController
     
     public function desativarAluno($idAluno)
     {
-        $this->alunoStorage->desativarAluno($idAluno);
+        $result = [
+            'error' => false,
+            'msg' => null
+        ];
+
+        try {
+            $this->alunoStorage->desativarAluno($idAluno);
+        } catch (\Exception $ex) {
+            $result['error'] = true;
+            $result['msg'] = $ex->getMessage();
+        }
+
+        echo json_encode($result);
     }
     
     public function verProfessores()
@@ -367,7 +379,19 @@ class AdminController
     
     public function desativarProfessor($idProfessor)
     {
-        $this->professorStorage->desativarProfessor($idProfessor);
+        $result = [
+            'error' => false,
+            'msg' => null
+        ];
+
+        try {
+            $this->professorStorage->desativarProfessor($idProfessor);
+        } catch (\Exception $ex) {
+            $result['error'] = true;
+            $result['msg'] = $ex->getMessage();
+        }
+
+        echo json_encode($result);
     }
     
     public function removerProfessorPorMateria(int $id)
@@ -473,7 +497,19 @@ class AdminController
     
     public function desativarResponsavel($idResponsavel)
     {
-        $this->responsavelStorage->desativarResponsavel($idResponsavel);
+        $result = [
+            'error' => false,
+            'msg' => null
+        ];
+
+        try {
+            $this->responsavelStorage->desativarResponsavel($idResponsavel);
+        } catch (\Exception $ex) {
+            $result['error'] = true;
+            $result['msg'] = $ex->getMessage();
+        }
+
+        echo json_encode($result);
     }
     
     public function removerResponsavel(int $idResponsavel)
