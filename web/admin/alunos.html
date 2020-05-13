@@ -32,15 +32,24 @@
             $.ajax({
                 url: "aluno/" + val + '/desativar',
                 type: "PUT",
-                success: function(){
-                    if ($('.label-status_'+val).hasClass('label-success') == true) {
-                        $('.label-status_'+val).removeClass('label-success');
-                        $('.label-status_'+val).addClass('label-danger');
-                        $('.label-status_'+val).text('Inativo');
+                success: function(data){
+                    data = jQuery.parseJSON(data)
+                    if (data.error === true) {
+                        $('.alert').css('display', 'block');
+                        $('.alert').text(data.msg);
+                        $('.alert').delay(5000).fadeOut(1000, function(){
+                            this.remove();
+                        });
                     } else {
-                        $('.label-status_'+val).removeClass('label-danger');
-                        $('.label-status_'+val).addClass('label-success');
-                        $('.label-status_'+val).text('Ativo');
+                        if ($('.label-status_' + val).hasClass('label-success') == true) {
+                            $('.label-status_' + val).removeClass('label-success');
+                            $('.label-status_' + val).addClass('label-danger');
+                            $('.label-status_' + val).text('Inativo');
+                        } else {
+                            $('.label-status_' + val).removeClass('label-danger');
+                            $('.label-status_' + val).addClass('label-success');
+                            $('.label-status_' + val).text('Ativo');
+                        }
                     }
                 }
             });
@@ -129,6 +138,9 @@
                 </form>
 
                 <p><strong>Lista de Alunos</strong></p>
+
+                <div class="alert alert-danger" role="alert" style="display: none;">
+                </div>
 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table hover" id="tableAlunos">
                     <thead>

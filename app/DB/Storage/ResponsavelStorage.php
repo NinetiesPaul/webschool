@@ -164,6 +164,11 @@ class ResponsavelStorage extends DB
     public function desativarResponsavel($responsavel)
     {
         $responsavelQuery = $this->connect()->query("select usuario.is_deleted from usuario, responsavel where usuario.id=responsavel.usuario and responsavel.usuario = $responsavel");
+
+        if ($responsavelQuery->rowCount() === 0) {
+            $this->throwError("Erro ao recuperar responsavel (id inválido)");
+        }
+
         $is_deleted = $responsavelQuery->fetch(PDO::FETCH_OBJ)->is_deleted;
         
         $is_deleted = ($is_deleted == 1) ? 0 : 1;
@@ -174,5 +179,14 @@ class ResponsavelStorage extends DB
             'is_deleted' => $is_deleted,
             'id' => $responsavel,
         ]);
+
+        if ($user->rowCount() === 0) {
+            $this->throwError("Erro ao recuperar responsavel (id inválido)");
+        }
+    }
+
+    private function throwError($msg)
+    {
+        throw new \Exception($msg);
     }
 }

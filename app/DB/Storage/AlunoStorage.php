@@ -206,6 +206,11 @@ class AlunoStorage extends DB
     public function desativarAluno($aluno)
     {
         $alunoQuery = $this->connect()->query("select usuario.is_deleted from usuario, aluno where usuario.id=aluno.usuario and aluno.usuario = $aluno");
+
+        if ($alunoQuery->rowCount() === 0){
+            $this->throwError("Erro ao recuperar aluno (id inválido)");
+        }
+
         $is_deleted = $alunoQuery->fetch(PDO::FETCH_OBJ)->is_deleted;
         
         $is_deleted = ($is_deleted == 1) ? 0 : 1;
@@ -216,6 +221,10 @@ class AlunoStorage extends DB
             'is_deleted' => $is_deleted,
             'id' => $aluno,
         ]);
+
+        if ($user->rowCount() === 0) {
+            $this->throwError("Erro ao atualizar aluno (id inválido)");
+        }
     }
     
     public function verAlunosDoResponsavel($responsavel)
@@ -233,5 +242,10 @@ class AlunoStorage extends DB
     {
         $usuarioQuery = $this->connect()->query("select turma from aluno where usuario = $usuario");
         return $usuarioQuery->fetch(PDO::FETCH_OBJ);
+    }
+
+    private function throwError($msg)
+    {
+        throw new \Exception($msg);
     }
 }
