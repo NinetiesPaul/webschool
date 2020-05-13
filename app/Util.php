@@ -7,13 +7,15 @@ use App\DB\DB;
 class Util
 {
     protected $connection;
-    
+    protected $template;
+
     public function __construct()
     {
+        $this->template = new Templates();
         $this->connection = new DB();
     }
 
-    public function userPermission(string $tipo)
+    public function userPermission($tipo)
     {
         session_start();
         $session_type = (isset($_SESSION['tipo'])) ? $_SESSION['tipo'] : false;
@@ -94,7 +96,7 @@ class Util
 
         return $nomeTurma;
     }
-    
+
     public function pegarTurmaDoAlunoPorTurma(int $id)
     {
         $turmaQuery = $this->connection->query("select * from turma where id = $id");
@@ -102,7 +104,7 @@ class Util
 
         return $turmaQuery->serie.'º Série '.$turmaQuery->nome;
     }
-    
+
     public function pegarNomeDaDisciplina(int $id)
     {
         $disciplinaQuery = $this->connection->query("select nome from disciplina where id = $id");
@@ -110,7 +112,7 @@ class Util
 
         return $disciplina->nome;
     }
-    
+
     public function pegarNomeDoAlunoPorAlunoId(int $id)
     {
         $userQuery = $this->connection->query("select usuario.* from usuario,aluno where usuario.id=aluno.usuario and aluno.id=$id");
@@ -118,7 +120,7 @@ class Util
 
         return $user->nome;
     }
-    
+
     public function pegarIdDaTurmaDoAlunoPorAlunoId(int $id)
     {
         $turmaQuery = $this->connection->query("select turma from aluno where id=$id");
@@ -126,7 +128,7 @@ class Util
 
         return $turma->turma;
     }
-    
+
     public function pegarNomeDaTurmaPorIdTurma(int $id)
     {
         $turmaQuery = $this->connection->query("select * from turma where id=$id");
@@ -134,12 +136,21 @@ class Util
 
         return $turma->serie.'º Série '.$turma->nome;
     }
-    
+
     public function pegarEstadoPeloEstado(int $id)
     {
         $estadoQuery = $this->connection->query("select * from estado where id=$id");
         $estado = $estadoQuery->fetchObject();
 
         return $estado->nome.', '.$estado->sigla;
+    }
+
+    public function loadTemplate($path, $args = null)
+    {
+        $template 	= $this->template->getTemplate($path);
+        if ($args) {
+            $template = $this->template->parseTemplate($template, $args);
+        }
+        echo $template;
     }
 }
