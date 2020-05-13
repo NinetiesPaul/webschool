@@ -143,6 +143,11 @@ class ProfessorStorage extends DB
     public function desativarProfessor($idProfessor)
     {
         $alunoQuery = $this->connect()->query("select usuario.is_deleted from usuario, professor where usuario.id=professor.usuario and professor.usuario = $idProfessor");
+
+        if ($alunoQuery->rowCount() === 0) {
+            $this->throwError("Erro ao recuperar professor (id inválido)");
+        }
+
         $is_deleted = $alunoQuery->fetch(PDO::FETCH_OBJ)->is_deleted;
         
         $is_deleted = ($is_deleted == 1) ? 0 : 1;
@@ -153,6 +158,10 @@ class ProfessorStorage extends DB
             'is_deleted' => $is_deleted,
             'id' => $idProfessor,
         ]);
+
+        if ($user->rowCount() === 0) {
+            $this->throwError("Erro ao atualizar aluno (id inválido)");
+        }
     }
     
     public function adicionarMateriaPorProfessor($disciplina, $turma, $professor)
@@ -214,5 +223,10 @@ class ProfessorStorage extends DB
                 order by usuario.nome
             ");
         return $alunosQuery->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    private function throwError($msg)
+    {
+        throw new \Exception($msg);
     }
 }
