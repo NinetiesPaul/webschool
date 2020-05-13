@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Enum;
 use App\Templates;
-use PDO;
 use App\Util;
 
 use App\DB\Storage\TurmaStorage;
@@ -50,7 +50,7 @@ class AdminController
     {
         $this->template = new Templates();
         $this->util = new Util();
-        $this->util->userPermission('admin');
+        $this->util->userPermission(Enum::TIPO_ADMIN);
         
         $this->turmaStorage = new TurmaStorage();
         $this->materiaStorage = new MateriaStorage();
@@ -67,8 +67,7 @@ class AdminController
     
     public function index()
     {
-        $templateFinal 	= $this->template->getTemplate('admin/index.html');
-        echo $templateFinal;
+        $this->util->loadTemplate('admin/index.html');
     }
     
     public function verAlunos()
@@ -98,9 +97,7 @@ class AdminController
             'ALUNOS' => $alunos
         ];
         
-        $template 	= $this->template->getTemplate('admin/alunos.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+        $this->util->loadTemplate('admin/alunos.html', $args);
     }
     
     public function verAluno(int $idAluno)
@@ -146,10 +143,8 @@ class AdminController
             'FOOTPRINT' => json_encode($footprint),
             'BOTAO_DELETAR' => $deletar
         ];
-        
-        $template 	= $this->template->getTemplate('admin/aluno.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+
+        $this->util->loadTemplate('admin/aluno.html', $args);
     }
     
     public function adicionarAluno()
@@ -272,9 +267,7 @@ class AdminController
             'DISCIPLINAS_POR_PROFESSOR' => $disciplinasProProfessor
         ];
         
-        $template 	= $this->template->getTemplate('admin/professores.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+        $this->util->loadTemplate('admin/professores.html', $args);
     }
     
     public function verProfessor(int $idProfessor)
@@ -307,9 +300,7 @@ class AdminController
             'BOTAO_DELETAR' => $deletar
         ];
         
-        $template = $this->template->getTemplate('admin/professor.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+        $this->util->loadTemplate('admin/professor.html', $args);
     }
     
     public function adicionarProfessor()
@@ -402,9 +393,7 @@ class AdminController
           'RESPONSAVEIS' => $responsaveis
         ];
         
-        $template 	= $this->template->getTemplate('admin/responsaveis.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+        $this->util->loadTemplate('admin/responsaveis.html', $args);
     }
     
     public function verResponsavel(int $idResponsavel)
@@ -451,9 +440,7 @@ class AdminController
             'BOTAO_DELETAR' => $deletar
         ];
         
-        $template = $this->template->getTemplate('admin/responsavel.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+        $this->util->loadTemplate('admin/responsavel.html', $args);
     }
     
     public function adicionarResponsavel()
@@ -541,9 +528,7 @@ class AdminController
           'ALUNOS' => $turmas
         ];
         
-        $template = $this->template->getTemplate('admin/turmas.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+        $this->util->loadTemplate('admin/turmas.html', $args);
     }
     
     public function verTurma(int $turma)
@@ -556,9 +541,7 @@ class AdminController
             'LETRA' => $turma->nome,
         ];
         
-        $template 	= $this->template->getTemplate('admin/turma.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+        $this->util->loadTemplate('admin/turma.html', $args);
     }
     
     public function adicionarTurma()
@@ -606,10 +589,8 @@ class AdminController
         $args = [
           'DISCIPLINAS' => $disciplinas
         ];
-        
-        $template 	= $this->template->getTemplate('admin/disciplinas.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+
+        $this->util->loadTemplate('admin/disciplinas.html', $args);
     }
     
     public function verMateria(int $materia)
@@ -621,9 +602,7 @@ class AdminController
             'NOME' => $disciplina->nome,
         ];
         
-        $template 	= $this->template->getTemplate('admin/disciplina.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+        $this->util->loadTemplate('admin/disciplina.html', $args);
     }
     
     public function adicionarMateria()

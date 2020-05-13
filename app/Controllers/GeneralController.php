@@ -234,9 +234,7 @@ class GeneralController
             'ESTADO_ATUAL' => $this->util->pegarEstadoPeloEstado($user->endereco->estado)
         ];
         
-        $template 	= $this->template->getTemplate('perfil.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+        $this->util->loadTemplate('perfil.html', $args);
     }
     
     public function alterarPerfil()
