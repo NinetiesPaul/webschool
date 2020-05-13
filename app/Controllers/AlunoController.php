@@ -6,9 +6,8 @@ use App\DB\Storage\AlunoStorage;
 use App\DB\Storage\NotaStorage;
 use App\DB\Storage\TurmaStorage;
 use App\Templates;
-use App\DB\DB;
-use PDO;
 use App\Util;
+use App\Enum;
 
 class AlunoController
 {
@@ -26,7 +25,7 @@ class AlunoController
     {
         $this->template = new Templates();
         $this->util = new Util();
-        $this->util->userPermission('aluno');
+        $this->util->userPermission(Enum::TIPO_ALUNO);
 
         $this->alunoStorage = new AlunoStorage();
         $this->turmaStorage = new TurmaStorage();
@@ -41,9 +40,7 @@ class AlunoController
             'LOGADO' => $nome
         ];
         
-        $template 	= $this->template->getTemplate('aluno/index.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+        $this->util->loadTemplate('aluno/index.html', $args);
     }
     
     public function verTurmas()
@@ -67,7 +64,7 @@ class AlunoController
 
             $notas = $this->notaStorage->verNotasPorTruma($user->aluno, $turma->turma);
 
-            $minhasTurmas .= "<table style='margin-left: auto; margin-right: auto; font-size: 13;' class='table'>
+            $minhasTurmas .= "<table style='margin-left: auto; margin-right: auto; font-size: 13px;' class='table'>
             <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th><th></th></tr></thead><tbody>";
             
             foreach ($notas as $nota) {
@@ -95,9 +92,7 @@ class AlunoController
             'LOGADO' => $user->nome,
             'TURMAS' => $minhasTurmas
         ];
-        
-        $template 	= $this->template->getTemplate('aluno/turmas.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+
+        $this->util->loadTemplate('aluno/turmas.html', $args);
     }
 }

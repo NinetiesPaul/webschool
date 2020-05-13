@@ -2,9 +2,8 @@
 
 namespace App\Controllers;
 
+use App\Enum;
 use App\Templates;
-use App\DB\DB;
-use PDO;
 use App\Util;
 use App\DB\Storage\ResponsavelStorage;
 use App\DB\Storage\NotaStorage;
@@ -23,7 +22,7 @@ class ResponsavelController
     {
         $this->template = new Templates();
         $this->util = new Util();
-        $this->util->userPermission('responsavel');
+        $this->util->userPermission(Enum::TIPO_RESPONSAVEL);
         $this->responsavelStorage = new ResponsavelStorage();
         $this->notaStorage = new NotaStorage();
     }
@@ -35,10 +34,8 @@ class ResponsavelController
         $args = [
             'LOGADO' => $user->nome
         ];
-        
-        $template 	= $this->template->getTemplate('responsavel/index.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+
+        $this->util->loadTemplate('responsavel/index.html', $args);
     }
     
     public function verAlunos()
@@ -56,10 +53,8 @@ class ResponsavelController
             'LOGADO' => $user->nome,
             'ALUNOS' => $alunos
         ];
-        
-        $template = $this->template->getTemplate('responsavel/alunos.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+
+        $this->util->loadTemplate('responsavel/alunos.html', $args);
     }
     
     public function verAluno(int $idAluno)
@@ -110,9 +105,7 @@ class ResponsavelController
             'ALUNOID_USERID' => $idAluno.'.'.$user->id,
             'NOTAS' => $notas
         ];
-        
-        $template = $this->template->getTemplate('responsavel/aluno.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+
+        $this->util->loadTemplate('responsavel/aluno.html', $args);
     }
 }

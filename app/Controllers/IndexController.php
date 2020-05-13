@@ -1,24 +1,16 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Controllers;
 
-use App\Templates;
+use App\Util;
 
 class IndexController
 {
-    //put your code here
-    
-    protected $template;
+    protected $util;
 
     public function __construct()
     {
-        $this->template = new Templates();
+        $this->util = new Util();
     }
     
     public function index()
@@ -39,8 +31,7 @@ class IndexController
                 header('Location: aluno/home');
             }
         }
-        
-        $templateFinal 	= $this->template->getTemplate('index.html');
-        echo $templateFinal;
+
+        $this->util->loadTemplate('index.html');
     }
 }

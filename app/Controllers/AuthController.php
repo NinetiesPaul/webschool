@@ -1,28 +1,22 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-declare(strict_types=1);
-
 namespace App\Controllers;
 
 use App\DB\DB;
 use App\Templates;
+use App\Util;
 
 class AuthController
 {
     protected $connection;
-    
     protected $template;
-    
+    protected $util;
+
     public function __construct()
     {
         $this->connection = new DB();
         $this->template = new Templates();
+        $this->util = new Util();
     }
     
     public function login()
@@ -71,15 +65,12 @@ class AuthController
                 $redirect = "<p/><a href='../webschool/'>Voltar</a>";
             }
 
-            $arrTags = array(
+            $args = array(
                 'msg' => $msg,
                 'redirect' => $redirect
             );
 
-            $template = $this->template->getTemplate('login.html');
-            $templateFinal = $this->template->parseTemplate($template, $arrTags);
-
-            echo $templateFinal;
+            $this->util->loadTemplate('login.html', $args);
         }
     }
     

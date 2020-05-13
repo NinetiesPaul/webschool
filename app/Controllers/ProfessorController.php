@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Controllers;
 
 use App\DB\Storage\MateriaStorage;
@@ -13,9 +7,8 @@ use App\DB\Storage\ProfessorStorage;
 use App\DB\Storage\DiarioDeClasseStorage;
 use App\DB\Storage\NotaStorage;
 use App\DB\Storage\ArquivoStorage;
+use App\Enum;
 use App\Templates;
-use App\DB\DB;
-use PDO;
 use App\Util;
 use DateTime;
 
@@ -44,7 +37,7 @@ class ProfessorController
         $this->diarioDeClasseStorage = new DiarioDeClasseStorage();
         $this->arquivoStorage = new ArquivoStorage();
         $this->notaStorage = new NotaStorage();
-        $this->util->userPermission('professor');
+        $this->util->userPermission(Enum::TIPO_PROFESSOR);
     }
     
     public function index()
@@ -54,10 +47,8 @@ class ProfessorController
         $args = [
             'LOGADO' => $user->nome
         ];
-        
-        $template 	= $this->template->getTemplate('professor/index.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+
+        $this->util->loadTemplate('professor/index.html', $args);
     }
     
     public function verTurmas()
@@ -90,9 +81,7 @@ class ProfessorController
             'TURMAS' => $turmas
         ];
 
-        $template 	= $this->template->getTemplate('professor/turmas.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+        $this->util->loadTemplate('professor/turmas.html', $args);
     }
     
     public function verTurma(int $id)
@@ -131,10 +120,8 @@ class ProfessorController
             'LOGADO' => $user->nome,
             'DETALHES' => $detalhes
         ];
-        
-        $template 	= $this->template->getTemplate('professor/turma.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+
+        $this->util->loadTemplate('professor/turma.html', $args);
     }
     
     public function verDiarioDeClasse(string $id)
@@ -148,10 +135,8 @@ class ProfessorController
             'DISCIPLINA' => $id[1],
             'TURMA' => $id[0],
         ];
-        
-        $template 	= $this->template->getTemplate('professor/diariodeclasse.html');
-        $templateFinal = $this->template->parseTemplate($template, $args);
-        echo $templateFinal;
+
+        $this->util->loadTemplate('professor/diariodeclasse.html', $args);
     }
     
     public function pesquisarFrequencia()
