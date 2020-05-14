@@ -86,7 +86,7 @@ class AdminController
             $is_deleted = ($aluno->is_deleted) ? "<span class='label-status_$aluno->id label-success'>Ativo</span>" : "<span class='label-status_$aluno->id label-danger'>Inativo</span>";
             $alunos .=
             "<tr id='row-$aluno->id'><td>$aluno->nome </td>
-            <td>".$this->util->pegarTurmaDoAlunoPorUsuario($aluno->id)."</td>
+            <td>".$this->turmaStorage->pegarTurmaDoAlunoPorUsuario($aluno->id)."</td>
             <td>$is_deleted</td>
             <td><a href='aluno/$aluno->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
             <a href='#' class='btn desativar' id='$aluno->id'><span class='glyphicon glyphicon-ban-circle'></span> </a></td></tr>";
@@ -103,7 +103,7 @@ class AdminController
     public function verAluno(int $idAluno)
     {
         $aluno = $this->alunoStorage->verAluno($idAluno);
-        $turmaAtual = $this->util->pegarIdDaTurmaDoAlunoPorAlunoId($aluno->aluno);
+        $turmaAtual = $this->alunoStorage->pegarIdDaTurmaDoAlunoPorAlunoId($aluno->aluno);
         $turmaQuery = $this->turmaStorage->verTurmas();
         
         $turmas = '';
@@ -428,14 +428,14 @@ class AdminController
 
         $alunos = '';
         foreach ($alunosQuery as $aluno) {
-            $alunos .= "<option value='$aluno->aluno'>$aluno->nome (".$this->util->pegarTurmaDoAlunoPorUsuario($aluno->id).")</option>";
+            $alunos .= "<option value='$aluno->aluno'>$aluno->nome (".$this->turmaStorage->pegarTurmaDoAlunoPorUsuario($aluno->id).")</option>";
         }
         
         $alunosDoResponsavel = $this->alunoStorage->verAlunosDoResponsavel($responsavel->responsavel);
 
         $filhos = '';
         foreach ($alunosDoResponsavel as $user) {
-            $filhos .= "<tr id='row-$user->rpa'><td>$user->nome</td><td>".$this->util->pegarTurmaDoAlunoPorUsuario($user->id)."</td>
+            $filhos .= "<tr id='row-$user->rpa'><td>$user->nome</td><td>".$this->turmaStorage->pegarTurmaDoAlunoPorUsuario($user->id)."</td>
             <td><button class='btn btn-danger btn-sm' id='deletar' value='$user->rpa'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
         }
         

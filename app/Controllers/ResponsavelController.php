@@ -2,6 +2,9 @@
 
 namespace App\Controllers;
 
+use App\DB\Storage\AlunoStorage;
+use App\DB\Storage\MateriaStorage;
+use App\DB\Storage\TurmaStorage;
 use App\Enum;
 use App\Templates;
 use App\Util;
@@ -11,20 +14,24 @@ use App\DB\Storage\NotaStorage;
 class ResponsavelController
 {
     protected $template;
-        
     protected $util;
-    
     protected $responsavelStorage;
-    
     protected $notaStorage;
+    protected $alunoStorage;
+    protected $materiaStorage;
+    protected $turmaStorage;
 
     public function __construct()
     {
         $this->template = new Templates();
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_RESPONSAVEL);
+
         $this->responsavelStorage = new ResponsavelStorage();
         $this->notaStorage = new NotaStorage();
+        $this->alunoStorage = new AlunoStorage();
+        $this->materiaStorage = new MateriaStorage();
+        $this->turmaStorage = new TurmaStorage();
     }
     
     public function index()
@@ -46,7 +53,7 @@ class ResponsavelController
         
         $alunos = '';
         foreach ($meusAlunosQuery as $aluno) {
-            $alunos .= "<a href='aluno/$aluno->aluno'>".$this->util->pegarNomeDoAlunoPorAlunoId($aluno->aluno)."</a><br/>";
+            $alunos .= "<a href='aluno/$aluno->aluno'>".$this->alunoStorage->pegarNomeDoAlunoPorAlunoId($aluno->aluno)."</a><br/>";
         }
         
         $args = [
@@ -66,9 +73,9 @@ class ResponsavelController
         $notas = '';
         
         foreach ($turmas as $turma) {
-            $turmaAtual = ($this->util->pegarIdDaTurmaDoAlunoPorAlunoId($idAluno) === $turma->turma) ? ' (<b>atual</b>) ' : '';
+            $turmaAtual = ($this->alunoStorage->pegarIdDaTurmaDoAlunoPorAlunoId($idAluno) === $turma->turma) ? ' (<b>atual</b>) ' : '';
 
-            $notas .= $this->util->pegarTurmaDoAlunoPorTurma($turma->turma) . ' ' . $turmaAtual;
+            $notas .= $this->turmaStorage->pegarTurmaDoAlunoPorTurma($turma->turma) . ' ' . $turmaAtual;
             
             $notas .=
                 "<button class='btn btn-sm btn-info boletim' id='$idAluno.$turma->turma'>
@@ -81,7 +88,7 @@ class ResponsavelController
             <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th><th></th></tr></thead><tbody>";
             
             foreach ($notasQuery as $nota) {
-                $notas .= "<tr><td>".$this->util->pegarNomeDaDisciplina($nota->disciplina)."</td>
+                $notas .= "<tr><td>".$this->materiaStorage->pegarNomeDaDisciplina($nota->disciplina)."</td>
                 <td>$nota->nota1</td>
                 <td>$nota->rec1</td>
                 <td>$nota->nota2</td>
