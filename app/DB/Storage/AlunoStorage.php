@@ -207,7 +207,7 @@ class AlunoStorage extends DB
     {
         $alunoQuery = $this->connect()->query("select usuario.is_deleted from usuario, aluno where usuario.id=aluno.usuario and aluno.usuario = $aluno");
 
-        if ($alunoQuery->rowCount() === 0){
+        if ($alunoQuery->rowCount() === 0) {
             $this->throwError("Erro ao recuperar aluno (id inválido)");
         }
 
