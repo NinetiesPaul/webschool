@@ -9,6 +9,9 @@
 namespace App\Controllers;
 
 use App\DB\DB;
+use App\DB\Storage\EnderecoStorage;
+use App\DB\Storage\MateriaStorage;
+use App\DB\Storage\TurmaStorage;
 use App\Templates;
 use App\Util;
 use PDO;
@@ -18,16 +21,20 @@ use DateTime;
 class GeneralController
 {
     protected $connection;
-    
     protected $util;
-    
     protected $template;
+    protected $enderecoStorage;
+    protected $materiaStorage;
+    protected $turmaStorage;
 
     public function __construct()
     {
         $this->connection = new DB;
         $this->util = new Util();
         $this->template = new Templates();
+        $this->enderecoStorage = new EnderecoStorage();
+        $this->materiaStorage = new MateriaStorage();
+        $this->turmaStorage = new TurmaStorage();
         session_start();
     }
     
@@ -66,7 +73,7 @@ class GeneralController
         // Data
         $fill = false;
         foreach ($notas as $row) {
-            $pdf->Cell(40, 6, $this->util->pegarNomeDaDisciplina($row->disciplina), 'LR', 0, 'L', $fill);
+            $pdf->Cell(40, 6, $this->materiaStorage->pegarNomeDaDisciplina($row->disciplina), 'LR', 0, 'L', $fill);
             $pdf->Cell(10, 6, $row->nota1, 'LR', 0, 'L', $fill);
             $pdf->Cell(10, 6, $row->rec1, 'LR', 0, 'L', $fill);
             $pdf->Cell(10, 6, $row->nota2, 'LR', 0, 'L', $fill);
@@ -114,7 +121,7 @@ class GeneralController
             $pdf->SetFont('DejaVu', '', 8);
             // Header
 
-            $pdf->Cell(120, 7, $this->util->pegarTurmaDoAlunoPorTurma($turma->turma), 1, 0, 'C', true);
+            $pdf->Cell(120, 7, $this->turmaStorage->pegarTurmaDoAlunoPorTurma($turma->turma), 1, 0, 'C', true);
             $pdf->Ln();
             $headers = ['Matéria','Nota 1', 'Rec. 1', 'Nota 2', 'Rec. 2', 'Nota 3', 'Rec. 3', 'Nota 4', 'Rec. 4'];
 
@@ -130,7 +137,7 @@ class GeneralController
             // Data
             $fill = false;
             foreach ($notas as $row) {
-                $pdf->Cell(40, 6, $this->util->pegarNomeDaDisciplina($row->disciplina), 'LR', 0, 'L', $fill);
+                $pdf->Cell(40, 6, $this->materiaStorage->pegarNomeDaDisciplina($row->disciplina), 'LR', 0, 'L', $fill);
                 $pdf->Cell(10, 6, $row->nota1, 'LR', 0, 'L', $fill);
                 $pdf->Cell(10, 6, $row->rec1, 'LR', 0, 'L', $fill);
                 $pdf->Cell(10, 6, $row->nota2, 'LR', 0, 'L', $fill);
@@ -231,7 +238,7 @@ class GeneralController
             'ENDERECO_COMPLEMENTO' => $user->endereco->complemento,
             'LOGADO' => $user->nome,
             'ESTADOS' => $estados,
-            'ESTADO_ATUAL' => $this->util->pegarEstadoPeloEstado($user->endereco->estado)
+            'ESTADO_ATUAL' => $this->enderecoStorage->pegarEstadoPeloEstado($user->endereco->estado)
         ];
         
         $this->util->loadTemplate('perfil.html', $args);

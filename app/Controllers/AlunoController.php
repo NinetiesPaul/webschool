@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\DB\Storage\AlunoStorage;
+use App\DB\Storage\MateriaStorage;
 use App\DB\Storage\NotaStorage;
 use App\DB\Storage\TurmaStorage;
 use App\Templates;
@@ -12,14 +13,11 @@ use App\Enum;
 class AlunoController
 {
     protected $template;
-
     protected $util;
-
     protected $alunoStorage;
-
     protected $turmaStorage;
-
     protected $notaStorage;
+    protected $materiaStorage;
 
     public function __construct()
     {
@@ -30,6 +28,7 @@ class AlunoController
         $this->alunoStorage = new AlunoStorage();
         $this->turmaStorage = new TurmaStorage();
         $this->notaStorage = new NotaStorage();
+        $this->materiaStorage = new MateriaStorage();
     }
     
     public function index()
@@ -55,7 +54,7 @@ class AlunoController
         foreach ($turmas as $turma) {
             $turmaAtual = ($usuario->turma === $turma->turma) ? ' (<b>atual</b>) ' : '';
 
-            $minhasTurmas .= $this->util->pegarTurmaDoAlunoPorTurma($turma->turma) . ' ' . $turmaAtual;
+            $minhasTurmas .= $this->turmaStorage->pegarTurmaDoAlunoPorTurma($turma->turma) . ' ' . $turmaAtual;
             
             $minhasTurmas .=
                 "<br/><button class='btn btn-sm btn-info boletim' id='$user->aluno.$turma->turma'>
@@ -68,7 +67,7 @@ class AlunoController
             <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th><th></th></tr></thead><tbody>";
             
             foreach ($notas as $nota) {
-                $minhasTurmas .= "<tr><td>".$this->util->pegarNomeDaDisciplina($nota->disciplina)."</td>
+                $minhasTurmas .= "<tr><td>".$this->materiaStorage->pegarNomeDaDisciplina($nota->disciplina)."</td>
                 <td>$nota->nota1</td>
                 <td>$nota->rec1</td>
                 <td>$nota->nota2</td>
