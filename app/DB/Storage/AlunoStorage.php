@@ -21,7 +21,7 @@ class AlunoStorage extends DB
         return $alunoQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public function verAluno(int $aluno)
+    public function verAluno($aluno)
     {
         $alunoQuery = $this->connect()->query("select usuario.*,aluno.id as aluno from usuario, aluno where usuario.id=aluno.usuario and aluno.usuario = $aluno");
         return $alunoQuery->fetch(PDO::FETCH_OBJ);
@@ -242,6 +242,22 @@ class AlunoStorage extends DB
     {
         $usuarioQuery = $this->connect()->query("select turma from aluno where usuario = $usuario");
         return $usuarioQuery->fetch(PDO::FETCH_OBJ);
+    }
+
+    public function pegarNomeDoAlunoPorAlunoId($id)
+    {
+        $userQuery = $this->connect()->query("select usuario.* from usuario,aluno where usuario.id=aluno.usuario and aluno.id=$id");
+        $user = $userQuery->fetchObject();
+
+        return $user->nome;
+    }
+
+    public function pegarIdDaTurmaDoAlunoPorAlunoId($id)
+    {
+        $turmaQuery = $this->connect()->query("select turma from aluno where id=$id");
+        $turma = $turmaQuery->fetchObject();
+
+        return $turma->turma;
     }
 
     private function throwError($msg)

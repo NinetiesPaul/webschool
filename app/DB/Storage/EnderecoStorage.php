@@ -31,4 +31,12 @@ class EnderecoStorage extends DB
         $enderecoQuery = $this->connect()->query("select * from endereco where id = $id");
         return $enderecoQuery->fetch(PDO::FETCH_OBJ);
     }
+
+    public function pegarEstadoPeloEstado($id)
+    {
+        $estadoQuery = $this->connect()->query("select * from estado where id=$id");
+        $estado = $estadoQuery->fetchObject();
+
+        return $estado->nome.', '.$estado->sigla;
+    }
 }

@@ -85,4 +85,12 @@ class MateriaStorage extends DB
         ");
         return $disciplinaQuery->fetchObject();
     }
+
+    public function pegarNomeDaDisciplina(int $id)
+    {
+        $disciplinaQuery = $this->connect()->query("select nome from disciplina where id = $id");
+        $disciplina = $disciplinaQuery->fetchObject();
+
+        return $disciplina->nome;
+    }
 }
