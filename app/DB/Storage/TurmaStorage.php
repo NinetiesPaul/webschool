@@ -70,12 +70,12 @@ class TurmaStorage extends DB
 
     public function pegarTurmaDoAlunoPorUsuario($idUsuario)
     {
-        $alunoQuery = $this->connection->query("
+        $alunoQuery = $this->connect()->query("
             select * from aluno where usuario = $idUsuario
         ");
         $alunoQuery = $alunoQuery->fetchObject();
 
-        $turmaQuery = $this->connection->query("
+        $turmaQuery = $this->connect()->query("
             select * from turma where id = $alunoQuery->turma
         ");
         $turmaQuery = $turmaQuery->fetchObject();
