@@ -5,35 +5,34 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class ProfessorStorage extends DB
+class ProfessorStorage
 {
-    public $localConnection;
+    public $db;
     
     public function __construct()
     {
-        parent::__construct();
-        $this->localConnection = $this->connect();
+        $this->db = new DB();
     }
     
     public function verProfessores()
     {
-        $professorQuery = $this->connect()->query("select usuario.*,professor.id as professor from usuario, professor where usuario.id = professor.usuario");
+        $professorQuery = $this->db->query("select usuario.*,professor.id as professor from usuario, professor where usuario.id = professor.usuario");
         return $professorQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verProfessor($idProfessor)
     {
-        $professorQuery = $this->connect()->query("select usuario.*,professor.id as professor from usuario, professor where usuario.id = professor.usuario and professor.usuario = $idProfessor");
+        $professorQuery = $this->db->query("select usuario.*,professor.id as professor from usuario, professor where usuario.id = professor.usuario and professor.usuario = $idProfessor");
         return $professorQuery->fetch(PDO::FETCH_OBJ);
     }
 
     public function adicionarProfessor($email, $nome, $password, $salt)
     {
-        if ($this->util()->loginTakenBackEnd($email, "professor")) {
+        if ($this->db->util()->loginTakenBackEnd($email, "professor")) {
             return false;
         }
         
-        $idEndereco = $this->endereco()->inserirEndereco();
+        $idEndereco = $this->db->endereco()->inserirEndereco();
 
         $usuario = [
             'name' => $nome,
@@ -43,11 +42,11 @@ class ProfessorStorage extends DB
             'endereco' => $idEndereco,
         ];
 
-        $userId = $this->usuario()->inserirUsuario($usuario);
+        $userId = $this->db->usuario()->inserirUsuario($usuario);
 
-        $this->avatar()->inserirAvatar($userId);
+        $this->db->avatar()->inserirAvatar($userId);
 
-        $professor = $this->connect()->prepare("INSERT INTO professor (usuario) VALUES (:idUusuario)");
+        $professor = $this->db->prepare("INSERT INTO professor (usuario) VALUES (:idUusuario)");
         $professor->execute([
             'idUusuario' => $userId,
         ]);
@@ -55,7 +54,7 @@ class ProfessorStorage extends DB
     
     public function alterarProfessor($userId, $nome, $email, $password, $salt)
     {
-        if ($this->util()->loginTakenBackEnd($email, "professor", $userId)) {
+        if ($this->db->util()->loginTakenBackEnd($email, "professor", $userId)) {
             return false;
         }
 
@@ -79,61 +78,61 @@ class ProfessorStorage extends DB
         $sql .= ' where id=:userId';
         $fields['userId'] = $userId;
 
-        $user = $this->connect()->prepare($sql);
+        $user = $this->db->prepare($sql);
         $user->execute($fields);
     }
     
     public function removerProfessor($professor, $usuario, $endereco, $footprint)
     {
-        $user = $this->connect()->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");
+        $user = $this->db->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");
 
         $user->execute([
             'id' => $usuario,
         ]);
 
-        $user = $this->connect()->prepare("DELETE FROM endereco WHERE id = :endereco;");
+        $user = $this->db->prepare("DELETE FROM endereco WHERE id = :endereco;");
 
         $user->execute([
             'endereco' => $endereco,
         ]);
 
-        $user = $this->connect()->prepare("DELETE FROM fotos_de_avatar WHERE usuario = :id;");
+        $user = $this->db->prepare("DELETE FROM fotos_de_avatar WHERE usuario = :id;");
 
         $user->execute([
             'id' => $usuario,
         ]);
 
-        $user = $this->connect()->prepare("DELETE FROM arquivos WHERE diario in (SELECT id FROM diario_de_classe WHERE professor = :professor AND contexto = 'observacao');");
+        $user = $this->db->prepare("DELETE FROM arquivos WHERE diario in (SELECT id FROM diario_de_classe WHERE professor = :professor AND contexto = 'observacao');");
 
         $user->execute([
             'professor' => $professor,
         ]);
 
-        $user = $this->connect()->prepare("DELETE FROM diario_de_classe WHERE professor = :professor;");
+        $user = $this->db->prepare("DELETE FROM diario_de_classe WHERE professor = :professor;");
 
         $user->execute([
             'professor' => $professor,
         ]);
 
-        $user = $this->connect()->prepare("DELETE FROM disciplina_por_professor WHERE professor = :professor;");
+        $user = $this->db->prepare("DELETE FROM disciplina_por_professor WHERE professor = :professor;");
 
         $user->execute([
             'professor' => $professor,
         ]);
 
-        $user = $this->connect()->prepare("DELETE FROM professor WHERE usuario = :id;");
+        $user = $this->db->prepare("DELETE FROM professor WHERE usuario = :id;");
 
         $user->execute([
             'id' => $usuario,
         ]);
 
-        $user = $this->connect()->prepare("DELETE FROM usuario WHERE id = :id;");
+        $user = $this->db->prepare("DELETE FROM usuario WHERE id = :id;");
 
         $user->execute([
             'id' => $usuario,
         ]);
         
-        $footprintBackup = $this->localConnection->prepare("INSERT INTO usuarios_deletados (tipo, nome, footprint, deletado_em) VALUES ('professor', :nome, :footprint, NOW())");
+        $footprintBackup = $this->db->prepare("INSERT INTO usuarios_deletados (tipo, nome, footprint, deletado_em) VALUES ('professor', :nome, :footprint, NOW())");
         $footprintBackup->execute([
             'nome' => $footprint['usuario']->nome,
             'footprint' => json_encode($footprint),
@@ -142,7 +141,7 @@ class ProfessorStorage extends DB
     
     public function desativarProfessor($idProfessor)
     {
-        $alunoQuery = $this->connect()->query("select usuario.is_deleted from usuario, professor where usuario.id=professor.usuario and professor.usuario = $idProfessor");
+        $alunoQuery = $this->db->query("select usuario.is_deleted from usuario, professor where usuario.id=professor.usuario and professor.usuario = $idProfessor");
 
         if ($alunoQuery->rowCount() === 0) {
             $this->throwError("Erro ao recuperar professor (id inválido)");
@@ -152,7 +151,7 @@ class ProfessorStorage extends DB
         
         $is_deleted = ($is_deleted == 1) ? 0 : 1;
         
-        $user = $this->connect()->prepare("UPDATE usuario SET is_deleted = :is_deleted WHERE id = :id");
+        $user = $this->db->prepare("UPDATE usuario SET is_deleted = :is_deleted WHERE id = :id");
 
         $user->execute([
             'is_deleted' => $is_deleted,
@@ -166,7 +165,7 @@ class ProfessorStorage extends DB
     
     public function adicionarMateriaPorProfessor($disciplina, $turma, $professor)
     {
-        $user = $this->connect()->prepare("INSERT INTO disciplina_por_professor (professor, disciplina, turma)
+        $user = $this->db->prepare("INSERT INTO disciplina_por_professor (professor, disciplina, turma)
                 VALUES (:idProfessor, :idDisciplina, :idTurma)");
 
         $user->execute([
@@ -175,7 +174,7 @@ class ProfessorStorage extends DB
             'idTurma' => $turma,
         ]);
         
-        $alunos = $this->turma()->verAlunosDaTurma($turma);
+        $alunos = $this->db->turma()->verAlunosDaTurma($turma);
 
         foreach ($alunos as $aluno) {
             $nota = [
@@ -184,7 +183,7 @@ class ProfessorStorage extends DB
                 'idTurma' => $turma,
             ];
             
-            $this->nota()->inserirNota($nota);
+            $this->db->nota()->inserirNota($nota);
             
             $diario = [
                 'idAluno' => $aluno->id,
@@ -192,13 +191,13 @@ class ProfessorStorage extends DB
                 'idTurma' => $turma,
             ];
             
-            $this->diario()->inserirDiarioDeClasse($diario);
+            $this->db->diario()->inserirDiarioDeClasse($diario);
         }
     }
     
     public function removerProfessorPorMateria($id)
     {
-        $user = $this->connect()->prepare("DELETE from disciplina_por_professor WHERE id = :id");
+        $user = $this->db->prepare("DELETE from disciplina_por_professor WHERE id = :id");
 
         $user->execute([
             'id' => $id,
@@ -207,13 +206,13 @@ class ProfessorStorage extends DB
     
     public function verProfessorPorMateria($id)
     {
-        $professorQuery = $this->connect()->query("SELECT * from disciplina_por_professor WHERE professor = $id");
+        $professorQuery = $this->db->query("SELECT * from disciplina_por_professor WHERE professor = $id");
         return $professorQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verMeusAlunos($turma, $disciplina, $professor)
     {
-        $alunosQuery = $this->connect()->query("
+        $alunosQuery = $this->db->query("
                 select distinct usuario.* from usuario, aluno, turma, disciplina_por_professor
                 where usuario.id=aluno.usuario
                 and aluno.turma=disciplina_por_professor.turma

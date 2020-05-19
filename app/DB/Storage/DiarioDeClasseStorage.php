@@ -5,25 +5,24 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class DiarioDeClasseStorage extends DB
+class DiarioDeClasseStorage
 {
-    public $connection;
+    public $db;
     
     public function __construct()
     {
-        parent::__construct();
-        $this->connection = $this->connect();
+        $this->db = new DB();
     }
     
     public function inserirDiarioDeClasse($diario)
     {
-        $save = $this->connect()->prepare("INSERT INTO diario_de_classe (aluno, disciplina, turma, data, contexto, presenca) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), 'presenca', 0)");
+        $save = $this->db->prepare("INSERT INTO diario_de_classe (aluno, disciplina, turma, data, contexto, presenca) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), 'presenca', 0)");
         $save->execute($diario);
     }
     
     public function verFaltasDoAlunoDaTurma($turma, $disc)
     {
-        $alunosQuery = $this->connect()->query("
+        $alunosQuery = $this->db->query("
             select diario_de_classe.aluno, diario_de_classe.disciplina, diario_de_classe.turma, usuario.nome
             from usuario
             inner join aluno on aluno.usuario = usuario.id
@@ -37,7 +36,7 @@ class DiarioDeClasseStorage extends DB
     
     public function verFaltasDoAlunoDaturmaPorData($aluno, $turma, $disc, $data)
     {
-        $diarioQuery = $this->connect()->query("
+        $diarioQuery = $this->db->query("
             select *
             from diario_de_classe
             where aluno = $aluno
@@ -49,7 +48,7 @@ class DiarioDeClasseStorage extends DB
     
     public function adicionarFalta($aluno, $turma, $disciplina, $data)
     {
-        $user = $this->connect()->prepare("
+        $user = $this->db->prepare("
             INSERT INTO diario_de_classe (aluno, disciplina, turma, data, presenca, contexto) 
             values (:aluno, :disciplina, :turma, :data, 1, 'presenca')
         ");
@@ -64,7 +63,7 @@ class DiarioDeClasseStorage extends DB
     
     public function alterarFalta($presenca, $diario)
     {
-        $user = $this->connect()->prepare("UPDATE diario_de_classe SET presenca = :presenca WHERE id=:id");
+        $user = $this->db->prepare("UPDATE diario_de_classe SET presenca = :presenca WHERE id=:id");
 
         $user->execute([
             'presenca' => $presenca,
@@ -74,7 +73,7 @@ class DiarioDeClasseStorage extends DB
     
     public function verComentariosDoAlunoDaTurma($aluno, $disciplina, $turma, $data, $professor)
     {
-        $comentarioQuery = $this->connect()->query("
+        $comentarioQuery = $this->db->query("
             select *
             from diario_de_classe
             where aluno = $aluno
@@ -89,7 +88,7 @@ class DiarioDeClasseStorage extends DB
     
     public function adicionarComentario($turma, $aluno, $disciplina, $mensagem, $data, $prof)
     {
-        $user = $this->connection->prepare("
+        $user = $this->db->prepare("
             INSERT INTO diario_de_classe
             (turma, aluno, disciplina, observacao, data, professor, contexto) VALUES
             (:turma, :aluno, :disciplina, :mensagem, :data, :professor, 'observacao')
@@ -104,12 +103,12 @@ class DiarioDeClasseStorage extends DB
             'professor' => $prof,
         ]);
         
-        return $this->connection->lastInsertId();
+        return $this->db->lastInsertId();
     }
     
     public function removerComentario($idComentario)
     {
-        $comentario = $this->connect()->prepare("DELETE FROM diario_de_classe where contexto = 'observacao' and id=:id");
+        $comentario = $this->db->prepare("DELETE FROM diario_de_classe where contexto = 'observacao' and id=:id");
         $comentario->execute([
             'id' => $idComentario,
         ]);
@@ -117,7 +116,7 @@ class DiarioDeClasseStorage extends DB
     
     public function verDiarioDeClassePorProfessor($professor)
     {
-        $diarioQuery = $this->connect()->query("
+        $diarioQuery = $this->db->query("
             select * from diario_de_classe where professor = $professor
         ");
         return $diarioQuery->fetchAll(PDO::FETCH_OBJ);
@@ -125,16 +124,8 @@ class DiarioDeClasseStorage extends DB
     
     public function verDiarioDeClassePorAluno($aluno)
     {
-        $diarioQuery = $this->connect()->query("
+        $diarioQuery = $this->db->query("
             select * from diario_de_classe where aluno = $aluno
-        ");
-        return $diarioQuery->fetchAll(PDO::FETCH_OBJ);
-    }
-    
-    public function verObservacaoPorAluno($aluno)
-    {
-        $diarioQuery = $this->connect()->query("
-            select id from diario_de_classe where aluno = $aluno and contexto = 'observacao' 
         ");
         return $diarioQuery->fetchAll(PDO::FETCH_OBJ);
     }

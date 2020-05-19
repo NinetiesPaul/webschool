@@ -4,7 +4,6 @@ namespace App\DB;
 
 use PDO;
 use App\Util;
-use App\DB\Storage\AlunoStorage;
 use App\DB\Storage\EnderecoStorage;
 use App\DB\Storage\UsuarioStorage;
 use App\DB\Storage\AvatarStorage;
@@ -12,7 +11,6 @@ use App\DB\Storage\MateriaStorage;
 use App\DB\Storage\NotaStorage;
 use App\DB\Storage\DiarioDeClasseStorage;
 use App\DB\Storage\TurmaStorage;
-use App\DB\Storage\ResponsavelStorage;
 
 class DB extends PDO
 {
@@ -69,15 +67,5 @@ class DB extends PDO
     public function turma()
     {
         return new TurmaStorage();
-    }
-    
-    public function responsavel()
-    {
-        return new ResponsavelStorage();
-    }
-    
-    public function aluno()
-    {
-        return new AlunoStorage();
     }
 }
