@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Enum;
 use App\Util;
 
 class IndexController
@@ -18,16 +19,16 @@ class IndexController
         session_start();
         if (isset($_SESSION['tipo'])) {
             $tipo = $_SESSION['tipo'];
-            if ($tipo == "admin") {
+            if ($tipo == Enum::TIPO_ADMIN) {
                 header('Location: admin/home');
             }
-            if ($tipo == "responsavel") {
+            if ($tipo == Enum::TIPO_RESPONSAVEL) {
                 header('Location: responsavel/home');
             }
-            if ($tipo == "professor") {
+            if ($tipo == Enum::TIPO_PROFESSOR) {
                 header('Location: professor/home');
             }
-            if ($tipo == "aluno") {
+            if ($tipo == Enum::TIPO_ALUNO) {
                 header('Location: aluno/home');
             }
         }

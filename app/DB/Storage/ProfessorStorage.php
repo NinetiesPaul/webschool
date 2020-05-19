@@ -3,6 +3,7 @@
 namespace App\DB\Storage;
 
 use App\DB\DB;
+use App\Enum;
 use PDO;
 
 class ProfessorStorage
@@ -28,7 +29,7 @@ class ProfessorStorage
 
     public function adicionarProfessor($email, $nome, $password, $salt)
     {
-        if ($this->db->util()->loginTakenBackEnd($email, "professor")) {
+        if ($this->db->util()->loginTakenBackEnd($email, Enum::TIPO_PROFESSOR)) {
             return false;
         }
         
@@ -54,7 +55,7 @@ class ProfessorStorage
     
     public function alterarProfessor($userId, $nome, $email, $password, $salt)
     {
-        if ($this->db->util()->loginTakenBackEnd($email, "professor", $userId)) {
+        if ($this->db->util()->loginTakenBackEnd($email, Enum::TIPO_PROFESSOR, $userId)) {
             return false;
         }
 

@@ -3,6 +3,7 @@
 namespace App\DB\Storage;
 
 use App\DB\DB;
+use App\Enum;
 use PDO;
 
 class AlunoStorage
@@ -28,7 +29,7 @@ class AlunoStorage
 
     public function adicionarAluno($email, $nome, $password, $salt, $turma)
     {
-        if ($this->db->util()->loginTakenBackEnd($email, "aluno")) {
+        if ($this->db->util()->loginTakenBackEnd($email, Enum::TIPO_ALUNO)) {
             return false;
         }
         
@@ -77,7 +78,7 @@ class AlunoStorage
 
     public function alterarAluno($userId, $idAluno, $nome, $email, $password, $salt, $turma)
     {
-        if ($this->db->util()->loginTakenBackEnd($email, "aluno", $userId)) {
+        if ($this->db->util()->loginTakenBackEnd($email, Enum::TIPO_ALUNO, $userId)) {
             return false;
         }
 

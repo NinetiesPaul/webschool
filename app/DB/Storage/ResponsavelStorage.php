@@ -3,6 +3,7 @@
 namespace App\DB\Storage;
 
 use App\DB\DB;
+use App\Enum;
 use PDO;
 
 class ResponsavelStorage
@@ -28,7 +29,7 @@ class ResponsavelStorage
     
     public function adicionarResponsavel($email, $nome, $password, $salt)
     {
-        if ($this->db->util()->loginTakenBackEnd($email, "responsavel")) {
+        if ($this->db->util()->loginTakenBackEnd($email, Enum::TIPO_RESPONSAVEL)) {
             return false;
         }
 
@@ -54,7 +55,7 @@ class ResponsavelStorage
     
     public function alterarResponsavel($userId, $nome, $email, $password, $salt)
     {
-        if ($this->db->util()->loginTakenBackEnd($email, "responsavel", $userId)) {
+        if ($this->db->util()->loginTakenBackEnd($email, Enum::TIPO_RESPONSAVEL, $userId)) {
             return false;
         }
 
