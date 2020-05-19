@@ -5,7 +5,6 @@ namespace App\Controllers;
 use App\Enum;
 use App\Templates;
 use App\Util;
-
 use App\DB\Storage\TurmaStorage;
 use App\DB\Storage\MateriaStorage;
 use App\DB\Storage\EnderecoStorage;
@@ -21,36 +20,26 @@ use App\DB\Storage\ResponsavelStorage;
 class AdminController
 {
     protected $template;
-        
     protected $util;
-    
     protected $turmaStorage;
-    
     protected $materiaStorage;
-    
     protected $alunoStorage;
-    
     protected $notaStorage;
-    
     protected $diarioStorage;
-    
     protected $enderecoStorage;
-    
     protected $avatarStorage;
-    
     protected $arquivoStorage;
-    
     protected $usuarioStorage;
-    
     protected $professorStorage;
-    
     protected $responsavelStorage;
+    protected $links;
 
     public function __construct()
     {
         $this->template = new Templates();
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_ADMIN);
+        $this->links = $this->util->generateLinks();
         
         $this->turmaStorage = new TurmaStorage();
         $this->materiaStorage = new MateriaStorage();
@@ -94,7 +83,8 @@ class AdminController
         
         $args = [
             'TURMAS' => $turmas,
-            'ALUNOS' => $alunos
+            'ALUNOS' => $alunos,
+            'LINKS' => $this->links
         ];
         
         $this->util->loadTemplate('admin/alunos.html', $args);
@@ -102,6 +92,8 @@ class AdminController
     
     public function verAluno(int $idAluno)
     {
+        $this->links = $this->util->generateLinks('../');
+
         $aluno = $this->alunoStorage->verAluno($idAluno);
         $turmaAtual = $this->alunoStorage->pegarIdDaTurmaDoAlunoPorAlunoId($aluno->aluno);
         $turmaQuery = $this->turmaStorage->verTurmas();
@@ -141,7 +133,8 @@ class AdminController
             'EMAIL' => $aluno->email,
             'TURMAS' => $turmas,
             'FOOTPRINT' => json_encode($footprint),
-            'BOTAO_DELETAR' => $deletar
+            'BOTAO_DELETAR' => $deletar,
+            'LINKS' => $this->links
         ];
 
         $this->util->loadTemplate('admin/aluno.html', $args);
@@ -276,7 +269,8 @@ class AdminController
             'PROFESSORES_SELECT' => $professores_select,
             'TURMAS_SELECT' => $turmas,
             'DISCIPLINAS_SELECT' => $disciplinas,
-            'DISCIPLINAS_POR_PROFESSOR' => $disciplinasProProfessor
+            'DISCIPLINAS_POR_PROFESSOR' => $disciplinasProProfessor,
+            'LINKS' => $this->links
         ];
         
         $this->util->loadTemplate('admin/professores.html', $args);
@@ -284,6 +278,8 @@ class AdminController
     
     public function verProfessor(int $idProfessor)
     {
+        $this->links = $this->util->generateLinks('../');
+
         $professor = $this->professorStorage->verProfessor($idProfessor);
         
         $endereco = $this->enderecoStorage->verEndereco($professor->endereco);
@@ -309,7 +305,8 @@ class AdminController
             'SALT' => $professor->salt,
             'EMAIL' => $professor->email,
             'FOOTPRINT' => json_encode($footprint),
-            'BOTAO_DELETAR' => $deletar
+            'BOTAO_DELETAR' => $deletar,
+            'LINKS' => $this->links
         ];
         
         $this->util->loadTemplate('admin/professor.html', $args);
@@ -414,7 +411,8 @@ class AdminController
         }
         
         $args = [
-          'RESPONSAVEIS' => $responsaveis
+            'RESPONSAVEIS' => $responsaveis,
+            'LINKS' => $this->links
         ];
         
         $this->util->loadTemplate('admin/responsaveis.html', $args);
@@ -422,6 +420,8 @@ class AdminController
     
     public function verResponsavel(int $idResponsavel)
     {
+        $this->links = $this->util->generateLinks('../');
+
         $responsavel = $this->responsavelStorage->verResponsavel($idResponsavel);
         
         $alunosQuery = $this->alunoStorage->verAlunos();
@@ -461,7 +461,8 @@ class AdminController
             'ALUNOS' => $alunos,
             'FILHOS' => $filhos,
             'FOOTPRINT' => json_encode($footprint),
-            'BOTAO_DELETAR' => $deletar
+            'BOTAO_DELETAR' => $deletar,
+            'LINKS' => $this->links
         ];
         
         $this->util->loadTemplate('admin/responsavel.html', $args);
@@ -561,7 +562,8 @@ class AdminController
         }
         
         $args = [
-          'ALUNOS' => $turmas
+            'ALUNOS' => $turmas,
+            'LINKS' => $this->links
         ];
         
         $this->util->loadTemplate('admin/turmas.html', $args);
@@ -569,12 +571,15 @@ class AdminController
     
     public function verTurma(int $turma)
     {
+        $this->links = $this->util->generateLinks('../');
+
         $turma = $this->turmaStorage->verTurma($turma);
         
         $args = [
             'ID' => $turma->id,
             'TURMA' => $turma->serie,
             'LETRA' => $turma->nome,
+            'LINKS' => $this->links
         ];
         
         $this->util->loadTemplate('admin/turma.html', $args);
@@ -608,7 +613,7 @@ class AdminController
     {
         $this->turmaStorage->removerTurma($turma);
     }
-    
+
     public function verMaterias()
     {
         $disciplinaQuery = $this->materiaStorage->verMaterias();
@@ -623,7 +628,8 @@ class AdminController
         }
         
         $args = [
-          'DISCIPLINAS' => $disciplinas
+            'DISCIPLINAS' => $disciplinas,
+            'LINKS' => $this->links
         ];
 
         $this->util->loadTemplate('admin/disciplinas.html', $args);
@@ -631,11 +637,14 @@ class AdminController
     
     public function verMateria(int $materia)
     {
+        $this->links = $this->util->generateLinks('../');
+
         $disciplina = $this->materiaStorage->verMateria($materia);
         
         $args = [
             'ID' => $disciplina->id,
             'NOME' => $disciplina->nome,
+            'LINKS' => $this->links
         ];
         
         $this->util->loadTemplate('admin/disciplina.html', $args);

@@ -15,29 +15,24 @@ use DateTime;
 class ProfessorController
 {
     protected $template;
-        
     protected $util;
-
     protected $materiaStorage;
-
     protected $professorStorage;
-    
     protected $diarioDeClasseStorage;
-    
     protected $arquivoStorage;
-    
     protected $notaStorage;
 
     public function __construct()
     {
         $this->template = new Templates();
         $this->util = new Util();
+        $this->util->userPermission(Enum::TIPO_PROFESSOR);
+
         $this->materiaStorage = new MateriaStorage();
         $this->professorStorage = new ProfessorStorage();
         $this->diarioDeClasseStorage = new DiarioDeClasseStorage();
         $this->arquivoStorage = new ArquivoStorage();
         $this->notaStorage = new NotaStorage();
-        $this->util->userPermission(Enum::TIPO_PROFESSOR);
     }
     
     public function index()
