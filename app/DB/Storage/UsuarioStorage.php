@@ -5,25 +5,24 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class UsuarioStorage extends DB
+class UsuarioStorage
 {
-    public $connection;
-    
+    protected $db;
+
     public function __construct()
     {
-        parent::__construct();
-        $this->connection = $this->connect();
+        $this->db = new DB();
     }
 
     public function inserirUsuario($usuario)
     {
-        $user = $this->connection->prepare("
+        $user = $this->db->prepare("
             INSERT INTO usuario (nome, email, pass, endereco, salt)
             VALUES (:name, :email, :password, :endereco, :salt)
         ");
 
         $user->execute($usuario);
         
-        return (int) $this->connection->lastInsertId();
+        return (int) $this->db->lastInsertId();
     }
 }

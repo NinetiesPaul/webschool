@@ -5,29 +5,36 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class NotaStorage extends DB
+class NotaStorage
 {
+    protected $db;
+
+    public function __construct()
+    {
+        $this->db = new DB();
+    }
+
     public function inserirNota($nota)
     {
-        $save = $this->connect()->prepare("INSERT INTO nota_por_aluno (aluno, disciplina, turma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, 0, 0, 0, 0, 0, 0, 0, 0)");
+        $save = $this->db->prepare("INSERT INTO nota_por_aluno (aluno, disciplina, turma, nota1, nota2, nota3, nota4, rec1, rec2, rec3, rec4) VALUES (:idAluno, :idDisciplina, :idTurma, 0, 0, 0, 0, 0, 0, 0, 0)");
         $save->execute($nota);
     }
 
     public function verTurmasComNotaDoAluno($aluno)
     {
-        $exec = $this->connect()->query("select turma from nota_por_aluno where aluno=$aluno group by turma");
+        $exec = $this->db->query("select turma from nota_por_aluno where aluno=$aluno group by turma");
         return $exec->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verNotasPorTruma($aluno, $turma)
     {
-        $exec = $this->connect()->query("select * from nota_por_aluno where aluno=$aluno and turma=$turma order by disciplina");
+        $exec = $this->db->query("select * from nota_por_aluno where aluno=$aluno and turma=$turma order by disciplina");
         return $exec->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verTurmasdoAluno($idAluno)
     {
-        $exec = $this->connect()->query("select turma from nota_por_aluno where aluno=$idAluno group by turma");
+        $exec = $this->db->query("select turma from nota_por_aluno where aluno=$idAluno group by turma");
         return $exec->fetchAll(PDO::FETCH_OBJ);
     }
     
@@ -39,7 +46,7 @@ class NotaStorage extends DB
         $notaNum = $data['tipo'];
         $nota = $data['nota'];
                 
-        $user = $this->connect()->prepare("
+        $user = $this->db->prepare("
             UPDATE nota_por_aluno
             SET ".$notaNum."=:nota
             where aluno=:idAluno and disciplina=:idDisciplina and turma=:idTurma
@@ -55,7 +62,7 @@ class NotaStorage extends DB
 
     public function verNotasPorAlunosDaDisciplinaETurma($disciplina, $turma)
     {
-        $alunosQuery = $this->connect()->query("
+        $alunosQuery = $this->db->query("
             select usuario.id, usuario.nome, aluno.id as aluno, nota_por_aluno.nota1, nota_por_aluno.nota2, nota_por_aluno.nota3, nota_por_aluno.nota4, nota_por_aluno.rec1, nota_por_aluno.rec2, nota_por_aluno.rec3, nota_por_aluno.rec4
             from usuario
             inner join aluno on aluno.usuario = usuario.id
@@ -68,7 +75,7 @@ class NotaStorage extends DB
     
     public function verNotasPorAluno($aluno)
     {
-        $alunosQuery = $this->connect()->query("
+        $alunosQuery = $this->db->query("
             select * from nota_por_aluno where aluno = $aluno
         ");
         return $alunosQuery->fetchAll(PDO::FETCH_OBJ);

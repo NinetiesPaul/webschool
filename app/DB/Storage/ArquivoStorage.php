@@ -5,19 +5,18 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class ArquivoStorage extends DB
+class ArquivoStorage
 {
-    public $connection;
+    public $db;
     
     public function __construct()
     {
-        parent::__construct();
-        $this->connection = $this->connect();
+        $this->db = new DB();
     }
     
     public function adicionarArquivo($file_name, $urlThumbFinal, $urlFinal, $dataComentario, $id)
     {
-        $fileQuery = $this->connection->prepare("
+        $fileQuery = $this->db->prepare("
             INSERT INTO arquivos (nome, endereco_thumb, endereco, contexto, diario, descricao, data) VALUES (:nome, :endereco_thumb, :endereco, 'ddc', $id, '', :data)
         ");
 
@@ -28,12 +27,12 @@ class ArquivoStorage extends DB
             'data' => $dataComentario,
         ]);
         
-        return $this->connection->lastInsertId();
+        return $this->db->lastInsertId();
     }
 
     public function verArquivosDoDiario($comentario)
     {
-        $arquivoQuery = $this->connection->query("
+        $arquivoQuery = $this->db->query("
             select *
             from arquivos
             where contexto = 'ddc'
@@ -44,7 +43,7 @@ class ArquivoStorage extends DB
 
     public function verArquivoDoDiario($comentario)
     {
-        $arquivoQuery = $this->connection->query("
+        $arquivoQuery = $this->db->query("
             select *
             from arquivos
             where contexto = 'ddc'
@@ -53,20 +52,9 @@ class ArquivoStorage extends DB
         return $arquivoQuery->fetch(PDO::FETCH_OBJ);
     }
     
-    public function verEnderecoNomeDoArquivo($id_arquivo)
-    {
-        $arquivoQuery = $this->connect()->query("
-            select endereco, nome
-            from arquivos
-            where id = $id_arquivo
-        ");
-        
-        return $arquivoQuery->fetch(PDO::FETCH_OBJ);
-    }
-    
     public function removerArquivoDoComentario($arquivo)
     {
-        $statement = $this->connect()->prepare("DELETE FROM arquivos where id=:id");
+        $statement = $this->db->prepare("DELETE FROM arquivos where id=:id");
         $statement->execute([
             'id' => $arquivo,
         ]);
@@ -74,7 +62,7 @@ class ArquivoStorage extends DB
     
     public function verArquivoPorId($idArquivo)
     {
-        $arquivoQuery = $this->connect()->query("
+        $arquivoQuery = $this->db->query("
         select *
         from arquivos
         where id = $idArquivo
@@ -84,7 +72,7 @@ class ArquivoStorage extends DB
     
     public function verArquivoPorAluno($aluno)
     {
-        $arquivosQuery = $this->connect()->query("
+        $arquivosQuery = $this->db->query("
         select *
         from arquivos
         where diario in (SELECT id FROM diario_de_classe WHERE aluno = $aluno AND contexto = 'observacao')
@@ -94,7 +82,7 @@ class ArquivoStorage extends DB
     
     public function verArquivoPorProfessor($professor)
     {
-        $arquivosQuery = $this->connect()->query("
+        $arquivosQuery = $this->db->query("
         select *
         from arquivos
         where diario in (SELECT id FROM diario_de_classe WHERE professor = $professor AND contexto = 'observacao')
