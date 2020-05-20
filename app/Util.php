@@ -102,13 +102,22 @@ class Util
                 ";
             }
             if ($tipo == Enum::TIPO_RESPONSAVEL) {
-                header('Location: responsavel/home');
+                $links = "
+                    <a class='dropdown-item' href='".$nivel."home'>Home</a>
+                    <a class='dropdown-item' href='".$nivel."alunos'>Alunos</a>
+                ";
             }
             if ($tipo == Enum::TIPO_PROFESSOR) {
-                header('Location: professor/home');
+                $links = "
+                    <a class='dropdown-item' href='".$nivel."home'>Home</a>
+                    <a class='dropdown-item' href='".$nivel."turmas'>Turmas</a>
+                ";
             }
             if ($tipo == Enum::TIPO_ALUNO) {
-                header('Location: aluno/home');
+                $links = "
+                    <a class='dropdown-item' href='".$nivel."home'>Home</a>
+                    <a class='dropdown-item' href='".$nivel."turmas'>Turmas</a>
+                ";
             }
         }
         return $links;
