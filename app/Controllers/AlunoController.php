@@ -18,12 +18,14 @@ class AlunoController
     protected $turmaStorage;
     protected $notaStorage;
     protected $materiaStorage;
+    protected $links;
 
     public function __construct()
     {
         $this->template = new Templates();
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_ALUNO);
+        $this->links = $this->util->generateLinks();
 
         $this->alunoStorage = new AlunoStorage();
         $this->turmaStorage = new TurmaStorage();
@@ -89,7 +91,8 @@ class AlunoController
         $args = [
             'ALUNOID_USERID' => $user->aluno.'.'.$user->id,
             'LOGADO' => $user->nome,
-            'TURMAS' => $minhasTurmas
+            'TURMAS' => $minhasTurmas,
+            'LINKS' => $this->links
         ];
 
         $this->util->loadTemplate('aluno/turmas.html', $args);
