@@ -85,4 +85,41 @@ class Util
         }
         echo $template;
     }
+
+    public function generateLinks($nivel = '')
+    {
+        $links = '';
+        if (isset($_SESSION['tipo'])) {
+            $tipo = $_SESSION['tipo'];
+            if ($tipo == Enum::TIPO_ADMIN) {
+                $links = "
+                    <a class='dropdown-item' href='".$nivel."home'>Home</a>
+                    <a class='dropdown-item' href='".$nivel."turmas'>Turmas</a>
+                    <a class='dropdown-item' href='".$nivel."disciplinas'>Disciplinas</a>
+                    <a class='dropdown-item' href='".$nivel."professores'>Professores</a>
+                    <a class='dropdown-item' href='".$nivel."alunos'>Alunos</a>
+                    <a class='dropdown-item' href='".$nivel."responsaveis'>Responsáveis</a>
+                ";
+            }
+            if ($tipo == Enum::TIPO_RESPONSAVEL) {
+                $links = "
+                    <a class='dropdown-item' href='".$nivel."home'>Home</a>
+                    <a class='dropdown-item' href='".$nivel."alunos'>Alunos</a>
+                ";
+            }
+            if ($tipo == Enum::TIPO_PROFESSOR) {
+                $links = "
+                    <a class='dropdown-item' href='".$nivel."home'>Home</a>
+                    <a class='dropdown-item' href='".$nivel."turmas'>Turmas</a>
+                ";
+            }
+            if ($tipo == Enum::TIPO_ALUNO) {
+                $links = "
+                    <a class='dropdown-item' href='".$nivel."home'>Home</a>
+                    <a class='dropdown-item' href='".$nivel."turmas'>Turmas</a>
+                ";
+            }
+        }
+        return $links;
+    }
 }

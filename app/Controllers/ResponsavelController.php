@@ -20,12 +20,14 @@ class ResponsavelController
     protected $alunoStorage;
     protected $materiaStorage;
     protected $turmaStorage;
+    protected $links;
 
     public function __construct()
     {
         $this->template = new Templates();
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_RESPONSAVEL);
+        $this->links = $this->util->generateLinks();
 
         $this->responsavelStorage = new ResponsavelStorage();
         $this->notaStorage = new NotaStorage();
@@ -58,7 +60,8 @@ class ResponsavelController
         
         $args = [
             'LOGADO' => $user->nome,
-            'ALUNOS' => $alunos
+            'ALUNOS' => $alunos,
+            'LINKS' => $this->links
         ];
 
         $this->util->loadTemplate('responsavel/alunos.html', $args);
@@ -66,6 +69,8 @@ class ResponsavelController
     
     public function verAluno(int $idAluno)
     {
+        $this->links = $this->util->generateLinks('../');
+
         $user = $_SESSION['user'];
         
         $turmas = $this->notaStorage->verTurmasdoAluno($idAluno);
@@ -110,7 +115,8 @@ class ResponsavelController
         $args = [
             'LOGADO' => $user->nome,
             'ALUNOID_USERID' => $idAluno.'.'.$user->id,
-            'NOTAS' => $notas
+            'NOTAS' => $notas,
+            'LINKS' => $this->links
         ];
 
         $this->util->loadTemplate('responsavel/aluno.html', $args);

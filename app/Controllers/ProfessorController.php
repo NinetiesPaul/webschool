@@ -15,29 +15,26 @@ use DateTime;
 class ProfessorController
 {
     protected $template;
-        
     protected $util;
-
     protected $materiaStorage;
-
     protected $professorStorage;
-    
     protected $diarioDeClasseStorage;
-    
     protected $arquivoStorage;
-    
     protected $notaStorage;
+    protected $links;
 
     public function __construct()
     {
         $this->template = new Templates();
         $this->util = new Util();
+        $this->util->userPermission(Enum::TIPO_PROFESSOR);
+        $this->links = $this->util->generateLinks();
+
         $this->materiaStorage = new MateriaStorage();
         $this->professorStorage = new ProfessorStorage();
         $this->diarioDeClasseStorage = new DiarioDeClasseStorage();
         $this->arquivoStorage = new ArquivoStorage();
         $this->notaStorage = new NotaStorage();
-        $this->util->userPermission(Enum::TIPO_PROFESSOR);
     }
     
     public function index()
@@ -78,7 +75,8 @@ class ProfessorController
                     
         $args = [
             'LOGADO' => $user->nome,
-            'TURMAS' => $turmas
+            'TURMAS' => $turmas,
+            'LINKS' => $this->links
         ];
 
         $this->util->loadTemplate('professor/turmas.html', $args);
@@ -86,6 +84,8 @@ class ProfessorController
     
     public function verTurma(int $id)
     {
+        $this->links = $this->util->generateLinks('../');
+
         $user = $_SESSION['user'];
         $result = $this->materiaStorage->verMateriaPorProfessorSingle($id);
 
@@ -118,7 +118,8 @@ class ProfessorController
         
         $args = [
             'LOGADO' => $user->nome,
-            'DETALHES' => $detalhes
+            'DETALHES' => $detalhes,
+            'LINKS' => $this->links
         ];
 
         $this->util->loadTemplate('professor/turma.html', $args);
@@ -126,6 +127,8 @@ class ProfessorController
     
     public function verDiarioDeClasse(string $id)
     {
+        $this->links = $this->util->generateLinks('../');
+
         $user = $_SESSION['user'];
         
         $id = explode('_', $id);
@@ -134,6 +137,7 @@ class ProfessorController
             'LOGADO' => $user->nome,
             'DISCIPLINA' => $id[1],
             'TURMA' => $id[0],
+            'LINKS' => $this->links
         ];
 
         $this->util->loadTemplate('professor/diariodeclasse.html', $args);
