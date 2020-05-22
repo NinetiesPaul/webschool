@@ -29,7 +29,7 @@ class AlunoStorage
 
     public function adicionarAluno($email, $nome, $password, $salt, $turma)
     {
-        if ($this->db->util()->loginTakenBackEnd($email, Enum::TIPO_ALUNO)) {
+        if ($this->db->usuario()->loginTakenBackEnd($email, Enum::TIPO_ALUNO)) {
             return false;
         }
         
@@ -78,7 +78,7 @@ class AlunoStorage
 
     public function alterarAluno($userId, $idAluno, $nome, $email, $password, $salt, $turma)
     {
-        if ($this->db->util()->loginTakenBackEnd($email, Enum::TIPO_ALUNO, $userId)) {
+        if ($this->db->usuario()->loginTakenBackEnd($email, Enum::TIPO_ALUNO, $userId)) {
             return false;
         }
 

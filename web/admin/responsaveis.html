@@ -23,13 +23,11 @@
                         $("#disponibilidade").hide();
                         $("#btn").attr("disabled", false)
                     }
-                    console.log(data);
                 }
             });
         }             
             
         function desativarResponsavel(val) {
-            console.log(val)
             $.ajax({
                 url: "responsavel/" + val + '/desativar',
                 type: "PUT",
