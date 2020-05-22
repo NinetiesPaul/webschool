@@ -24,16 +24,6 @@ class DB extends PDO
         $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
     
-    public function connect()
-    {
-        return new DB();
-    }
-    
-    public function util()
-    {
-        return new Util();
-    }
-    
     public function endereco()
     {
         return new EnderecoStorage();
