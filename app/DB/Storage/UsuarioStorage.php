@@ -25,4 +25,27 @@ class UsuarioStorage
         
         return (int) $this->db->lastInsertId();
     }
+
+    public function loginTakenBackEnd($login, $tipo, $id = false)
+    {
+        $query = "
+            SELECT usuario.id FROM usuario,$tipo
+            WHERE usuario.id = $tipo.usuario
+            and usuario.email = '$login'
+        ";
+
+        if ($id) {
+            $query .= " and usuario.id != $id";
+        }
+
+        $userQuery = $this->db->query($query);
+        $userQuery = $userQuery->fetchObject();
+
+        $res = false;
+        if ($userQuery) {
+            $res = true;
+        }
+
+        return $res;
+    }
 }

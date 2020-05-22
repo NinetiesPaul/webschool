@@ -12,6 +12,7 @@ use App\DB\DB;
 use App\DB\Storage\EnderecoStorage;
 use App\DB\Storage\MateriaStorage;
 use App\DB\Storage\TurmaStorage;
+use App\DB\Storage\UsuarioStorage;
 use App\Templates;
 use App\Util;
 use PDO;
@@ -26,6 +27,7 @@ class GeneralController
     protected $enderecoStorage;
     protected $materiaStorage;
     protected $turmaStorage;
+    protected $usuarioStorage;
 
     public function __construct()
     {
@@ -35,6 +37,7 @@ class GeneralController
         $this->enderecoStorage = new EnderecoStorage();
         $this->materiaStorage = new MateriaStorage();
         $this->turmaStorage = new TurmaStorage();
+        $this->usuarioStorage = new UsuarioStorage();
         session_start();
     }
     
@@ -254,14 +257,13 @@ class GeneralController
                 $nome = $_POST['nome'];
                 $email = $_POST['email'];
                 $password = $_POST['senha'];
-                $newPassword = md5($password);
                 $tel1 = $_POST['telefone1'];
                 $tel2 = $_POST['telefone2'];
                 $tipo = $_POST['tipo'];
                 $salt = $_POST['salt'];
 
-                if ($this->util->loginTakenBackEnd($email, $tipo, (int) $userId)) {
-                    $msg = $_SESSION['msg'] = 'E-mail já está em uso';
+                if ($this->usuarioStorage->loginTakenBackEnd($email, $tipo, (int) $userId)) {
+                    $_SESSION['msg'] = 'E-mail já está em uso';
                     header('Location: /webschool/perfil');
                     exit;
                 }
