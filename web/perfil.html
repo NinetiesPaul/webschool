@@ -16,7 +16,6 @@
                     url: "/webschool/verificarLogin",
                     data:'login='+email+'&tipo='+tipo+'&id='+id,
                     success: function(data ){
-                        console.log(data);
                         if (data == 1){
                             $("#disponibilidade").show();
                             $("#atualizar").attr("disabled", true);

@@ -35,7 +35,6 @@
                 dado = dado.split('.');
                 aluno = dado[0];
                 turma = dado[1];
-                console.log(dado);
                 $("#aluno-pdf").val(aluno);
                 $("#turma-pdf").val(turma);
                 $("#gerarDocumento").submit();
@@ -43,7 +42,6 @@
 
             $(".historico").click(function(){
                 aluno = this.id;
-                console.log(aluno);
                 $("#aluno-pdf").val(aluno);
                 $("#turma-pdf").val('');
                 $("#gerarDocumento").attr('action', '../gerarHistorico');

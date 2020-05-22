@@ -21,7 +21,6 @@
                         $("#disponibilidade").hide();
                         $("#btn").attr("disabled", false)
                     }
-                    console.log(data);
                 }
             });
         }
@@ -31,7 +30,6 @@
                 url: val + '/delete',
                 type: "DELETE",
                 success: function(data){
-                    console.log(data)
                     window.location.href = '../professores'
                 }
             });
