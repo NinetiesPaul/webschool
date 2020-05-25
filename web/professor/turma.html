@@ -18,10 +18,19 @@
                 type: "POST",
                 url: "../inserirNota",
                 data: { aluno : aluno, turma : turma, disciplina : disciplina, tipo : tipo, nota : nota},
-                success: function(data ){
-                    id = [aluno,disciplina,turma,tipo].join('_');
-                    $("#id-"+id).text(nota)
-                    $("#nota").val('')
+                success: function(data){
+                    data = jQuery.parseJSON(data)
+                    if (data.error === true) {
+                        $('.alert').css('display', 'block');
+                        $('.alert').text(data.msg);
+                        $('.alert').delay(5000).fadeOut(1000, function(){
+                            $('.alert').css('display', 'none');
+                        });
+                    } else {
+                        id = [aluno, disciplina, turma, tipo].join('_');
+                        $("#id-" + id).text(nota)
+                        $("#nota").val('')
+                    }
                 }
             });
         }
@@ -95,20 +104,23 @@
                     </div>
                     <div class="modal-body">
                         <div id="result">
-                            <input type="hidden" id="aluno" name="aluno" value="" />
-                            <input type="hidden" id="disciplina" name="disciplina" value="" />
-                            <input type="hidden" id="turma" name="turma" value="" />
-                            <input type="hidden" id="notaNum" name="notaNum" value="" />
+
                             <div class="form-group row justify-content-center ">
                                 <label for="nota" class="col-form-label col-md-2 col-form-label-sm ">Nota:</label>
                                 <div class="col-md-3">
-                                    <input type="text" class="form-control form-control-sm" name="nota" id="nota" value=""/>
+                                    <div class="alert alert-danger" role="alert" style="display: none;">
+                                    </div>
+                                    <form action="" method="post" role="form" class="form-horizontal" id="form-comentario">
+                                        <input type="hidden" id="aluno" name="aluno" value="" />
+                                        <input type="hidden" id="disciplina" name="disciplina" value="" />
+                                        <input type="hidden" id="turma" name="turma" value="" />
+                                        <input type="hidden" id="notaNum" name="notaNum" value="" />
+                                        <input type="text" class="form-control form-control-sm" name="nota" id="nota" value=""/><br/>
+                                        <a href="#" class="btn btn-sm btn-primary" id="btn-inserir-nota"> <span class='glyphicon glyphicon-plus'></span> Salvar</a>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="btn-inserir-nota"><span class='glyphicon glyphicon-plus'></span> Salvar</button>
                     </div>
                 </div>
             </div>

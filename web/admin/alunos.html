@@ -37,7 +37,7 @@
                         $('.alert').css('display', 'block');
                         $('.alert').text(data.msg);
                         $('.alert').delay(5000).fadeOut(1000, function(){
-                            this.remove();
+                            $('.alert').css('display', 'none');
                         });
                     } else {
                         if ($('.label-status_' + val).hasClass('label-success') == true) {

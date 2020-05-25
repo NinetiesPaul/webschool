@@ -57,6 +57,10 @@ class MateriaStorage
         $user->execute([
             'id' => $materia,
         ]);
+
+        if ($user->rowCount() === 0) {
+            $this->throwError("Erro ao recuperar materia: id inválido");
+        }
     }
     
     public function verMateriaPorProfessor()
@@ -99,5 +103,10 @@ class MateriaStorage
         $disciplina = $disciplinaQuery->fetchObject();
 
         return $disciplina->nome;
+    }
+
+    private function throwError($msg)
+    {
+        throw new \Exception($msg);
     }
 }

@@ -208,7 +208,7 @@ class AlunoStorage
         $alunoQuery = $this->db->query("select usuario.is_deleted from usuario, aluno where usuario.id=aluno.usuario and aluno.usuario = $aluno");
 
         if ($alunoQuery->rowCount() === 0) {
-            $this->throwError("Erro ao recuperar aluno (id inválido)");
+            $this->throwError("Erro ao recuperar aluno: id inválido");
         }
 
         $is_deleted = $alunoQuery->fetch(PDO::FETCH_OBJ)->is_deleted;
@@ -223,7 +223,7 @@ class AlunoStorage
         ]);
 
         if ($user->rowCount() === 0) {
-            $this->throwError("Erro ao atualizar aluno (id inválido)");
+            $this->throwError("Erro ao atualizar aluno: id inválido");
         }
     }
     

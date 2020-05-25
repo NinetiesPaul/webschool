@@ -59,6 +59,10 @@ class TurmaStorage
         $user->execute([
             'id' => $turma,
         ]);
+
+        if ($user->rowCount() === 0) {
+            $this->throwError("Erro ao recuperar turma: id inválido");
+        }
     }
     
     public function verAlunosDaTurma($turma)
@@ -93,5 +97,10 @@ class TurmaStorage
         }
 
         return $nomeTurma;
+    }
+
+    private function throwError($msg)
+    {
+        throw new \Exception($msg);
     }
 }

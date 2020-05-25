@@ -171,47 +171,6 @@ class AdminController
         header('Location: /webschool/admin/alunos');
     }
     
-    public function removerAluno($idAluno)
-    {
-        $aluno = $this->alunoStorage->verAluno($idAluno);
-        
-        $endereco = $this->enderecoStorage->verEndereco($aluno->endereco);
-        $avatar = $this->avatarStorage->verAvatar($aluno->id);
-        $diario_de_classe = $this->diarioStorage->verDiarioDeClassePorAluno($aluno->aluno);
-        $nota_por_aluno = $this->notaStorage->verNotasPorAluno($aluno->aluno);
-        $arquivos_do_diario = $this->arquivoStorage->verArquivoPorAluno($aluno->aluno);
-        $filho_de = $this->responsavelStorage->verAlunosDoResponsavelPorAluno($aluno->aluno);
-        
-        $footprint = [
-            'usuario' => $aluno,
-            'endereco' => $endereco,
-            'avatar' => $avatar,
-            'diario_de_classe' => $diario_de_classe,
-            'nota_por_aluno' => $nota_por_aluno,
-            'arquivos' => $arquivos_do_diario,
-            'filho_de' => $filho_de
-        ];
-        
-        $this->alunoStorage->removerAluno($aluno->aluno, $aluno->id, $aluno->endereco, $footprint);
-    }
-    
-    public function desativarAluno($idAluno)
-    {
-        $result = [
-            'error' => false,
-            'msg' => null
-        ];
-
-        try {
-            $this->alunoStorage->desativarAluno($idAluno);
-        } catch (\Exception $ex) {
-            $result['error'] = true;
-            $result['msg'] = $ex->getMessage();
-        }
-
-        echo json_encode($result);
-    }
-    
     public function verProfessores()
     {
         $professorQuery = $this->professorStorage->verProfessores();
@@ -340,28 +299,6 @@ class AdminController
         header('Location: /webschool/admin/professores');
     }
     
-    public function removerProfessor(int $idProfessor)
-    {
-        $professor = $this->professorStorage->verProfessor($idProfessor);
-        
-        $endereco = $this->enderecoStorage->verEndereco($professor->endereco);
-        $avatar = $this->avatarStorage->verAvatar($professor->id);
-        $diario_de_classe = $this->diarioStorage->verDiarioDeClassePorProfessor($professor->professor);
-        $disciplina = $this->professorStorage->verProfessorPorMateria($professor->professor);
-        $arquivos_do_diario = $this->arquivoStorage->verArquivoPorProfessor($professor->professor);
-        
-        $footprint = [
-            'usuario' => $professor,
-            'endereco' => $endereco,
-            'avatar' => $avatar,
-            'diario_de_classe' => $diario_de_classe,
-            'disciplina' => $disciplina,
-            'arquivos' => $arquivos_do_diario
-        ];
-        
-        $this->professorStorage->removerProfessor($professor->professor, $professor->id, $professor->endereco, $footprint);
-    }
-    
     public function adicionarProfessorPorMateria()
     {
         $data = json_decode(json_encode($_POST), true);
@@ -372,28 +309,6 @@ class AdminController
         
         $this->professorStorage->adicionarMateriaPorProfessor($disciplina, $turma, $professor);
         header("Location: /webschool/admin/professores");
-    }
-    
-    public function desativarProfessor($idProfessor)
-    {
-        $result = [
-            'error' => false,
-            'msg' => null
-        ];
-
-        try {
-            $this->professorStorage->desativarProfessor($idProfessor);
-        } catch (\Exception $ex) {
-            $result['error'] = true;
-            $result['msg'] = $ex->getMessage();
-        }
-
-        echo json_encode($result);
-    }
-    
-    public function removerProfessorPorMateria(int $id)
-    {
-        $this->professorStorage->removerProfessorPorMateria($id);
     }
     
     public function verResponsaveis()
@@ -496,41 +411,6 @@ class AdminController
         header('Location: /webschool/admin/responsaveis');
     }
     
-    public function desativarResponsavel($idResponsavel)
-    {
-        $result = [
-            'error' => false,
-            'msg' => null
-        ];
-
-        try {
-            $this->responsavelStorage->desativarResponsavel($idResponsavel);
-        } catch (\Exception $ex) {
-            $result['error'] = true;
-            $result['msg'] = $ex->getMessage();
-        }
-
-        echo json_encode($result);
-    }
-    
-    public function removerResponsavel(int $idResponsavel)
-    {
-        $responsavel = $this->responsavelStorage->verResponsavel($idResponsavel);
-        
-        $endereco = $this->enderecoStorage->verEndereco($responsavel->endereco);
-        $avatar = $this->avatarStorage->verAvatar($responsavel->id);
-        $responsavel_por = $this->responsavelStorage->verAlunosDoResponsavel($responsavel->responsavel);
-        
-        $footprint = [
-            'usuario' => $responsavel,
-            'endereco' => $endereco,
-            'avatar' => $avatar,
-            'responsavel_por' => $responsavel_por
-        ];
-        
-        $this->responsavelStorage->removerResponsavel($responsavel->responsavel, $responsavel->id, $responsavel->endereco, $footprint);
-    }
-    
     public function adicionarAlunoPorResponsavel()
     {
         $data = json_decode(json_encode($_POST), true);
@@ -541,11 +421,6 @@ class AdminController
         
         $responsavel = $this->responsavelStorage->adicionarAlunoPorResponsavel($responsavel, $aluno, $id);
         header("Location: /webschool/admin/responsavel/$responsavel");
-    }
-    
-    public function removerAlunoPorResponsavel(int $id)
-    {
-        $this->responsavelStorage->removerAlunoPorResponsavel($id);
     }
     
     public function verTurmas()
@@ -608,11 +483,6 @@ class AdminController
         $this->turmaStorage->alterarTurma($nome, $serie, $turma);
         header('Location: /webschool/admin/turmas');
     }
-    
-    public function removerTurma(int $turma)
-    {
-        $this->turmaStorage->removerTurma($turma);
-    }
 
     public function verMaterias()
     {
@@ -669,10 +539,5 @@ class AdminController
         
         $this->materiaStorage->alterarMateria($nome, $id);
         header('Location: /webschool/admin/disciplinas');
-    }
-    
-    public function removerMateria(int $disciplina)
-    {
-        $this->materiaStorage->removerMateria($disciplina);
     }
 }

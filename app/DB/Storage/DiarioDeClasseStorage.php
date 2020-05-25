@@ -129,4 +129,20 @@ class DiarioDeClasseStorage
         ");
         return $diarioQuery->fetchAll(PDO::FETCH_OBJ);
     }
+
+    public function verFaltasPorAlunoDaMateriaETurma($turma, $aluno, $disciplina)
+    {
+        $faltasQuery = $this->db->query("
+            select * from diario_de_classe where turma=$turma and aluno=$aluno and disciplina=$disciplina and presenca = 1 order by data
+        ");
+        return $faltasQuery->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public function verComentariosPorAlunoDaMateriaETurma($turma, $aluno, $disciplina)
+    {
+        $comentariosQuery = $this->db->query("
+            select * from diario_de_classe where turma=$turma and aluno=$aluno and disciplina=$disciplina and contexto='observacao' order by data
+        ");
+        return $comentariosQuery->fetchAll(PDO::FETCH_OBJ);
+    }
 }

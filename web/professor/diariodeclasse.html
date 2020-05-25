@@ -1,4 +1,3 @@
-
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -14,31 +13,63 @@
                     type: "POST",
                     url: "../../professor/pesquisarFrequencia",
                     data:'mes='+mes+'&ano='+ano+'&turma='+turma+'&disc='+disc+'&context='+context,
-                    success: function(data ){
-                        $("#search").removeClass('disabled');
-                        $("#result").html(data);
+                    success: function(data){
+                        data = jQuery.parseJSON(data)
+                        if (data.error === true) {
+                            $('.alert').css('display', 'block');
+                            $('.alert').text(data.msg);
+                            $('.alert').delay(5000).fadeOut(1000, function(){
+                                $('.alert').css('display', 'none');
+                            });
+                        } else {
+                            $("#search").removeClass('disabled');
+                            $("#result").html(data.msg);
+                        }
                     }
                 });
             }
 
-            function alterarFrequencia(dados) {
+            function alterarFrequencia(id) {
                 $.ajax({
                     type: "POST",
                     url: "../../professor/alterarFrequencia",
-                    data: { dados : dados},
+                    data: { id : id },
                     success: function(data){
-                        $("#"+dados).html(data);
+                        data = jQuery.parseJSON(data)
+                        if (data.error === true) {
+                            $('.alert').css('display', 'block');
+                            $('.alert').text(data.msg);
+                            $('.alert').delay(5000).fadeOut(1000, function(){
+                                $('.alert').css('display', 'none');
+                            });
+                        } else {
+                            $("#" + id).html(data.msg);
+                        }
                     }
                 });
             }
 
             function visualizarComentarios(dados) {
+                dataVisualizada = dados
+                dataVisualizada = dataVisualizada.split('-')
+                dataVisualizada = dataVisualizada[1].split('_')
+                dataVisualizada = dataVisualizada[2] + '/' + dataVisualizada[1] + '/' + dataVisualizada[0]
                 $.ajax({
                     type: "POST",
                     url: "../../professor/visualizarComentarios",
                     data: { dados : dados},
                     success: function(data){
-                        $("#tabela-comentarios tbody").html(data);
+                        data = jQuery.parseJSON(data)
+                        if (data.error === true) {
+                            $('.alert-modal').css('display', 'block');
+                            $('.alert-modal').text(data.msg);
+                            $('.alert-modal').delay(5000).fadeOut(1000, function () {
+                                $('.alert-modal').css('display', 'none');
+                            });
+                        } else {
+                            $("#tabela-comentarios tbody").html(data.msg);
+                            $(".data").text(dataVisualizada);
+                        }
                     }
                 });
             }
@@ -48,9 +79,18 @@
                     type: "DELETE",
                     url: "../comentario/" + comentario,
                     success: function(data){
-                        $('#row-comentario-'+comentario).fadeOut(400, function(){
-                            remove();
-                        });
+                        data = jQuery.parseJSON(data)
+                        if (data.error === true) {
+                            $('.alert-modal').css('display', 'block');
+                            $('.alert-modal').text(data.msg);
+                            $('.alert-modal').delay(5000).fadeOut(1000, function () {
+                                $('.alert-modal').css('display', 'none');
+                            });
+                        } else {
+                            $('#row-comentario-' + comentario).fadeOut(400, function () {
+                                remove();
+                            });
+                        }
                     }
                 });
             }
@@ -60,8 +100,17 @@
                     type: "DELETE",
                     url: "../arquivo/" + arquivo,
                     success: function(data){
-                        $('#cell-file-head-'+arquivo).text('Essa observação não contem arquivos anexados');
-                        $('#cell-file-remove-'+arquivo).text('');
+                        data = jQuery.parseJSON(data)
+                        if (data.error === true) {
+                            $('.alert-modal').css('display', 'block');
+                            $('.alert-modal').text(data.msg);
+                            $('.alert-modal').delay(5000).fadeOut(1000, function () {
+                                $('.alert-modal').css('display', 'none');
+                            });
+                        } else {
+                            $('#cell-file-head-' + arquivo).text('Essa observação não contem arquivos anexados');
+                            $('#cell-file-remove-' + arquivo).text('');
+                        }
                     }
                 });
             }
@@ -108,7 +157,13 @@
 
                 $("#search").click(function(){
                     if ($("#search").hasClass('disabled') === false) {
-                        pesquisarFrequencia($("#mes").val(), $("#ano").val(), $("#turma").val(), $("#disc").val(), $("#context").val());
+                        pesquisarFrequencia(
+                            $("#mes").val(),
+                            $("#ano").val(),
+                            $("#turma").val(),
+                            $("#disc").val(),
+                            $("#context").val()
+                        );
                         $("#search").addClass('disabled');
                         $("#result").html('Pesquisando');
                     }
@@ -127,13 +182,25 @@
                         contentType: false,
                         cache: false,
                         processData:false,
-                        beforeSend: function(){
-                        },
-                        success: function(response){ 
-                            $("#tabela-comentarios tbody").append(response);
+                        success: function(data){
+                            data = jQuery.parseJSON(data)
+                            if (data.error === true) {
+                                $('.alert-modal').css('display', 'block');
+                                $('.alert-modal').text(data.msg);
+                                $('.alert-modal').delay(5000).fadeOut(1000, function(){
+                                    $('.alert-modal').css('display', 'none');
+                                });
+                            } else {
+                                $("#tabela-comentarios tbody").append(data.msg);
+                                $("#comentario").val('');
+                            }
                         }
                     });
                 }));
+
+                $('#modalExemplo').on('hidden.bs.modal', function () {
+                    $(this).find('form').trigger('reset');
+                })
             });
         </script>
         <title>Professor :: Home Page</title>
@@ -195,7 +262,10 @@
                 </select><p/>
                 
                 <button class="btn btn-primary btn-sm" id="search" ><span class='glyphicon glyphicon-search'></span> Pesquisar</button>
-                
+
+                <div class="alert alert-danger" role="alert" style="display: none;">
+                </div>
+
                 <div id="result" >
                     Selecione o mês e ano para pesquisar a frequencia da turma.
                 </div>
@@ -208,9 +278,11 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel"><strong>Comentários em classe</strong></h5>
+                        <h5 class="modal-title" id="exampleModalLabel"><strong>Comentários em classe</strong> - <small><span class="data"></span></small></h5>
                     </div>
                     <div class="modal-body">
+                        <div class="alert alert-danger alert-modal" role="alert" style="display: none;">
+                        </div>
                         <form action="" method="post" role="form" class="form-horizontal" id="form-comentario">
                             <input type="hidden" name="dado" id="dado" value="" />
                             <div class="form-group row justify-content-center ">
@@ -227,7 +299,7 @@
                                     <button type="submit" class="btn btn-primary btn-sm"><span class='glyphicon glyphicon-plus'></span> Adicionar</button>
                                 </div>
                             </div>
-                        <form>
+                        </form>
                         <div id="result-modal">
                             <table style="margin-left: auto; margin-right: auto; font-size: 13;" class="table" id="tabela-comentarios">
                                 <thead>
