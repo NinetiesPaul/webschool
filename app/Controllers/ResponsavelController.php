@@ -67,7 +67,7 @@ class ResponsavelController
         $this->util->loadTemplate('responsavel/alunos.html', $args);
     }
     
-    public function verAluno(int $idAluno)
+    public function verAluno($idAluno)
     {
         $this->links = $this->util->generateLinks('../');
 
