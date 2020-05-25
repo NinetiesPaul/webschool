@@ -8,7 +8,9 @@ use App\Controllers\AdminController;
 use App\Controllers\GeneralController;
 use App\Controllers\ResponsavelController;
 use App\Controllers\ProfessorController;
-use App\Util;
+use App\Controllers\AjaxControllers\AdminController as AjaxAdmin;
+use App\Controllers\AjaxControllers\GeneralController as AjaxGeneral;
+use App\Controllers\AjaxControllers\ProfessorController as AjaxProfessor;
 
 //general
 
@@ -28,8 +30,8 @@ SimpleRouter::post('/webschool/gerarHistorico', function() {
 });
 
 SimpleRouter::post('/webschool/pesquisarFaltas', function() {
-    $general = new GeneralController;
-    $general->pesquisarFaltas();
+    $generalAjax = new AjaxGeneral();
+    $generalAjax->pesquisarFaltas();
 });
 
 SimpleRouter::get('/webschool/perfil', function() {
@@ -94,38 +96,38 @@ SimpleRouter::get('/webschool/professor/diariodeclasse/{idTurma}', function($idT
 });
 
 SimpleRouter::post('/webschool/professor/inserirNota', function() {
-    $professor = new ProfessorController();
-    $professor->inserirNota();
+    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor->inserirNota();
 });
 
 SimpleRouter::post('/webschool/professor/pesquisarFrequencia', function() {
-    $professor = new ProfessorController();
-    $professor->pesquisarFrequencia();
+    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor->pesquisarFrequencia();
 });
 
 SimpleRouter::post('/webschool/professor/alterarFrequencia', function() {
-    $professor = new ProfessorController();
-    $professor->alterarFrequencia();
+    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor->alterarFrequencia();
 });
 
 SimpleRouter::post('/webschool/professor/visualizarComentarios', function() {
-    $professor = new ProfessorController();
-    $professor->verComentarios();
+    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor->verComentarios();
 });
 
 SimpleRouter::post('/webschool/professor/comentario', function() {
-    $professor = new ProfessorController();
-    $professor->adicionarComentario();
+    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor->adicionarComentario();
 });
 
 SimpleRouter::delete('/webschool/professor/comentario/{idComentario}', function($idComentario) {
-    $professor = new ProfessorController();
-    $professor->deletarComentario($idComentario);
+    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor->deletarComentario($idComentario);
 });
 
 SimpleRouter::delete('/webschool/professor/arquivo/{idArquivo}', function($idArquivo) {
-    $professor = new ProfessorController();
-    $professor->deletarArquivoDeComentario($idArquivo);
+    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor->deletarArquivoDeComentario($idArquivo);
 });
 
 //admin - alunos
@@ -146,13 +148,13 @@ SimpleRouter::get('/webschool/admin/aluno/{idAluno}', function($idAluno) {
 });
 
 SimpleRouter::delete('/webschool/admin/aluno/{idAluno}/delete', function($idAluno) {
-    $admin = new AdminController();
-    $admin->removerAluno($idAluno);
+    $adminAjax = new AjaxAdmin();
+    $adminAjax->removerAluno($idAluno);
 });
 
 SimpleRouter::put('/webschool/admin/aluno/{idAluno}/desativar', function($idAluno) {
-    $admin = new AdminController();
-    $admin->desativarAluno($idAluno);
+    $ajaxAdmin = new AjaxAdmin();
+    $ajaxAdmin->desativarAluno($idAluno);
 });
 
 SimpleRouter::put('/webschool/admin/aluno', function() {
@@ -178,13 +180,13 @@ SimpleRouter::get('/webschool/admin/professor/{idProfessor}', function($idProfes
 });
 
 SimpleRouter::put('/webschool/admin/professor/{idProfessor}/desativar', function($idProfessor) {
-    $admin = new AdminController();
-    $admin->desativarProfessor($idProfessor);
+    $adminAjax = new AjaxAdmin();
+    $adminAjax->desativarProfessor($idProfessor);
 });
 
 SimpleRouter::delete('/webschool/admin/professor/{idProfessor}/delete', function($idProfessor) {
-    $admin = new AdminController();
-    $admin->removerProfessor($idProfessor);
+    $adminAjax = new AjaxAdmin();
+    $adminAjax->removerProfessor($idProfessor);
 });
 
 SimpleRouter::put('/webschool/admin/professor', function() {
@@ -203,8 +205,8 @@ SimpleRouter::post('/webschool/admin/professorPorMateria', function() {
 });
 
 SimpleRouter::delete('/webschool/admin/professorPorMateria/{id}', function($id) {
-    $admin = new AdminController();
-    $admin->removerProfessorPorMateria($id);
+    $adminAjax = new AjaxAdmin();
+    $adminAjax->removerProfessorPorMateria($id);
 });
 
 //admin - responsaveis
@@ -220,13 +222,13 @@ SimpleRouter::get('/webschool/admin/responsavel/{idResponsavel}', function($idRe
 });
 
 SimpleRouter::delete('/webschool/admin/responsavel/{idResponsavel}/delete', function($idResponsavel) {
-    $admin = new AdminController();
-    $admin->removerResponsavel($idResponsavel);
+    $adminAjax = new AjaxAdmin();
+    $adminAjax->removerResponsavel($idResponsavel);
 });
 
 SimpleRouter::put('/webschool/admin/responsavel/{idResponsavel}/desativar', function($idResponsavel) {
-    $admin = new AdminController();
-    $admin->desativarResponsavel($idResponsavel);
+    $adminAjax = new AjaxAdmin();
+    $adminAjax->desativarResponsavel($idResponsavel);
 });
 
 SimpleRouter::put('/webschool/admin/responsavel', function() {
@@ -245,8 +247,8 @@ SimpleRouter::post('/webschool/admin/alunoPorResponsavel', function() {
 });
 
 SimpleRouter::delete('/webschool/admin/alunoPorResponsavel/{id}', function($id) {
-    $admin = new AdminController();
-    $admin->removerAlunoPorResponsavel($id);
+    $adminAjax = new AjaxAdmin();
+    $adminAjax->removerAlunoPorResponsavel($id);
 });
 
 //admin - disciplinas
@@ -262,8 +264,8 @@ SimpleRouter::get('/webschool/admin/disciplina/{idDisciplina}', function($idDisc
 });
 
 SimpleRouter::delete('/webschool/admin/disciplina/{idDisciplina}/delete', function($idDisciplina) {
-    $admin = new AdminController();
-    $admin->removerMateria($idDisciplina);
+    $ajaxAdmin = new AjaxAdmin();
+    $ajaxAdmin->removerMateria($idDisciplina);
 });
 
 SimpleRouter::put('/webschool/admin/disciplina', function() {
@@ -289,8 +291,8 @@ SimpleRouter::get('/webschool/admin/turma/{idTurma}', function($idTurma) {
 });
 
 SimpleRouter::delete('/webschool/admin/turma/{idTurma}/delete', function($idTurma) {
-    $admin = new AdminController();
-    $admin->removerTurma($idTurma);
+    $ajaxAdmin = new AjaxAdmin();
+    $ajaxAdmin->removerTurma($idTurma);
 });
 
 SimpleRouter::put('/webschool/admin/turma', function() {
