@@ -81,7 +81,6 @@ class ProfessorController extends AjaxController
         foreach ($alunos as $aluno) {
             $output .= "<tr><td>$aluno->nome</td>";
             foreach ($dates as $date) {
-
                 try {
                     $diario = $this->diarioDeClasseStorage->verFaltasDoAlunoDaturmaPorData($aluno->aluno, $turma, $disc, $date->format('Y-m-d'));
                 } catch (\Exception $ex) {

@@ -2,8 +2,6 @@
 
 namespace App\Controllers\AjaxControllers;
 
-
-
 class AjaxController
 {
     protected $response;
@@ -37,5 +35,4 @@ class AjaxController
         echo json_encode($this->response);
         exit();
     }
-
 }
