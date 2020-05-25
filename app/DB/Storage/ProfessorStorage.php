@@ -145,7 +145,7 @@ class ProfessorStorage
         $alunoQuery = $this->db->query("select usuario.is_deleted from usuario, professor where usuario.id=professor.usuario and professor.usuario = $idProfessor");
 
         if ($alunoQuery->rowCount() === 0) {
-            $this->throwError("Erro ao recuperar professor (id inválido)");
+            $this->throwError("Erro ao recuperar professor: id inválido");
         }
 
         $is_deleted = $alunoQuery->fetch(PDO::FETCH_OBJ)->is_deleted;
@@ -160,7 +160,7 @@ class ProfessorStorage
         ]);
 
         if ($user->rowCount() === 0) {
-            $this->throwError("Erro ao atualizar aluno (id inválido)");
+            $this->throwError("Erro ao atualizar professor: id inválido");
         }
     }
     
@@ -203,6 +203,10 @@ class ProfessorStorage
         $user->execute([
             'id' => $id,
         ]);
+
+        if ($user->rowCount() === 0) {
+            $this->throwError("Erro ao remover disciplina por professor: id inválido");
+        }
     }
     
     public function verProfessorPorMateria($id)
