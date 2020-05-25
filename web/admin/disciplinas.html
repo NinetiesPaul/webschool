@@ -13,9 +13,18 @@
                 url: "disciplina/" + val + '/delete',
                 type: "DELETE",
                 success: function(data){
-                    $('#row-'+val).fadeOut(400, function(){
-                        remove();
-                    });
+                    data = jQuery.parseJSON(data)
+                    if (data.error === true) {
+                        $('.alert').css('display', 'block');
+                        $('.alert').text(data.msg);
+                        $('.alert').delay(5000).fadeOut(1000, function(){
+                            $('.alert').css('display', 'none');
+                        });
+                    } else {
+                        $('#row-'+val).fadeOut(400, function(){
+                            remove();
+                        });
+                    }
                 }
             });
         }
@@ -61,6 +70,8 @@
 
                 <p><strong>Lista de Disciplina</strong></p>
 
+                <div class="alert alert-danger" role="alert" style="display: none;">
+                </div>
                 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
                     {DISCIPLINAS}

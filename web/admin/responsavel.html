@@ -13,7 +13,7 @@
                 type: "POST",
                 url: "/webschool/verificarLogin",
                 data: { login : val, tipo : "responsavel", id : $("#id").val()},
-                success: function(data ){
+                success: function(data){
                     if (data == 1){
                         $("#disponibilidade").show();
                         $("#btn").attr("disabled", true)
@@ -30,9 +30,18 @@
                 url: "/webschool/admin/alunoPorResponsavel/" + val,
                 type: "DELETE",
                 success: function(data){
-                    $('#row-'+val).fadeOut(400, function(){
-                        this.remove();
-                    });
+                    data = jQuery.parseJSON(data)
+                    if (data.error === true) {
+                        $('.alert').css('display', 'block');
+                        $('.alert').text(data.msg);
+                        $('.alert').delay(5000).fadeOut(1000, function(){
+                            $('.alert').css('display', 'none');
+                        });
+                    } else {
+                        $('#row-' + val).fadeOut(400, function () {
+                            this.remove();
+                        });
+                    }
                 }
             });
         }
@@ -41,8 +50,17 @@
             $.ajax({
                 url: val + '/delete',
                 type: "DELETE",
-                success: function(){
-                    window.location.href = '../responsaveis'
+                success: function(data){
+                    data = jQuery.parseJSON(data)
+                    if (data.error === true) {
+                        $('.alert').css('display', 'block');
+                        $('.alert').text(data.msg);
+                        $('.alert').delay(5000).fadeOut(1000, function(){
+                            $('.alert').css('display', 'none');
+                        });
+                    } else {
+                        window.location.href = '../responsaveis'
+                    }
                 }
             });
         }
@@ -137,16 +155,19 @@
                     <button type="submit" class="btn btn-primary btn-sm"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button>
                 </form>
 
-                <table style="margin-left: auto; margin-right: auto; font-size: 13; width: 50%;" class="table">
-                    <thead>
-                        <tr><td>Nome</td><td>Turma</td><td>Remover</td></tr>
-                    </thead>
+                <strong>Lista de Alunos relacionados a esse Responsável</strong><p/><br>
+
+                <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
                     <tbody>
                         {FILHOS}
                     </tbody>
                 </table>
                 
                 <hr>
+
+                <div class="alert alert-danger" role="alert" style="display: none;">
+                </div>
+
                 <strong>Footprint</strong> <p/>
                 {BOTAO_DELETAR}
                 <pre id="footprint" class="text-left">

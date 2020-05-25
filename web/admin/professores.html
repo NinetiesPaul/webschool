@@ -37,7 +37,7 @@
                         $('.alert').css('display', 'block');
                         $('.alert').text(data.msg);
                         $('.alert').delay(5000).fadeOut(1000, function(){
-                            this.remove();
+                            $('.alert').css('display', 'none');
                         });
                     } else {
                         if ($('.label-status_' + val).hasClass('label-success') == true) {
@@ -58,10 +58,19 @@
             $.ajax({
                 url: "professorPorMateria/" + val ,
                 type: "DELETE",
-                success: function(){
-                    $('#row-dpp-'+val).fadeOut(400, function(){
-                        remove();
-                    });
+                success: function(data){
+                    data = jQuery.parseJSON(data)
+                    if (data.error === true) {
+                        $('.alert').css('display', 'block');
+                        $('.alert').text(data.msg);
+                        $('.alert').delay(5000).fadeOut(1000, function(){
+                            $('.alert').css('display', 'none');
+                        });
+                    } else {
+                        $('#row-dpp-' + val).fadeOut(400, function () {
+                            remove();
+                        });
+                    }
                 }
             });
         }
@@ -186,11 +195,11 @@
                 </form>
 
                 <strong>Lista de Professor por Disciplina de Turma</strong><p/>
+
+                <div class="alert alert-danger" role="alert" style="display: none;">
+                </div>
                 
                 <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
-                    <thead>
-                        <tr><td>Professor</td><td>Disciplina</td><td>Turma</td><td>Remover</td></tr>
-                    </thead>
                     <tbody>
                         {DISCIPLINAS_POR_PROFESSOR}
                     </tbody>

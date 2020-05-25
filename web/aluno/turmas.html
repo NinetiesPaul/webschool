@@ -13,8 +13,17 @@
                 type: "POST",
                 url: "../pesquisarFaltas",
                 data: 'aluno='+aluno+'&turma='+turma+'&disciplina='+disciplina,
-                success: function(data ){
-                    $("#result").html(data);
+                success: function(data){
+                    data = jQuery.parseJSON(data)
+                    if (data.error === true) {
+                        $('.alert').css('display', 'block');
+                        $('.alert').text(data.msg);
+                        $('.alert').delay(5000).fadeOut(1000, function(){
+                            $('.alert').css('display', 'none');
+                        });
+                    } else {
+                        $("#result").html(data.msg);
+                    }
                 }
             });
         }
@@ -93,7 +102,7 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel"><strong>Faltas</strong></h5>
+                  <h5 class="modal-title" id="exampleModalLabel"><strong>Diario de Classe</strong></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
                   <span aria-hidden="true">&times;</span>
                 </button>

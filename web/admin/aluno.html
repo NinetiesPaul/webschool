@@ -34,8 +34,17 @@
             $.ajax({
                 url: val + '/delete',
                 type: "DELETE",
-                success: function(){
-                    window.location.href = '../alunos'
+                success: function(data){
+                    data = jQuery.parseJSON(data)
+                    if (data.error === true) {
+                        $('.alert').css('display', 'block');
+                        $('.alert').text(data.msg);
+                        $('.alert').delay(5000).fadeOut(1000, function(){
+                            $('.alert').css('display', 'none');
+                        });
+                    } else {
+                        window.location.href = '../alunos'
+                    }
                 }
             });
         }
@@ -49,8 +58,8 @@
         });
 
         $(document).ready(function(){
-           $("#disponibilidade").hide();
-           formatjson();
+            $("#disponibilidade").hide();
+            formatjson();
         });
         </script>
         <title>webSchool :: Alteração de Aluno</title>
@@ -114,6 +123,10 @@
                     <button type="submit" id="btn" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
                 </form>
                 <hr>
+
+                <div class="alert alert-danger" role="alert" style="display: none;">
+                </div>
+
                 <strong>Footprint</strong> <p/>
                 {BOTAO_DELETAR}
                 <pre id="footprint" class="text-left">
