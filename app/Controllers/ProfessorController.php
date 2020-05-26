@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\DB\Storage\LogStorage;
 use App\DB\Storage\MateriaStorage;
 use App\DB\Storage\ProfessorStorage;
 use App\DB\Storage\DiarioDeClasseStorage;
@@ -29,6 +30,7 @@ class ProfessorController
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_PROFESSOR);
         $this->links = $this->util->generateLinks();
+        new LogStorage();
 
         $this->materiaStorage = new MateriaStorage();
         $this->professorStorage = new ProfessorStorage();

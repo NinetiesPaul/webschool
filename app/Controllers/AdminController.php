@@ -16,6 +16,7 @@ use App\DB\Storage\AlunoStorage;
 use App\DB\Storage\UsuarioStorage;
 use App\DB\Storage\ProfessorStorage;
 use App\DB\Storage\ResponsavelStorage;
+use App\DB\Storage\LogStorage;
 
 class AdminController
 {
@@ -40,6 +41,7 @@ class AdminController
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_ADMIN);
         $this->links = $this->util->generateLinks();
+        new LogStorage();
         
         $this->turmaStorage = new TurmaStorage();
         $this->materiaStorage = new MateriaStorage();
