@@ -2,12 +2,16 @@
 
 namespace App\Controllers\AjaxControllers;
 
+use App\DB\Storage\LogStorage;
+
 class AjaxController
 {
     protected $response;
 
     public function __construct()
     {
+        new LogStorage();
+
         $this->response = [
             'error' => false,
             'msg' => null
@@ -27,7 +31,7 @@ class AjaxController
         $this->response($errorMsg, true);
     }
 
-    public function response($msg = null, $isError = null)
+    public function response($msg = null, $isError = false)
     {
         $this->response['error'] = $isError;
         $this->response['msg'] = $msg;
