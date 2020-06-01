@@ -89,7 +89,7 @@ class ProfessorController extends AjaxController
 
                 $date = explode('-', $date->format('Y-m-d'));
 
-                $spanPresenca = "<span class='glyphicon glyphicon-remove'></span>";
+                $spanPresenca = "<span class='glyphicon glyphicon-trash'></span>";
                 $linkPresenca = "$date[0]".'_'."$date[1]".'_'."$date[2]".'_'."$aluno->aluno".'_'."$aluno->disciplina".'_'."$aluno->turma";
 
                 if ($diario && $diario->presenca == 1) {
@@ -155,7 +155,7 @@ class ProfessorController extends AjaxController
                 $span = "<span class='glyphicon glyphicon-ok'></span>";
             } else {
                 $presenca = 0;
-                $span = "<span class='glyphicon glyphicon-remove'></span>";
+                $span = "<span class='glyphicon glyphicon-trash'></span>";
             }
 
             try {
