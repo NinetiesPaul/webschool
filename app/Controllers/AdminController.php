@@ -92,7 +92,7 @@ class AdminController
         $this->util->loadTemplate('admin/alunos.html', $args);
     }
     
-    public function verAluno(int $idAluno)
+    public function verAluno($idAluno)
     {
         $this->links = $this->util->generateLinks('../');
 
@@ -124,7 +124,7 @@ class AdminController
             'filho_de' => $filho_de
         ];
         
-        $deletar = "<button class='btn btn-danger btn-sm' id='deletar' value='$aluno->id'><span class='glyphicon glyphicon-remove'></span> Deletar aluno</button>";
+        $deletar = "<button class='btn btn-danger btn-sm' id='deletar' value='$aluno->id'><span class='glyphicon glyphicon-trash'></span> Deletar aluno</button>";
         
         $args = [
             'ID' => $aluno->id,
@@ -182,12 +182,13 @@ class AdminController
         $professor_array = [];
         
         foreach ($professorQuery as $professor) {
+            $data_token = strtolower($professor->nome);
             $is_deleted = ($professor->is_deleted) ? "<span class='label-status_$professor->id label-success'>Ativo</span>" : "<span class='label-status_$professor->id label-danger'>Inativo</span>";
             $professores .=
             "<tr id='row-$professor->id'><td>$professor->nome </td>
             <td>$is_deleted</td><td><a href='professor/$professor->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
             <a href='#' class='btn desativar' id='$professor->id'><span class='glyphicon glyphicon-ban-circle'></span></a></td></tr>";
-            $professores_select .= "<option value='$professor->professor'>$professor->nome</option>";
+            $professores_select .= "<option data-tokens='$data_token' value='$professor->professor'>$professor->nome</option>";
             $professor_array[$professor->professor] = $professor->nome;
         }
         
@@ -222,7 +223,7 @@ class AdminController
             $disciplinasProProfessor .=
             "<tr id='row-dpp-$disciplinaProProfessor->id'><td> $professor_array[$dpp] </td>
             <td>$disciplina_array[$dpd]</td><td>$turma_array[$dpt]</td>
-            <td><button class='btn btn-danger btn-sm' id='deletar-dpp' value='$disciplinaProProfessor->id'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
+            <td><button class='btn btn-danger btn-sm' id='deletar-dpp' value='$disciplinaProProfessor->id'><span class='glyphicon glyphicon-trash'></span> Deletar</button></td></tr>";
         }
         
         $args = [
@@ -237,7 +238,7 @@ class AdminController
         $this->util->loadTemplate('admin/professores.html', $args);
     }
     
-    public function verProfessor(int $idProfessor)
+    public function verProfessor($idProfessor)
     {
         $this->links = $this->util->generateLinks('../');
 
@@ -258,7 +259,7 @@ class AdminController
             'arquivos' => $arquivos_do_diario
         ];
         
-        $deletar = "<button class='btn btn-danger btn-sm' id='deletar' value='$professor->id'><span class='glyphicon glyphicon-remove'></span> Deletar professor</button>";
+        $deletar = "<button class='btn btn-danger btn-sm' id='deletar' value='$professor->id'><span class='glyphicon glyphicon-trash'></span> Deletar professor</button>";
         
         $args = [
             'ID' => $professor->id,
@@ -308,8 +309,13 @@ class AdminController
         $disciplina = $data['disciplina'];
         $turma = $data['turma'];
         $professor = $data['professor'];
-        
-        $this->professorStorage->adicionarMateriaPorProfessor($disciplina, $turma, $professor);
+
+        $disponivel = $this->professorStorage->verificarMateriaPorProfessor($disciplina, $turma, $professor);
+
+        if (count($disponivel) === 0) {
+            $this->professorStorage->adicionarMateriaPorProfessor($disciplina, $turma, $professor);
+        }
+
         header("Location: /webschool/admin/professores");
     }
     
@@ -335,7 +341,7 @@ class AdminController
         $this->util->loadTemplate('admin/responsaveis.html', $args);
     }
     
-    public function verResponsavel(int $idResponsavel)
+    public function verResponsavel($idResponsavel)
     {
         $this->links = $this->util->generateLinks('../');
 
@@ -345,7 +351,8 @@ class AdminController
 
         $alunos = '';
         foreach ($alunosQuery as $aluno) {
-            $alunos .= "<option value='$aluno->aluno'>$aluno->nome (".$this->turmaStorage->pegarTurmaDoAlunoPorUsuario($aluno->id).")</option>";
+            $nome = $aluno->nome .$this->turmaStorage->pegarTurmaDoAlunoPorUsuario($aluno->id);
+            $alunos .= "<tr><td>$nome</td><td><button class='btn badge badge-primary escolher_aluno' style='padding: 2px 8px; color: white;' value='$aluno->aluno' id='$nome' data-dismiss='modal' >Escolher</button></td></tr>";
         }
         
         $alunosDoResponsavel = $this->alunoStorage->verAlunosDoResponsavel($responsavel->responsavel);
@@ -353,7 +360,7 @@ class AdminController
         $filhos = '';
         foreach ($alunosDoResponsavel as $user) {
             $filhos .= "<tr id='row-$user->rpa'><td>$user->nome</td><td>".$this->turmaStorage->pegarTurmaDoAlunoPorUsuario($user->id)."</td>
-            <td><button class='btn btn-danger btn-sm' id='deletar' value='$user->rpa'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
+            <td><button class='btn btn-danger btn-sm' id='deletar' value='$user->rpa'><span class='glyphicon glyphicon-trash'></span> Deletar</button></td></tr>";
         }
         
         $endereco = $this->enderecoStorage->verEndereco($responsavel->endereco);
@@ -367,7 +374,7 @@ class AdminController
             'responsavel_por' => $responsavel_por
         ];
         
-        $deletar = "<button class='btn btn-danger btn-sm' id='deletar-responsavel' value='$responsavel->id'><span class='glyphicon glyphicon-remove'></span> Deletar responsável</button>";
+        $deletar = "<button class='btn btn-danger btn-sm' id='deletar-responsavel' value='$responsavel->id'><span class='glyphicon glyphicon-trash'></span> Deletar responsável</button>";
         
         $args = [
             'ID' => $responsavel->id,
@@ -435,7 +442,7 @@ class AdminController
             $turmas .=
              "<tr id='row-$turma->id'><td>$turma->serie º Série $turma->nome</td>
              <td><a href='turma/$turma->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>
-             <td><button class='btn btn-danger btn-sm' id='deletar' value='$turma->id'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
+             <td><button class='btn btn-danger btn-sm' id='deletar' value='$turma->id'><span class='glyphicon glyphicon-trash'></span> Deletar</button></td></tr>";
         }
         
         $args = [
@@ -446,7 +453,7 @@ class AdminController
         $this->util->loadTemplate('admin/turmas.html', $args);
     }
     
-    public function verTurma(int $turma)
+    public function verTurma($turma)
     {
         $this->links = $this->util->generateLinks('../');
 
@@ -496,7 +503,7 @@ class AdminController
             $disciplinas .=
              "<tr id='row-$disciplina->id'><td>$disciplina->nome</td>
              <td><a href='disciplina/$disciplina->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>
-             <td><button class='btn btn-danger btn-sm' id='deletar' value='$disciplina->id'><span class='glyphicon glyphicon-remove'></span> Deletar</button></td></tr>";
+             <td><button class='btn btn-danger btn-sm' id='deletar' value='$disciplina->id'><span class='glyphicon glyphicon-trash'></span> Deletar</button></td></tr>";
         }
         
         $args = [
@@ -507,7 +514,7 @@ class AdminController
         $this->util->loadTemplate('admin/disciplinas.html', $args);
     }
     
-    public function verMateria(int $materia)
+    public function verMateria($materia)
     {
         $this->links = $this->util->generateLinks('../');
 

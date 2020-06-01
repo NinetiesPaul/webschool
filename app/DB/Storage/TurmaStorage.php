@@ -93,7 +93,7 @@ class TurmaStorage
 
         $nomeTurma = 'Sem turma';
         if ($turmaQuery) {
-            $nomeTurma = " na " . $turmaQuery->serie.'º Série '.$turmaQuery->nome;
+            $nomeTurma = "na " . $turmaQuery->serie.'º Série '.$turmaQuery->nome;
         }
 
         return $nomeTurma;

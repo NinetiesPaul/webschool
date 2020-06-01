@@ -195,6 +195,12 @@ class ProfessorStorage
             $this->db->diario()->inserirDiarioDeClasse($diario);
         }
     }
+
+    public function verificarMateriaPorProfessor($disciplina, $turma, $professor)
+    {
+        $professorQuery = $this->db->query("select * from disciplina_por_professor where disciplina = $disciplina and turma = $turma and professor = $professor");
+        return $professorQuery->fetchAll(PDO::FETCH_OBJ);
+    }
     
     public function removerProfessorPorMateria($id)
     {

@@ -133,7 +133,7 @@ class ResponsavelStorage
         $user = $this->db->prepare("INSERT INTO responsavel_por_aluno (responsavel, aluno)
                 VALUES (:responsavel, :aluno)");
 
-        $count = $user->execute([
+        $user->execute([
             'responsavel' => $responsavel,
             'aluno' => $aluno,
         ]);

@@ -28,6 +28,7 @@ class GeneralController
     protected $materiaStorage;
     protected $turmaStorage;
     protected $usuarioStorage;
+    protected $links;
 
     public function __construct()
     {
@@ -38,6 +39,7 @@ class GeneralController
         $this->materiaStorage = new MateriaStorage();
         $this->turmaStorage = new TurmaStorage();
         $this->usuarioStorage = new UsuarioStorage();
+        $this->links = $this->util->generateLinks();
         session_start();
     }
     
@@ -162,6 +164,7 @@ class GeneralController
     
     public function visualizarPerfil()
     {
+        $this->links = $this->util->generateLinks('', true);
         $user = $_SESSION['user'];
         
         $tipo = (isset($user->aluno)) ? 'aluno' : ((isset($user->professor) > 0) ? 'professor' : 'responsavel');
@@ -208,7 +211,8 @@ class GeneralController
             'ENDERECO_COMPLEMENTO' => $user->endereco->complemento,
             'LOGADO' => $user->nome,
             'ESTADOS' => $estados,
-            'ESTADO_ATUAL' => $this->enderecoStorage->pegarEstadoPeloEstado($user->endereco->estado)
+            'ESTADO_ATUAL' => $this->enderecoStorage->pegarEstadoPeloEstado($user->endereco->estado),
+            'LINKS' => $this->links
         ];
         
         $this->util->loadTemplate('perfil.html', $args);
