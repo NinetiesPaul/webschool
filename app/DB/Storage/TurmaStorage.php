@@ -71,34 +71,6 @@ class TurmaStorage
         return $alunosQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public function pegarTurmaDoAlunoPorTurma($id)
-    {
-        $turmaQuery = $this->db->query("select * from turma where id = $id");
-        $turmaQuery = $turmaQuery->fetchObject();
-
-        return $turmaQuery->serie.'º Série '.$turmaQuery->nome;
-    }
-
-    public function pegarTurmaDoAlunoPorUsuario($idUsuario)
-    {
-        $alunoQuery = $this->db->query("
-            select * from aluno where usuario = $idUsuario
-        ");
-        $alunoQuery = $alunoQuery->fetchObject();
-
-        $turmaQuery = $this->db->query("
-            select * from turma where id = $alunoQuery->turma
-        ");
-        $turmaQuery = $turmaQuery->fetchObject();
-
-        $nomeTurma = 'Sem turma';
-        if ($turmaQuery) {
-            $nomeTurma = "na " . $turmaQuery->serie.'º Série '.$turmaQuery->nome;
-        }
-
-        return $nomeTurma;
-    }
-
     private function throwError($msg)
     {
         throw new \Exception($msg);

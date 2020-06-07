@@ -22,19 +22,28 @@ class NotaStorage
 
     public function verTurmasComNotaDoAluno($aluno)
     {
-        $exec = $this->db->query("select turma from nota_por_aluno where aluno=$aluno group by turma");
+        $exec = $this->db->query("
+        SELECT npa.turma, CONCAT(t.serie, 'º Série ', t.nome) AS nome_turma
+        FROM nota_por_aluno npa
+        JOIN turma t ON npa.turma = t.id
+        WHERE aluno=$aluno
+        GROUP BY turma");
         return $exec->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verNotasPorTruma($aluno, $turma)
     {
-        $exec = $this->db->query("select * from nota_por_aluno where aluno=$aluno and turma=$turma order by disciplina");
-        return $exec->fetchAll(PDO::FETCH_OBJ);
-    }
-
-    public function verTurmasdoAluno($idAluno)
-    {
-        $exec = $this->db->query("select turma from nota_por_aluno where aluno=$idAluno group by turma");
+        $exec = $this->db->query("
+        SELECT npa.*, CONCAT('Prof. ',IFNULL(u.nome, 'INDEFINIDO')) AS nome_professor, IFNULL(p.id, 'ID indefinido') AS professor, d.nome AS materia, CONCAT(t.serie, 'º Série ', t.nome) as turma
+        FROM nota_por_aluno npa
+        JOIN disciplina d ON d.id = npa.disciplina
+        JOIN turma t ON t.id = npa.turma
+        LEFT JOIN disciplina_por_professor dpp ON dpp.disciplina = d.id AND dpp.turma = t.id
+        LEFT JOIN professor p ON p.id = dpp.professor
+        LEFT JOIN usuario u ON u.id = p.usuario
+        WHERE npa.aluno = $aluno
+        AND npa.turma = $turma
+        ORDER BY npa.disciplina");
         return $exec->fetchAll(PDO::FETCH_OBJ);
     }
     
@@ -58,6 +67,18 @@ class NotaStorage
             'idDisciplina' => $disciplina,
             'idTurma' => $turma,
         ]);
+    }
+
+    public function verTurmasEMateriasComNotasDoAluno($aluno)
+    {
+        $alunosQuery = $this->db->query("
+            SELECT npa.turma, CONCAT(t.serie, 'º Série ', t.nome) AS nome_da_turma
+            FROM nota_por_aluno npa
+            JOIN turma t ON npa.turma = t.id
+            WHERE aluno=$aluno
+            GROUP BY turma
+        ");
+        return $alunosQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verNotasPorAlunosDaDisciplinaETurma($disciplina, $turma)
