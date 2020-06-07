@@ -15,8 +15,8 @@ use App\Controllers\AjaxControllers\ProfessorController as AjaxProfessor;
 //general
 
 SimpleRouter::get('/webschool/', function() {
-    $index = new IndexController;
-    $index->index();
+    $general = new GeneralController;
+    $general->index();
 });
 
 SimpleRouter::post('/webschool/gerarBoletim', function() {
