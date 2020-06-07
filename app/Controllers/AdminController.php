@@ -77,7 +77,7 @@ class AdminController
             $is_deleted = ($aluno->is_deleted) ? "<span class='label-status_$aluno->id label-success'>Ativo</span>" : "<span class='label-status_$aluno->id label-danger'>Inativo</span>";
             $alunos .=
             "<tr id='row-$aluno->id'><td>$aluno->nome </td>
-            <td>".$this->turmaStorage->pegarTurmaDoAlunoPorUsuario($aluno->id)."</td>
+            <td>$aluno->nome_turma</td>
             <td>$is_deleted</td>
             <td><a href='aluno/$aluno->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
             <a href='#' class='btn desativar' id='$aluno->id'><span class='glyphicon glyphicon-ban-circle'></span> </a></td></tr>";
@@ -97,13 +97,12 @@ class AdminController
         $this->links = $this->util->generateLinks('../');
 
         $aluno = $this->alunoStorage->verAluno($idAluno);
-        $turmaAtual = $this->alunoStorage->pegarIdDaTurmaDoAlunoPorAlunoId($aluno->aluno);
         $turmaQuery = $this->turmaStorage->verTurmas();
         
         $turmas = '';
         
         foreach ($turmaQuery as $turma) {
-            $selected = ($turmaAtual == $turma->id)? 'selected' : '';
+            $selected = ($aluno->turma == $turma->id)? 'selected' : '';
             $turmas .= "<option value='$turma->id' $selected>$turma->serie º Série $turma->nome</option>";
         }
         
@@ -351,7 +350,7 @@ class AdminController
 
         $alunos = '';
         foreach ($alunosQuery as $aluno) {
-            $nome = $aluno->nome .$this->turmaStorage->pegarTurmaDoAlunoPorUsuario($aluno->id);
+            $nome = $aluno->nome . " (" . $aluno->nome_turma . ")";
             $alunos .= "<tr><td>$nome</td><td><button class='btn badge badge-primary escolher_aluno' style='padding: 2px 8px; color: white;' value='$aluno->aluno' id='$nome' data-dismiss='modal' >Escolher</button></td></tr>";
         }
         
@@ -359,7 +358,7 @@ class AdminController
 
         $filhos = '';
         foreach ($alunosDoResponsavel as $user) {
-            $filhos .= "<tr id='row-$user->rpa'><td>$user->nome</td><td>".$this->turmaStorage->pegarTurmaDoAlunoPorUsuario($user->id)."</td>
+            $filhos .= "<tr id='row-$user->rpa'><td>$user->nome</td><td>$user->nome_turma</td>
             <td><button class='btn btn-danger btn-sm' id='deletar' value='$user->rpa'><span class='glyphicon glyphicon-trash'></span> Deletar</button></td></tr>";
         }
         

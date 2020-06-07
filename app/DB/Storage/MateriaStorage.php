@@ -20,7 +20,7 @@ class MateriaStorage
         return $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public function verMateria(int $materia)
+    public function verMateria($materia)
     {
         $disciplinaQuery = $this->db->query("select * from disciplina where id = $materia");
         return $disciplinaQuery->fetch(PDO::FETCH_OBJ);
@@ -75,7 +75,7 @@ class MateriaStorage
         return $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public function verMateriaPorProfessorDoProfessor($professor)
+    public function verMateriasDoProfessor($professor)
     {
         $disciplinaQuery = $this->db->query("
             SELECT disciplina_por_professor.*, disciplina.nome as nomeDisciplina, turma.serie, turma.nome FROM disciplina_por_professor
@@ -86,8 +86,13 @@ class MateriaStorage
         return $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public function verMateriaPorProfessorSingle($id)
+    public function verMateriaDoProfessor($id)
     {
+        echo "            SELECT disciplina_por_professor.*, disciplina.nome as nomeDisciplina, turma.serie, turma.nome FROM disciplina_por_professor
+            INNER JOIN disciplina ON disciplina.id = disciplina_por_professor.disciplina
+            INNER JOIN turma ON turma.id = disciplina_por_professor.turma
+            WHERE disciplina_por_professor.id=$id";
+
         $disciplinaQuery = $this->db->query("
             SELECT disciplina_por_professor.*, disciplina.nome as nomeDisciplina, turma.serie, turma.nome FROM disciplina_por_professor
             INNER JOIN disciplina ON disciplina.id = disciplina_por_professor.disciplina
@@ -95,14 +100,6 @@ class MateriaStorage
             WHERE disciplina_por_professor.id=$id
         ");
         return $disciplinaQuery->fetchObject();
-    }
-
-    public function pegarNomeDaDisciplina(int $id)
-    {
-        $disciplinaQuery = $this->db->query("select nome from disciplina where id = $id");
-        $disciplina = $disciplinaQuery->fetchObject();
-
-        return $disciplina->nome;
     }
 
     private function throwError($msg)

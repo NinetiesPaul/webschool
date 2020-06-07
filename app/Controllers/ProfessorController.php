@@ -54,25 +54,12 @@ class ProfessorController
     {
         $user = $_SESSION['user'];
 
-        $disciplinas = $this->materiaStorage->verMateriaPorProfessorDoProfessor($user->professor);
+        $disciplinas = $this->materiaStorage->verMateriasDoProfessor($user->professor);
 
         $turmas = '';
         
         foreach ($disciplinas as $disciplina) {
-            $turmas .= $disciplina->nomeDisciplina.', '.$disciplina->serie.'º Série '.$disciplina->nome;
-            $turmas .= "<p/><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '><span class='glyphicon glyphicon-eye-open'></span> Visualizar</a><br/>";
-
-            $alunosQuery = $this->professorStorage->verMeusAlunos($disciplina->turma, $disciplina->disciplina, $user->professor);
-
-            $text = '<br/>Sem alunos cadastrados nessa turma no momento';
-            if (!empty($alunosQuery)) {
-                $text = '';
-                foreach ($alunosQuery as $aluno) {
-                    $text .= $aluno->nome . '<br/>';
-                }
-            }
-            
-            $turmas .= $text;
+            $turmas .= "<p/><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '>".$disciplina->nomeDisciplina.', '.$disciplina->serie.'º Série '.$disciplina->nome."</a><br/>";
         }
                     
         $args = [
@@ -89,7 +76,7 @@ class ProfessorController
         $this->links = $this->util->generateLinks('../');
 
         $user = $_SESSION['user'];
-        $result = $this->materiaStorage->verMateriaPorProfessorSingle($id);
+        $result = $this->materiaStorage->verMateriaDoProfessor($id);
 
         $disciplina = $result->disciplina;
         $turma = $result->turma;
@@ -97,7 +84,7 @@ class ProfessorController
         $detalhes = '';
         
         $detalhes .= $result->nomeDisciplina.', '.$result->serie.'º Série '.$result->nome;
-        $detalhes .= "<a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a><p/>";
+        $detalhes .= "<p/><a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a><p/>";
 
         $alunosQuery = $this->notaStorage->verNotasPorAlunosDaDisciplinaETurma($disciplina, $turma);
 

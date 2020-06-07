@@ -221,20 +221,6 @@ class ProfessorStorage
         return $professorQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public function verMeusAlunos($turma, $disciplina, $professor)
-    {
-        $alunosQuery = $this->db->query("
-                select distinct usuario.* from usuario, aluno, turma, disciplina_por_professor
-                where usuario.id=aluno.usuario
-                and aluno.turma=disciplina_por_professor.turma
-                and disciplina_por_professor.turma=$turma
-                and disciplina_por_professor.disciplina=$disciplina
-                and disciplina_por_professor.professor=$professor
-                order by usuario.nome
-            ");
-        return $alunosQuery->fetchAll(PDO::FETCH_OBJ);
-    }
-
     private function throwError($msg)
     {
         throw new \Exception($msg);

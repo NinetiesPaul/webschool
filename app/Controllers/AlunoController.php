@@ -56,7 +56,7 @@ class AlunoController
         foreach ($turmas as $turma) {
             $turmaAtual = ($usuario->turma === $turma->turma) ? ' (<b>atual</b>) ' : '';
 
-            $minhasTurmas .= $this->turmaStorage->pegarTurmaDoAlunoPorTurma($turma->turma) . ' ' . $turmaAtual;
+            $minhasTurmas .= $turma->nome_turma . ' ' . $turmaAtual;
             
             $minhasTurmas .=
                 "<br/><button class='btn btn-sm btn-info boletim' id='$user->aluno.$turma->turma'>
@@ -69,7 +69,7 @@ class AlunoController
             <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th><th></th></tr></thead><tbody>";
             
             foreach ($notas as $nota) {
-                $minhasTurmas .= "<tr><td>".$this->materiaStorage->pegarNomeDaDisciplina($nota->disciplina)."</td>
+                $minhasTurmas .= "<tr><td>$nota->materia<br><small>$nota->nome_professor</small></td>
                 <td>$nota->nota1</td>
                 <td>$nota->rec1</td>
                 <td>$nota->nota2</td>
