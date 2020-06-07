@@ -159,8 +159,8 @@ class ResponsavelStorage
         $meusAlunosQuery = $this->db->query("select * from responsavel_por_aluno where responsavel = $responsavel");
         return $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);
     }
-    
-    public function verAlunosDoResponsavelPorAluno($aluno)
+
+    public function verResponsaveisPeloAluno($aluno)
     {
         $meusAlunosQuery = $this->db->query("select * from responsavel_por_aluno where aluno = $aluno");
         return $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);

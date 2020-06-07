@@ -60,7 +60,7 @@ class AdminController extends AjaxController
         $diario_de_classe = $this->diarioStorage->verDiarioDeClassePorAluno($aluno->aluno);
         $nota_por_aluno = $this->notaStorage->verNotasPorAluno($aluno->aluno);
         $arquivos_do_diario = $this->arquivoStorage->verArquivoPorAluno($aluno->aluno);
-        $filho_de = $this->responsavelStorage->verAlunosDoResponsavelPorAluno($aluno->aluno);
+        $filho_de = $this->responsavelStorage->verResponsaveisPeloAluno($aluno->aluno);
 
         $footprint= [
             'usuario' => $aluno,
