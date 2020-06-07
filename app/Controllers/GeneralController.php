@@ -276,7 +276,7 @@ class GeneralController
                 $tipo = $_POST['tipo'];
                 $salt = $_POST['salt'];
 
-                if ($this->usuarioStorage->loginTakenBackEnd($email, $tipo, (int) $userId)) {
+                if ($this->usuarioStorage->loginTaken($email, $tipo, (int) $userId)) {
                     $_SESSION['msg'] = 'E-mail já está em uso';
                     header('Location: /webschool/perfil');
                     exit;

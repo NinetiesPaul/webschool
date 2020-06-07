@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\DB\DB;
 use App\DB\Storage\EnderecoStorage;
 use App\DB\Storage\UsuarioStorage;
 use App\Enum;
@@ -11,7 +10,6 @@ use App\Util;
 
 class AuthController
 {
-    protected $connection;
     protected $enderecoStorage;
     protected $usuarioStorage;
     protected $template;
@@ -19,8 +17,6 @@ class AuthController
 
     public function __construct()
     {
-        $this->connection = new DB();
-
         $this->enderecoStorage = new EnderecoStorage();
         $this->usuarioStorage = new UsuarioStorage();
         $this->template = new Templates();
@@ -82,32 +78,18 @@ class AuthController
         header('Location: /webschool/');
     }
 
-    public function loginTakenAjax()
+    public function loginTaken()
     {
         $data = json_decode(json_encode($_POST), true);
 
         $login = $data["login"];
         $tipo = $data["tipo"];
-        $id = (isset($data["id"])) ? $data['id'] : null;
+        $id = (isset($data["id"])) ? (int) $data['id'] : null;
 
-        $query = "
-            SELECT usuario.id FROM usuario,$tipo
-            WHERE usuario.id = $tipo.usuario
-            and usuario.email = '$login'
-        ";
+        $res = $this->usuarioStorage->loginTaken($login, $tipo, $id);
 
-        if ($id) {
-            $query .= " and usuario.id != $id";
-        }
-
-        $cidadeQuery = $this->connection->query($query);
-        $cidadeQuery = $cidadeQuery->fetchObject();
-
-        $res = false;
-        if ($cidadeQuery) {
-            $res = true;
-        }
-
-        echo $res;
+        echo json_encode([
+            'loginTaken' => $res
+        ]);
     }
 }

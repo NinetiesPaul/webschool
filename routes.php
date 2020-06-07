@@ -319,5 +319,5 @@ SimpleRouter::get('/webschool/logout', function() {
 
 SimpleRouter::post('/webschool/verificarLogin', function() {
     $auth = new AuthController;
-    $auth->loginTakenAjax();
+    $auth->loginTaken();
 });
