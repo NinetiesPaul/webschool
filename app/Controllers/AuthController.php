@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\DB\DB;
+use App\Enum;
 use App\Templates;
 use App\Util;
 
@@ -26,12 +27,20 @@ class AuthController
         $tipo = $data['tipo'];
         $email = $data['email'];
         $password = $data['password'];
+
+        $turma = ($tipo === Enum::TIPO_ALUNO) ? ', a.turma AS turma_atual' : '';
+
+        $alias = substr($tipo, 0, 1);
+
+        $query = "
+            SELECT u.*, $alias.id AS $tipo $turma
+                FROM usuario u
+                JOIN $tipo $alias ON $alias.usuario = u.id
+                WHERE u.id = $alias.usuario
+                AND u.email = '$email'
+        ";
     
-        $usersQuery = $this->connection->query("
-            SELECT usuario.*, $tipo.id AS $tipo FROM usuario, $tipo
-            WHERE usuario.id=$tipo.usuario
-            AND usuario.email='$email'
-            ");
+        $usersQuery = $this->connection->query($query);
 
         $user = $usersQuery->fetchObject();
         

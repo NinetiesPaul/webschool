@@ -48,13 +48,11 @@ class AlunoController
     {
         $user = $_SESSION['user'];
 
-        $usuario = $this->alunoStorage->verTurmaDoAluno($user->id);
-
         $turmas = $this->notaStorage->verTurmasComNotaDoAluno($user->aluno);
 
         $minhasTurmas = '';
         foreach ($turmas as $turma) {
-            $turmaAtual = ($usuario->turma === $turma->turma) ? ' (<b>atual</b>) ' : '';
+            $turmaAtual = ($user->turma_atual === $turma->turma) ? ' (<b>atual</b>) ' : '';
 
             $minhasTurmas .= $turma->nome_turma . ' ' . $turmaAtual;
             

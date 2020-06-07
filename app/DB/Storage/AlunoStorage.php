@@ -246,12 +246,6 @@ class AlunoStorage
         return $usersQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
-    public function verTurmaDoAluno($usuario)
-    {
-        $usuarioQuery = $this->db->query("select turma from aluno where usuario = $usuario");
-        return $usuarioQuery->fetch(PDO::FETCH_OBJ);
-    }
-
     public function pegarNomeDoAlunoPorAlunoId($id)
     {
         $userQuery = $this->db->query("select usuario.* from usuario,aluno where usuario.id=aluno.usuario and aluno.id=$id");
