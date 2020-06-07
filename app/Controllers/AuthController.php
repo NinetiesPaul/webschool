@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\DB\DB;
+use App\DB\Storage\EnderecoStorage;
+use App\DB\Storage\UsuarioStorage;
 use App\Enum;
 use App\Templates;
 use App\Util;
@@ -10,12 +12,17 @@ use App\Util;
 class AuthController
 {
     protected $connection;
+    protected $enderecoStorage;
+    protected $usuarioStorage;
     protected $template;
     protected $util;
 
     public function __construct()
     {
         $this->connection = new DB();
+
+        $this->enderecoStorage = new EnderecoStorage();
+        $this->usuarioStorage = new UsuarioStorage();
         $this->template = new Templates();
         $this->util = new Util();
     }
@@ -32,17 +39,7 @@ class AuthController
 
         $alias = substr($tipo, 0, 1);
 
-        $query = "
-            SELECT u.*, $alias.id AS $tipo $turma
-                FROM usuario u
-                JOIN $tipo $alias ON $alias.usuario = u.id
-                WHERE u.id = $alias.usuario
-                AND u.email = '$email'
-        ";
-    
-        $usersQuery = $this->connection->query($query);
-
-        $user = $usersQuery->fetchObject();
+        $user = $this->usuarioStorage->verificarUsuario($alias, $turma, $tipo, $email);
         
         $msg = '';
         $redirect = '';
@@ -53,12 +50,7 @@ class AuthController
 
             if ($password == $actualPassword) {
                 if ($user->endereco) {
-                    $enderecoQuery = $this->connection->query("
-                        SELECT * from endereco where id = $user->endereco
-                    ");
-
-                    $endereco = $enderecoQuery->fetchObject();
-                    $user->endereco = $endereco;
+                    $user->endereco = $this->enderecoStorage->verEndereco($user->endereco);
                 }
 
                 session_start();

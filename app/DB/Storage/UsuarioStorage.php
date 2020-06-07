@@ -48,4 +48,19 @@ class UsuarioStorage
 
         return $res;
     }
+
+    public function verificarUsuario($alias, $turma, $tipo, $email)
+    {
+        $query = "
+            SELECT u.*, $alias.id AS $tipo $turma
+                FROM usuario u
+                JOIN $tipo $alias ON $alias.usuario = u.id
+                WHERE u.id = $alias.usuario
+                AND u.email = '$email'
+        ";
+
+        $usersQuery = $this->db->query($query);
+
+        return $usersQuery->fetchObject();
+    }
 }
