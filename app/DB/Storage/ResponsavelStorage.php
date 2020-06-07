@@ -29,7 +29,7 @@ class ResponsavelStorage
     
     public function adicionarResponsavel($email, $nome, $password, $salt)
     {
-        if ($this->db->usuario()->loginTakenBackEnd($email, Enum::TIPO_RESPONSAVEL)) {
+        if ($this->db->usuario()->loginTaken($email, Enum::TIPO_RESPONSAVEL)) {
             return false;
         }
 
@@ -55,7 +55,7 @@ class ResponsavelStorage
     
     public function alterarResponsavel($userId, $nome, $email, $password, $salt)
     {
-        if ($this->db->usuario()->loginTakenBackEnd($email, Enum::TIPO_RESPONSAVEL, $userId)) {
+        if ($this->db->usuario()->loginTaken($email, Enum::TIPO_RESPONSAVEL, $userId)) {
             return false;
         }
 
@@ -159,8 +159,8 @@ class ResponsavelStorage
         $meusAlunosQuery = $this->db->query("select * from responsavel_por_aluno where responsavel = $responsavel");
         return $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);
     }
-    
-    public function verAlunosDoResponsavelPorAluno($aluno)
+
+    public function verResponsaveisPeloAluno($aluno)
     {
         $meusAlunosQuery = $this->db->query("select * from responsavel_por_aluno where aluno = $aluno");
         return $meusAlunosQuery->fetchAll(PDO::FETCH_OBJ);

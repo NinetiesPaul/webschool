@@ -35,7 +35,7 @@ class AlunoStorage
 
     public function adicionarAluno($email, $nome, $password, $salt, $turma)
     {
-        if ($this->db->usuario()->loginTakenBackEnd($email, Enum::TIPO_ALUNO)) {
+        if ($this->db->usuario()->loginTaken($email, Enum::TIPO_ALUNO)) {
             return false;
         }
         
@@ -84,7 +84,7 @@ class AlunoStorage
 
     public function alterarAluno($userId, $idAluno, $nome, $email, $password, $salt, $turma)
     {
-        if ($this->db->usuario()->loginTakenBackEnd($email, Enum::TIPO_ALUNO, $userId)) {
+        if ($this->db->usuario()->loginTaken($email, Enum::TIPO_ALUNO, $userId)) {
             return false;
         }
 
@@ -244,12 +244,6 @@ class AlunoStorage
             WHERE responsavel = $responsavel
         ");
         return $usersQuery->fetchAll(PDO::FETCH_OBJ);
-    }
-
-    public function verTurmaDoAluno($usuario)
-    {
-        $usuarioQuery = $this->db->query("select turma from aluno where usuario = $usuario");
-        return $usuarioQuery->fetch(PDO::FETCH_OBJ);
     }
 
     public function pegarNomeDoAlunoPorAlunoId($id)

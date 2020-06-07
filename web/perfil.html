@@ -17,12 +17,13 @@
                     url: "/webschool/verificarLogin",
                     data:'login='+email+'&tipo='+tipo+'&id='+id,
                     success: function(data){
-                        if (data == 1){
-                            $("#disponibilidade").show();
+                        data = jQuery.parseJSON(data)
+                        if (data.loginTaken === true){
                             $("#atualizar").attr("disabled", true);
+                            $("#disponibilidade").slideDown("slow", function(){});
                         } else {
-                            $("#disponibilidade").hide();
                             $("#atualizar").attr("disabled", false);
+                            $("#disponibilidade").slideUp("slow", function(){});
                         }
                     }
                 });

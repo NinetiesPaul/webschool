@@ -88,11 +88,6 @@ class MateriaStorage
 
     public function verMateriaDoProfessor($id)
     {
-        echo "            SELECT disciplina_por_professor.*, disciplina.nome as nomeDisciplina, turma.serie, turma.nome FROM disciplina_por_professor
-            INNER JOIN disciplina ON disciplina.id = disciplina_por_professor.disciplina
-            INNER JOIN turma ON turma.id = disciplina_por_professor.turma
-            WHERE disciplina_por_professor.id=$id";
-
         $disciplinaQuery = $this->db->query("
             SELECT disciplina_por_professor.*, disciplina.nome as nomeDisciplina, turma.serie, turma.nome FROM disciplina_por_professor
             INNER JOIN disciplina ON disciplina.id = disciplina_por_professor.disciplina

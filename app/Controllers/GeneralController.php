@@ -14,6 +14,7 @@ use App\DB\Storage\MateriaStorage;
 use App\DB\Storage\NotaStorage;
 use App\DB\Storage\TurmaStorage;
 use App\DB\Storage\UsuarioStorage;
+use App\Enum;
 use App\Templates;
 use App\Util;
 use PDO;
@@ -43,6 +44,28 @@ class GeneralController
         $this->notaStorage = new NotaStorage();
         $this->links = $this->util->generateLinks();
         session_start();
+    }
+
+    public function index()
+    {
+        session_start();
+        if (isset($_SESSION['tipo'])) {
+            $tipo = $_SESSION['tipo'];
+            if ($tipo == Enum::TIPO_ADMIN) {
+                header('Location: admin/home');
+            }
+            if ($tipo == Enum::TIPO_RESPONSAVEL) {
+                header('Location: responsavel/home');
+            }
+            if ($tipo == Enum::TIPO_PROFESSOR) {
+                header('Location: professor/home');
+            }
+            if ($tipo == Enum::TIPO_ALUNO) {
+                header('Location: aluno/home');
+            }
+        }
+
+        $this->util->loadTemplate('index.html');
     }
     
     public function gerarBoletim()
@@ -253,7 +276,7 @@ class GeneralController
                 $tipo = $_POST['tipo'];
                 $salt = $_POST['salt'];
 
-                if ($this->usuarioStorage->loginTakenBackEnd($email, $tipo, (int) $userId)) {
+                if ($this->usuarioStorage->loginTaken($email, $tipo, (int) $userId)) {
                     $_SESSION['msg'] = 'E-mail já está em uso';
                     header('Location: /webschool/perfil');
                     exit;

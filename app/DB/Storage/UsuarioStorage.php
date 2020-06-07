@@ -26,7 +26,7 @@ class UsuarioStorage
         return (int) $this->db->lastInsertId();
     }
 
-    public function loginTakenBackEnd($login, $tipo, $id = false)
+    public function loginTaken($login, $tipo, $id = false)
     {
         $query = "
             SELECT usuario.id FROM usuario,$tipo
@@ -47,5 +47,20 @@ class UsuarioStorage
         }
 
         return $res;
+    }
+
+    public function verificarUsuario($alias, $turma, $tipo, $email)
+    {
+        $query = "
+            SELECT u.*, $alias.id AS $tipo $turma
+                FROM usuario u
+                JOIN $tipo $alias ON $alias.usuario = u.id
+                WHERE u.id = $alias.usuario
+                AND u.email = '$email'
+        ";
+
+        $usersQuery = $this->db->query($query);
+
+        return $usersQuery->fetchObject();
     }
 }

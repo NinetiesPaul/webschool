@@ -2,19 +2,23 @@
 
 namespace App\Controllers;
 
-use App\DB\DB;
+use App\DB\Storage\EnderecoStorage;
+use App\DB\Storage\UsuarioStorage;
+use App\Enum;
 use App\Templates;
 use App\Util;
 
 class AuthController
 {
-    protected $connection;
+    protected $enderecoStorage;
+    protected $usuarioStorage;
     protected $template;
     protected $util;
 
     public function __construct()
     {
-        $this->connection = new DB();
+        $this->enderecoStorage = new EnderecoStorage();
+        $this->usuarioStorage = new UsuarioStorage();
         $this->template = new Templates();
         $this->util = new Util();
     }
@@ -26,14 +30,12 @@ class AuthController
         $tipo = $data['tipo'];
         $email = $data['email'];
         $password = $data['password'];
-    
-        $usersQuery = $this->connection->query("
-            SELECT usuario.*, $tipo.id AS $tipo FROM usuario, $tipo
-            WHERE usuario.id=$tipo.usuario
-            AND usuario.email='$email'
-            ");
 
-        $user = $usersQuery->fetchObject();
+        $turma = ($tipo === Enum::TIPO_ALUNO) ? ', a.turma AS turma_atual' : '';
+
+        $alias = substr($tipo, 0, 1);
+
+        $user = $this->usuarioStorage->verificarUsuario($alias, $turma, $tipo, $email);
         
         $msg = '';
         $redirect = '';
@@ -44,12 +46,7 @@ class AuthController
 
             if ($password == $actualPassword) {
                 if ($user->endereco) {
-                    $enderecoQuery = $this->connection->query("
-                        SELECT * from endereco where id = $user->endereco
-                    ");
-
-                    $endereco = $enderecoQuery->fetchObject();
-                    $user->endereco = $endereco;
+                    $user->endereco = $this->enderecoStorage->verEndereco($user->endereco);
                 }
 
                 session_start();
@@ -81,32 +78,18 @@ class AuthController
         header('Location: /webschool/');
     }
 
-    public function loginTakenAjax()
+    public function loginTaken()
     {
         $data = json_decode(json_encode($_POST), true);
 
         $login = $data["login"];
         $tipo = $data["tipo"];
-        $id = (isset($data["id"])) ? $data['id'] : null;
+        $id = (isset($data["id"])) ? (int) $data['id'] : null;
 
-        $query = "
-            SELECT usuario.id FROM usuario,$tipo
-            WHERE usuario.id = $tipo.usuario
-            and usuario.email = '$login'
-        ";
+        $res = $this->usuarioStorage->loginTaken($login, $tipo, $id);
 
-        if ($id) {
-            $query .= " and usuario.id != $id";
-        }
-
-        $cidadeQuery = $this->connection->query($query);
-        $cidadeQuery = $cidadeQuery->fetchObject();
-
-        $res = false;
-        if ($cidadeQuery) {
-            $res = true;
-        }
-
-        echo $res;
+        echo json_encode([
+            'loginTaken' => $res
+        ]);
     }
 }

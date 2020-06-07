@@ -111,7 +111,7 @@ class AdminController
         $diario_de_classe = $this->diarioStorage->verDiarioDeClassePorAluno($aluno->aluno);
         $nota_por_aluno = $this->notaStorage->verNotasPorAluno($aluno->aluno);
         $arquivos_do_diario = $this->arquivoStorage->verArquivoPorAluno($aluno->aluno);
-        $filho_de = $this->responsavelStorage->verAlunosDoResponsavelPorAluno($aluno->aluno);
+        $filho_de = $this->responsavelStorage->verResponsaveisPeloAluno($aluno->aluno);
         
         $footprint = [
             'usuario' => $aluno,
@@ -364,7 +364,7 @@ class AdminController
         
         $endereco = $this->enderecoStorage->verEndereco($responsavel->endereco);
         $avatar = $this->avatarStorage->verAvatar($responsavel->id);
-        $responsavel_por = $this->responsavelStorage->verAlunosDoResponsavel($responsavel->responsavel);
+        $responsavel_por = $alunosDoResponsavel;
         
         $footprint = [
             'usuario' => $responsavel,
