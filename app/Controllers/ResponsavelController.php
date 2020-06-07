@@ -73,14 +73,14 @@ class ResponsavelController
 
         $user = $_SESSION['user'];
         
-        $turmas = $this->notaStorage->verTurmasdoAluno($idAluno);
+        $turmas = $this->notaStorage->verTurmasComNotaDoAluno($idAluno);
 
         $notas = '';
         
         foreach ($turmas as $turma) {
             $turmaAtual = ($this->alunoStorage->pegarIdDaTurmaDoAlunoPorAlunoId($idAluno) === $turma->turma) ? ' (<b>atual</b>) ' : '';
 
-            $notas .= $this->turmaStorage->pegarTurmaDoAlunoPorTurma($turma->turma) . ' ' . $turmaAtual;
+            $notas .= $turma->nome_turma . ' ' . $turmaAtual;
             
             $notas .=
                 "<button class='btn btn-sm btn-info boletim' id='$idAluno.$turma->turma'>
@@ -89,11 +89,11 @@ class ResponsavelController
             
             $notasQuery = $this->notaStorage->verNotasPorTruma($idAluno, $turma->turma);
 
-            $notas .= "<table style='margin-left: auto; margin-right: auto; font-size: 13;' class='table'>
+            $notas .= "<table style='margin-left: auto; margin-right: auto; font-size: 13px;' class='table'>
             <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th><th></th></tr></thead><tbody>";
             
             foreach ($notasQuery as $nota) {
-                $notas .= "<tr><td>".$this->materiaStorage->pegarNomeDaDisciplina($nota->disciplina)."</td>
+                $notas .= "<tr><td>$nota->materia<br><small>$nota->nome_professor</small></td>
                 <td>$nota->nota1</td>
                 <td>$nota->rec1</td>
                 <td>$nota->nota2</td>

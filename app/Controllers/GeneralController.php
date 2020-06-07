@@ -11,13 +11,13 @@ namespace App\Controllers;
 use App\DB\DB;
 use App\DB\Storage\EnderecoStorage;
 use App\DB\Storage\MateriaStorage;
+use App\DB\Storage\NotaStorage;
 use App\DB\Storage\TurmaStorage;
 use App\DB\Storage\UsuarioStorage;
 use App\Templates;
 use App\Util;
 use PDO;
 use tFPDF;
-use DateTime;
 
 class GeneralController
 {
@@ -28,6 +28,7 @@ class GeneralController
     protected $materiaStorage;
     protected $turmaStorage;
     protected $usuarioStorage;
+    protected $notaStorage;
     protected $links;
 
     public function __construct()
@@ -39,6 +40,7 @@ class GeneralController
         $this->materiaStorage = new MateriaStorage();
         $this->turmaStorage = new TurmaStorage();
         $this->usuarioStorage = new UsuarioStorage();
+        $this->notaStorage = new NotaStorage();
         $this->links = $this->util->generateLinks();
         session_start();
     }
@@ -48,8 +50,7 @@ class GeneralController
         $aluno = $_POST["aluno-pdf"];
         $turma = $_POST["turma-pdf"];
 
-        $notasQuery = $this->connection->query("select * from nota_por_aluno where aluno=$aluno and turma=$turma order by disciplina");
-        $notas = $notasQuery->fetchAll(PDO::FETCH_OBJ);
+        $notas = $this->notaStorage->verNotasPorTruma($aluno, $turma);
 
         $pdf = new tFPDF();
         $pdf->AddPage();
@@ -78,7 +79,8 @@ class GeneralController
         // Data
         $fill = false;
         foreach ($notas as $row) {
-            $pdf->Cell(40, 6, $this->materiaStorage->pegarNomeDaDisciplina($row->disciplina), 'LR', 0, 'L', $fill);
+            $pdf->SetFont('DejaVu', '', 8);
+            $pdf->Cell(40, 6, $row->materia, 'LR', 0, 'L', $fill);
             $pdf->Cell(10, 6, $row->nota1, 'LR', 0, 'L', $fill);
             $pdf->Cell(10, 6, $row->rec1, 'LR', 0, 'L', $fill);
             $pdf->Cell(10, 6, $row->nota2, 'LR', 0, 'L', $fill);
@@ -87,6 +89,17 @@ class GeneralController
             $pdf->Cell(10, 6, $row->rec3, 'LR', 0, 'L', $fill);
             $pdf->Cell(10, 6, $row->nota4, 'LR', 0, 'L', $fill);
             $pdf->Cell(10, 6, $row->rec4, 'LR', 0, 'L', $fill);
+            $pdf->Ln();
+            $pdf->SetFont('DejaVu', '', 4);
+            $pdf->Cell(40, 2, $row->nome_professor, 'LR', 0, 'L', $fill);
+            $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+            $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+            $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+            $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+            $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+            $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+            $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+            $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
             $pdf->Ln();
             $fill = !$fill;
         }
@@ -102,18 +115,13 @@ class GeneralController
         $aluno = $_POST["aluno-pdf"];
         
         $aluno = explode('.', $aluno);
-   
-        $usuarioQuery = $this->connection->query("select * from aluno where usuario=$aluno[1]");
-        $usuario = $usuarioQuery->fetch(PDO::FETCH_OBJ);
 
-        $turmasQuery = $this->connection->query("select turma from nota_por_aluno where aluno=$aluno[0] group by turma");
-        $turmas = $turmasQuery->fetchAll(PDO::FETCH_OBJ);
+        $turmas = $this->notaStorage->verTurmasEMateriasComNotasDoAluno($aluno[0]);
 
         $pdf = new tFPDF();
 
         foreach ($turmas as $turma) {
-            $notasQuery = $this->connection->query("select * from nota_por_aluno where aluno=$aluno[0] and turma=$turma->turma order by disciplina");
-            $notas = $notasQuery->fetchAll(PDO::FETCH_OBJ);
+            $notas = $this->notaStorage->verNotasPorTruma($aluno[0], $turma->turma);
 
             $pdf->AddPage();
 
@@ -126,7 +134,7 @@ class GeneralController
             $pdf->SetFont('DejaVu', '', 8);
             // Header
 
-            $pdf->Cell(120, 7, $this->turmaStorage->pegarTurmaDoAlunoPorTurma($turma->turma), 1, 0, 'C', true);
+            $pdf->Cell(120, 7, $turma->nome_da_turma, 1, 0, 'C', true);
             $pdf->Ln();
             $headers = ['Matéria','Nota 1', 'Rec. 1', 'Nota 2', 'Rec. 2', 'Nota 3', 'Rec. 3', 'Nota 4', 'Rec. 4'];
 
@@ -142,7 +150,8 @@ class GeneralController
             // Data
             $fill = false;
             foreach ($notas as $row) {
-                $pdf->Cell(40, 6, $this->materiaStorage->pegarNomeDaDisciplina($row->disciplina), 'LR', 0, 'L', $fill);
+                $pdf->SetFont('DejaVu', '', 8);
+                $pdf->Cell(40, 6, $row->materia, 'LR', 0, 'L', $fill);
                 $pdf->Cell(10, 6, $row->nota1, 'LR', 0, 'L', $fill);
                 $pdf->Cell(10, 6, $row->rec1, 'LR', 0, 'L', $fill);
                 $pdf->Cell(10, 6, $row->nota2, 'LR', 0, 'L', $fill);
@@ -151,6 +160,17 @@ class GeneralController
                 $pdf->Cell(10, 6, $row->rec3, 'LR', 0, 'L', $fill);
                 $pdf->Cell(10, 6, $row->nota4, 'LR', 0, 'L', $fill);
                 $pdf->Cell(10, 6, $row->rec4, 'LR', 0, 'L', $fill);
+                $pdf->Ln();
+                $pdf->SetFont('DejaVu', '', 4);
+                $pdf->Cell(40, 2, $row->nome_professor, 'LR', 0, 'L', $fill);
+                $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+                $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+                $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+                $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+                $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+                $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+                $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
+                $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
                 $pdf->Ln();
                 $fill = !$fill;
             }
