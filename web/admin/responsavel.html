@@ -16,12 +16,13 @@
                 url: "/webschool/verificarLogin",
                 data: { login : val, tipo : "responsavel", id : $("#id").val()},
                 success: function(data){
-                    if (data == 1){
-                        $("#disponibilidade").show();
+                    data = jQuery.parseJSON(data)
+                    if (data.loginTaken === true){
                         $("#btn").attr("disabled", true)
+                        $("#disponibilidade").slideDown("slow", function(){});
                     } else {
-                        $("#disponibilidade").hide();
                         $("#btn").attr("disabled", false)
+                        $("#disponibilidade").slideUp("slow", function(){});
                     }
                 }
             });
