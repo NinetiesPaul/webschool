@@ -17,13 +17,19 @@ class AlunoStorage
     
     public function verAlunos()
     {
-        $alunoQuery = $this->db->query("select usuario.*,aluno.id as aluno from usuario, aluno where usuario.id=aluno.usuario");
+        $alunoQuery = $this->db->query("
+        SELECT u.*,a.id AS aluno, CONCAT(t.serie, 'º Série ', t.nome) AS nome_turma
+        FROM usuario u
+        JOIN aluno a ON a.usuario = u.id
+        JOIN turma t ON t.id = a.turma
+        ORDER BY nome ASC
+        ");
         return $alunoQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verAluno($aluno)
     {
-        $alunoQuery = $this->db->query("select usuario.*,aluno.id as aluno from usuario, aluno where usuario.id=aluno.usuario and aluno.usuario = $aluno");
+        $alunoQuery = $this->db->query("select usuario.*,aluno.id as aluno, aluno.turma from usuario, aluno where usuario.id=aluno.usuario and aluno.usuario = $aluno");
         return $alunoQuery->fetch(PDO::FETCH_OBJ);
     }
 
@@ -230,10 +236,12 @@ class AlunoStorage
     public function verAlunosDoResponsavel($responsavel)
     {
         $usersQuery = $this->db->query("
-            select distinct usuario.*, responsavel_por_aluno.id as rpa from usuario, aluno, responsavel_por_aluno
-            where aluno.usuario = usuario.id
-            and aluno.id = responsavel_por_aluno.aluno
-            and responsavel_por_aluno.responsavel = $responsavel
+            SELECT u.nome, CONCAT(t.serie, 'º Série ', t.nome) AS nome_turma, rpa.id AS rpa
+            FROM responsavel_por_aluno rpa
+            JOIN aluno a ON a.id = rpa.aluno
+            JOIN usuario u ON u.id = a.usuario
+            JOIN turma t ON t.id = a.turma
+            WHERE responsavel = $responsavel
         ");
         return $usersQuery->fetchAll(PDO::FETCH_OBJ);
     }
