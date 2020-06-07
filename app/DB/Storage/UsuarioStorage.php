@@ -26,7 +26,7 @@ class UsuarioStorage
         return (int) $this->db->lastInsertId();
     }
 
-    public function loginTakenBackEnd($login, $tipo, $id = false)
+    public function loginTaken($login, $tipo, $id = false)
     {
         $query = "
             SELECT usuario.id FROM usuario,$tipo

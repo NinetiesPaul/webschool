@@ -29,7 +29,7 @@ class ProfessorStorage
 
     public function adicionarProfessor($email, $nome, $password, $salt)
     {
-        if ($this->db->usuario()->loginTakenBackEnd($email, Enum::TIPO_PROFESSOR)) {
+        if ($this->db->usuario()->loginTaken($email, Enum::TIPO_PROFESSOR)) {
             return false;
         }
         
@@ -55,7 +55,7 @@ class ProfessorStorage
     
     public function alterarProfessor($userId, $nome, $email, $password, $salt)
     {
-        if ($this->db->usuario()->loginTakenBackEnd($email, Enum::TIPO_PROFESSOR, $userId)) {
+        if ($this->db->usuario()->loginTaken($email, Enum::TIPO_PROFESSOR, $userId)) {
             return false;
         }
 
