@@ -14,12 +14,14 @@ class AuthController
     protected $usuarioStorage;
     protected $template;
     protected $util;
+    protected $folder;
 
     public function __construct()
     {
         $this->enderecoStorage = new EnderecoStorage();
         $this->usuarioStorage = new UsuarioStorage();
         $this->template = new Templates();
+        $this->folder = getenv('FOLDER', '');
         $this->util = new Util();
     }
     
@@ -59,7 +61,7 @@ class AuthController
                 $redirect = "<p/><a href='$url'>Ir</a> para minha tela inicial.";
             } else {
                 $msg = 'Usuário não cadastrado ou senha incorreta!';
-                $redirect = "<p/><a href='../webschool/'>Voltar</a>";
+                $redirect = "<p/><a href='..$this->folder/'>Voltar</a>";
             }
 
             $args = array(
@@ -75,7 +77,7 @@ class AuthController
     {
         session_start();
         session_destroy();
-        header('Location: /webschool/');
+        header('Location: /');
     }
 
     public function loginTaken()
