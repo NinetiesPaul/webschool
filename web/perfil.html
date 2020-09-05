@@ -14,7 +14,7 @@
             function verificarLogin(email, tipo, id) {
                 $.ajax({
                     type: "POST",
-                    url: "/webschool/verificarLogin",
+                    url: "/verificarLogin",
                     data:'login='+email+'&tipo='+tipo+'&id='+id,
                     success: function(data){
                         data = jQuery.parseJSON(data)

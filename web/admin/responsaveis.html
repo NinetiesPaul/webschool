@@ -13,7 +13,7 @@
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "/webschool/verificarLogin",
+                url: "/verificarLogin",
                 data: { login : val, tipo : "responsavel" },
                 success: function(data){
                     data = jQuery.parseJSON(data)
@@ -101,7 +101,7 @@
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Cadastro de Responsaveis</strong> <p/>
-                <form action="/webschool/admin/responsavel" method="post" role="form" class="form-horizontal " >
+                <form action="/admin/responsavel" method="post" role="form" class="form-horizontal " >
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm ">Nome:</label>
                         <div class="col-md-3">

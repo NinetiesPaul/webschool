@@ -14,7 +14,7 @@
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "/webschool/verificarLogin",
+                url: "/verificarLogin",
                 data: { login : val, tipo : "professor" },
                 success: function(data){
                     data = jQuery.parseJSON(data)
@@ -127,7 +127,7 @@
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Cadastro de Professores</strong> <p/>
-                <form action="/webschool/admin/professor" method="post" role="form" class="form-horizontal " >
+                <form action="/admin/professor" method="post" role="form" class="form-horizontal " >
                     <div class="form-group row justify-content-center ">
                         <label for="nome" class="col-form-label col-md-2 col-form-label-sm ">Nome:</label>
                         <div class="col-md-3">
@@ -168,7 +168,7 @@
                 
                 <p><strong>Cadastrar Professor por Disciplina de Turma</strong></p>
                 
-                <form action="/webschool/admin/professorPorMateria" method="post" role="form" class="form-horizontal " >
+                <form action="/admin/professorPorMateria" method="post" role="form" class="form-horizontal " >
                     <div class="form-group row justify-content-center ">
                         <label for="professor" class="col-form-label col-md-2 col-form-label-sm ">Professor:</label>
                         <div class="col-md-3">

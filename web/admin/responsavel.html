@@ -13,7 +13,7 @@
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "/webschool/verificarLogin",
+                url: "/verificarLogin",
                 data: { login : val, tipo : "responsavel", id : $("#id").val()},
                 success: function(data){
                     data = jQuery.parseJSON(data)
@@ -30,7 +30,7 @@
         
         function deletarResponsavelPorAluno(val) {
             $.ajax({
-                url: "/webschool/admin/alunoPorResponsavel/" + val,
+                url: "/admin/alunoPorResponsavel/" + val,
                 type: "DELETE",
                 success: function(data){
                     data = jQuery.parseJSON(data)
@@ -134,7 +134,7 @@
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Alteração de Responsável</strong> <p/>
-                <form action="/webschool/admin/responsavel" method="post" role="form" class="form-horizontal " >
+                <form action="/admin/responsavel" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="_method" value="PUT" />
                     <input type="hidden" name="id" id="id" value="{ID}" />
                     <input type="hidden" name="salt" value="{SALT}" />
@@ -164,7 +164,7 @@
 
                 <p><strong>Cadastrar aluno para responsável</strong></p>
 
-                <form action="/webschool/admin/alunoPorResponsavel" method="post" role="form" class="form-horizontal " id="alunoPorResponsavelform">
+                <form action="/admin/alunoPorResponsavel" method="post" role="form" class="form-horizontal " id="alunoPorResponsavelform">
                     <input type="hidden" name="id" value="{ID}" />
                     <input type="hidden" name="responsavel" value="{RESPONSAVEL}" />
                     <input type="hidden" name="aluno" id="aluno" value="" />
