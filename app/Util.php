@@ -8,11 +8,13 @@ class Util
 {
     protected $connection;
     protected $template;
+    protected $folder;
 
     public function __construct()
     {
         $this->template = new Templates();
         $this->connection = new DB();
+        $this->folder = getenv('FOLDER', '');
     }
 
     public function userPermission($tipo)
@@ -21,7 +23,7 @@ class Util
         $session_type = (isset($_SESSION['tipo'])) ? $_SESSION['tipo'] : false;
         
         if (!$session_type || $session_type !== $tipo) {
-            header('Location: /webschool/');
+            header("Location: $this->folder/");
         }
     }
 

@@ -12,7 +12,7 @@
         function verificarLogin(val) {
             $.ajax({
                 type: "POST",
-                url: "/webschool/verificarLogin",
+                url: "/verificarLogin",
                 data: { login : val, tipo : "aluno", id : $("#id").val()},
                 success: function(data ){
                     data = jQuery.parseJSON(data)
@@ -88,7 +88,7 @@
         <div class="container">
             <div class="jumbotron text-center">
                 <strong>Alteração de Aluno</strong> <p/>
-                <form action="/webschool/admin/aluno" method="post" role="form" class="form-horizontal " >
+                <form action="/admin/aluno" method="post" role="form" class="form-horizontal " >
                     <input type="hidden" name="_method" value="PUT" />
                     <input type="hidden" name="id" id="id" value="{ID}" />
                     <input type="hidden" name="idAluno" id="idAluno" value="{IDALUNO}" />

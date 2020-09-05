@@ -153,7 +153,7 @@ class AdminController
         $turma = $data['turma'];
         
         $this->alunoStorage->adicionarAluno($email, $nome, $password, $salt, $turma);
-        header('Location: /webschool/admin/alunos');
+        header('Location: /admin/alunos');
     }
     
     public function atualizarAluno()
@@ -169,7 +169,7 @@ class AdminController
         $turma = $data['turma'];
         
         $this->alunoStorage->alterarAluno($userId, $idAluno, $nome, $email, $password, $salt, $turma);
-        header('Location: /webschool/admin/alunos');
+        header('Location: /admin/alunos');
     }
     
     public function verProfessores()
@@ -284,7 +284,7 @@ class AdminController
         $password = md5($password . $salt);
         
         $this->professorStorage->adicionarProfessor($email, $nome, $password, $salt);
-        header('Location: /webschool/admin/professores');
+        header('Location: /admin/professores');
     }
     
     public function atualizarProfessor()
@@ -298,7 +298,7 @@ class AdminController
         $salt = $data['salt'];
         
         $this->professorStorage->alterarProfessor($userId, $nome, $email, $password, $salt);
-        header('Location: /webschool/admin/professores');
+        header('Location: /admin/professores');
     }
     
     public function adicionarProfessorPorMateria()
@@ -315,7 +315,7 @@ class AdminController
             $this->professorStorage->adicionarMateriaPorProfessor($disciplina, $turma, $professor);
         }
 
-        header("Location: /webschool/admin/professores");
+        header("Location: /admin/professores");
     }
     
     public function verResponsaveis()
@@ -402,7 +402,7 @@ class AdminController
         $password = md5($password . $salt);
         
         $this->responsavelStorage->adicionarResponsavel($email, $nome, $password, $salt);
-        header('Location: /webschool/admin/responsaveis');
+        header('Location: /admin/responsaveis');
     }
     
     public function atualizarResponsavel()
@@ -416,7 +416,7 @@ class AdminController
         $salt = $data['salt'];
         
         $this->responsavelStorage->alterarResponsavel($userId, $nome, $email, $password, $salt);
-        header('Location: /webschool/admin/responsaveis');
+        header('Location: /admin/responsaveis');
     }
     
     public function adicionarAlunoPorResponsavel()
@@ -428,7 +428,7 @@ class AdminController
         $id = $data['id'];
         
         $responsavel = $this->responsavelStorage->adicionarAlunoPorResponsavel($responsavel, $aluno, $id);
-        header("Location: /webschool/admin/responsavel/$responsavel");
+        header("Location: /admin/responsavel/$responsavel");
     }
     
     public function verTurmas()
@@ -476,7 +476,7 @@ class AdminController
         $serie = $data['serie'];
         
         $this->turmaStorage->adicionarTurma($nome, $serie);
-        header('Location: /webschool/admin/turmas');
+        header('Location: /admin/turmas');
     }
     
     public function atualizarTurma()
@@ -489,7 +489,7 @@ class AdminController
         
         
         $this->turmaStorage->alterarTurma($nome, $serie, $turma);
-        header('Location: /webschool/admin/turmas');
+        header('Location: /admin/turmas');
     }
 
     public function verMaterias()
@@ -535,7 +535,7 @@ class AdminController
         $nome = $data['nome'];
         
         $this->materiaStorage->adicionarMateria($nome);
-        header('Location: /webschool/admin/disciplinas');
+        header('Location: /admin/disciplinas');
     }
     
     public function atualizarMateria()
@@ -546,6 +546,6 @@ class AdminController
         $id = $data['id'];
         
         $this->materiaStorage->alterarMateria($nome, $id);
-        header('Location: /webschool/admin/disciplinas');
+        header('Location: /admin/disciplinas');
     }
 }
