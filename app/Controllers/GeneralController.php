@@ -31,7 +31,6 @@ class GeneralController
     protected $usuarioStorage;
     protected $notaStorage;
     protected $links;
-    protected $folder;
 
     public function __construct()
     {
@@ -43,7 +42,6 @@ class GeneralController
         $this->turmaStorage = new TurmaStorage();
         $this->usuarioStorage = new UsuarioStorage();
         $this->notaStorage = new NotaStorage();
-        $this->folder = getenv('FOLDER', '');
         $this->links = $this->util->generateLinks();
         session_start();
     }
@@ -280,7 +278,7 @@ class GeneralController
 
                 if ($this->usuarioStorage->loginTaken($email, $tipo, (int) $userId)) {
                     $_SESSION['msg'] = 'E-mail já está em uso';
-                    header("Location: $this->folder/perfil");
+                    header("Location: /perfil");
                     exit;
                 }
                 

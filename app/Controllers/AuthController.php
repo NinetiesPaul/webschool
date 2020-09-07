@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\DB\Storage\EnderecoStorage;
 use App\DB\Storage\UsuarioStorage;
 use App\Enum;
+use App\ErrorHandler;
 use App\Templates;
 use App\Util;
 
@@ -14,14 +15,12 @@ class AuthController
     protected $usuarioStorage;
     protected $template;
     protected $util;
-    protected $folder;
 
     public function __construct()
     {
         $this->enderecoStorage = new EnderecoStorage();
         $this->usuarioStorage = new UsuarioStorage();
         $this->template = new Templates();
-        $this->folder = getenv('FOLDER', '');
         $this->util = new Util();
     }
     
@@ -39,9 +38,6 @@ class AuthController
 
         $user = $this->usuarioStorage->verificarUsuario($alias, $turma, $tipo, $email);
         
-        $msg = '';
-        $redirect = '';
-        
         if ($user) {
             $actualPassword = $user->pass;
             $password = md5($password . $user->salt);
@@ -56,21 +52,12 @@ class AuthController
                 $_SESSION['tipo'] = $tipo;
 
                 $url = "$tipo/home";
-                
-                $msg = 'Bem-vindo!';
-                $redirect = "<p/><a href='$url'>Ir</a> para minha tela inicial.";
-            } else {
-                $msg = 'Usuário não cadastrado ou senha incorreta!';
-                $redirect = "<p/><a href='..$this->folder/'>Voltar</a>";
+
+                header("Location: $url");
             }
-
-            $args = array(
-                'msg' => $msg,
-                'redirect' => $redirect
-            );
-
-            $this->util->loadTemplate('login.html', $args);
         }
+
+        new ErrorHandler('Usuário não cadastrado ou senha incorreta!', "/");
     }
     
     public function logout()
