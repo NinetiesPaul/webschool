@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+  php:
+    container_name: webschool_php
+    build: .
+    ports:
+     - "8015:80"
+     - "443:443"
+    volumes:
+     - .:/var/www/html
+    links:
+     - mysql
+
+  mysql:
+    container_name: webschool_mysql
+    image: mysql:5.7
+    volumes:
+     - /var/lib/mysql
+    environment:
+     - MYSQL_PASSWORD=root
+     - MYSQL_ROOT_PASSWORD=root
+     - MYSQL_DATABASE=webschool
