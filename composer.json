@@ -3,7 +3,10 @@
         "robmorgan/phinx": "^0.11.1",
         "friendsofphp/php-cs-fixer": "^2.16",
         "pecee/simple-router": "4.2.0.6",
-        "vlucas/phpdotenv": "^4.0"
+        "vlucas/phpdotenv": "^4.0",
+      "ext-json": "*",
+      "ext-gd": "*",
+        "ext-calendar": "*"
     },
     "autoload": {
         "psr-4": {
