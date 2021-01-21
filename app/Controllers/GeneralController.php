@@ -443,4 +443,39 @@ class GeneralController
         
         header('Location: perfil');
     }
+
+    public function pesquisarFaltas()
+    {
+        $aluno = $_POST["aluno"];
+        $turma = $_POST["turma"];
+        $disciplina = $_POST["disciplina"];
+
+        try {
+            $faltas = $this->diarioStorage->verFaltasPorAlunoDaMateriaETurma($turma, $aluno, $disciplina);
+        } catch (\Exception $ex) {
+            $this->throwError($ex);
+        }
+
+        $message =  "Este aluno possui " . count($faltas) . " falta(s) nesta matéria:<p/>";
+
+        foreach ($faltas as $falta) {
+            $data = new DateTime($falta->data);
+            $message .= $data->format('d/m/Y') . "<br/>";
+        }
+
+        try {
+            $comentarios = $this->diarioStorage->verComentariosPorAlunoDaMateriaETurma($turma, $aluno, $disciplina);
+        } catch (\Exception $ex) {
+            $this->throwError($ex);
+        }
+
+        $message .= "<p/>Este aluno possui " . count($comentarios) . " comentários(s) por professores:<p/>";
+
+        foreach ($comentarios as $comentario) {
+            $data = new DateTime($comentario->data);
+            $message .= $data->format('d/m/Y') . "<br/>$comentario->observacao<br/>";
+        }
+
+        $this->response($message);
+    }
 }
