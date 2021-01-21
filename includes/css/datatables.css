@@ -1,5 +1,6 @@
 #tableProfessores_length {
     font-size: 14px;
+    text-align: left;
 }
 
 #tableProfessores_filter {
@@ -8,6 +9,7 @@
 
 #tableProfessores_info {
     font-size: 14px;
+    text-align: left;
 }
 
 #tableProfessores_paginate {
@@ -16,6 +18,7 @@
 
 #tableAlunos_length {
     font-size: 14px;
+    text-align: left;
 }
 
 #tableAlunos_filter {
@@ -24,6 +27,7 @@
 
 #tableAlunos_info {
     font-size: 14px;
+    text-align: left;
 }
 
 #tableAlunos_paginate {
@@ -32,6 +36,7 @@
 
 #tableResponsaveis_length {
     font-size: 14px;
+    text-align: left;
 }
 
 #tableResponsaveis_filter {
@@ -40,6 +45,7 @@
 
 #tableResponsaveis_info {
     font-size: 14px;
+    text-align: left;
 }
 
 #tableResponsaveis_paginate {

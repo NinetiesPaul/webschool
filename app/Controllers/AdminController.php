@@ -64,14 +64,14 @@ class AdminController
     public function verAlunos()
     {
         $turmaQuery = $this->turmaStorage->verTurmas();
-        
+
         $turmas = '';
         foreach ($turmaQuery as $turma) {
             $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
         }
-        
+
         $alunoQuery = $this->alunoStorage->verAlunos();
-        
+
         $alunos = '';
         foreach ($alunoQuery as $aluno) {
             $is_deleted = ($aluno->is_deleted) ? "<span class='label-status_$aluno->id label-success'>Ativo</span>" : "<span class='label-status_$aluno->id label-danger'>Inativo</span>";
@@ -79,40 +79,40 @@ class AdminController
             "<tr id='row-$aluno->id'><td>$aluno->nome </td>
             <td>$aluno->nome_turma</td>
             <td>$is_deleted</td>
-            <td><a href='aluno/$aluno->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
+            <td style='text-align: center;'><a href='aluno/$aluno->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
             <a href='#' class='btn desativar' id='$aluno->id'><span class='glyphicon glyphicon-ban-circle'></span> </a></td></tr>";
         }
-        
+
         $args = [
             'TURMAS' => $turmas,
             'ALUNOS' => $alunos,
             'LINKS' => $this->links
         ];
-        
+
         $this->util->loadTemplate('admin/alunos.html', $args);
     }
-    
+
     public function verAluno($idAluno)
     {
         $this->links = $this->util->generateLinks('../');
 
         $aluno = $this->alunoStorage->verAluno($idAluno);
         $turmaQuery = $this->turmaStorage->verTurmas();
-        
+
         $turmas = '';
-        
+
         foreach ($turmaQuery as $turma) {
             $selected = ($aluno->turma == $turma->id)? 'selected' : '';
             $turmas .= "<option value='$turma->id' $selected>$turma->serie º Série $turma->nome</option>";
         }
-        
+
         $endereco = $this->enderecoStorage->verEndereco($aluno->endereco);
         $avatar = $this->avatarStorage->verAvatar($aluno->id);
         $diario_de_classe = $this->diarioStorage->verDiarioDeClassePorAluno($aluno->aluno);
         $nota_por_aluno = $this->notaStorage->verNotasPorAluno($aluno->aluno);
         $arquivos_do_diario = $this->arquivoStorage->verArquivoPorAluno($aluno->aluno);
         $filho_de = $this->responsavelStorage->verResponsaveisPeloAluno($aluno->aluno);
-        
+
         $footprint = [
             'usuario' => $aluno,
             'endereco' => $endereco,
@@ -122,15 +122,14 @@ class AdminController
             'arquivos' => $arquivos_do_diario,
             'filho_de' => $filho_de
         ];
-        
+
         $deletar = "<button class='btn btn-danger btn-sm' id='deletar' value='$aluno->id'><span class='glyphicon glyphicon-trash'></span> Deletar aluno</button>";
-        
+
         $args = [
             'ID' => $aluno->id,
             'IDALUNO' => $aluno->aluno,
             'NOME' => $aluno->nome,
             'SALT' => $aluno->salt,
-            'TURMAATUAL' =>  $turmaAtual,
             'EMAIL' => $aluno->email,
             'TURMAS' => $turmas,
             'FOOTPRINT' => json_encode($footprint),
@@ -140,26 +139,26 @@ class AdminController
 
         $this->util->loadTemplate('admin/aluno.html', $args);
     }
-    
+
     public function adicionarAluno()
     {
         $data = json_decode(json_encode($_POST), true);
-        
+
         $email = $data['email'];
         $nome = $data['nome'];
         $salt = time() + rand(100, 1000);
         $password = $data['password'];
         $password = md5($password . $salt);
         $turma = $data['turma'];
-        
+
         $this->alunoStorage->adicionarAluno($email, $nome, $password, $salt, $turma);
         header('Location: /admin/alunos');
     }
-    
+
     public function atualizarAluno()
     {
         $data = json_decode(json_encode($_POST), true);
-        
+
         $userId = $data['id'];
         $idAluno = $data['idAluno'];
         $nome = $data['nome'];
@@ -167,11 +166,11 @@ class AdminController
         $password = $data['password'];
         $salt = $data['salt'];
         $turma = $data['turma'];
-        
+
         $this->alunoStorage->alterarAluno($userId, $idAluno, $nome, $email, $password, $salt, $turma);
         header('Location: /admin/alunos');
     }
-    
+
     public function verProfessores()
     {
         $professorQuery = $this->professorStorage->verProfessores();
@@ -185,7 +184,7 @@ class AdminController
             $is_deleted = ($professor->is_deleted) ? "<span class='label-status_$professor->id label-success'>Ativo</span>" : "<span class='label-status_$professor->id label-danger'>Inativo</span>";
             $professores .=
             "<tr id='row-$professor->id'><td>$professor->nome </td>
-            <td>$is_deleted</td><td><a href='professor/$professor->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
+            <td>$is_deleted</td><td style='text-align: center;'><a href='professor/$professor->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
             <a href='#' class='btn desativar' id='$professor->id'><span class='glyphicon glyphicon-ban-circle'></span></a></td></tr>";
             $professores_select .= "<option data-tokens='$data_token' value='$professor->professor'>$professor->nome</option>";
             $professor_array[$professor->professor] = $professor->nome;
@@ -211,7 +210,7 @@ class AdminController
             $disciplina_array[$disciplina->id] = $disciplina->nome;
         }
 
-        $disciplinaPorProfessorQuery = $this->materiaStorage->verMateriaPorProfessor();
+        $disciplinaPorProfessorQuery = $this->materiaStorage->verMateriasPorProfessor();
         
         $disciplinasProProfessor = '';
         
@@ -227,10 +226,6 @@ class AdminController
         
         $args = [
             'PROFESSORES' => $professores,
-            'PROFESSORES_SELECT' => $professores_select,
-            'TURMAS_SELECT' => $turmas,
-            'DISCIPLINAS_SELECT' => $disciplinas,
-            'DISCIPLINAS_POR_PROFESSOR' => $disciplinasProProfessor,
             'LINKS' => $this->links
         ];
         
@@ -259,12 +254,44 @@ class AdminController
         ];
         
         $deletar = "<button class='btn btn-danger btn-sm' id='deletar' value='$professor->id'><span class='glyphicon glyphicon-trash'></span> Deletar professor</button>";
-        
+
+        $disciplinaPorProfessorQuery = $this->materiaStorage->verMateriasDoProfessorAdmin($professor->professor);
+
+        $disciplinasProProfessor = '';
+
+        foreach ($disciplinaPorProfessorQuery as $disciplinaProProfessor) {
+            $disciplinasProProfessor .= "
+                <tr id='row-dpp-$disciplinaProProfessor->id'>
+                <td>$disciplinaProProfessor->turma</td><td>$disciplinaProProfessor->nome</td>
+                <td><button class='btn btn-danger btn-sm' id='deletar-dpp' value='$disciplinaProProfessor->id'><span class='glyphicon glyphicon-trash'></span> Deletar</button></td></tr>
+            ";
+        }
+
+        $turmaQuery = $this->turmaStorage->verTurmas();
+
+        $turmas = '';
+
+        foreach ($turmaQuery as $turma) {
+            $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
+        }
+
+        $disciplinaQuery = $this->materiaStorage->verMaterias();
+
+        $disciplinas = '';
+
+        foreach ($disciplinaQuery as $disciplina) {
+            $disciplinas .= "<option value='$disciplina->id'>$disciplina->nome</option>";
+        }
+
         $args = [
             'ID' => $professor->id,
             'NOME' => $professor->nome,
             'SALT' => $professor->salt,
             'EMAIL' => $professor->email,
+            'PROFESSOR' => $professor->professor,
+            'DISCIPLINAS_SELECT' => $disciplinas,
+            'TURMAS_SELECT' => $turmas,
+            'DISCIPLINAS_PROFESSOR' => $disciplinasProProfessor,
             'FOOTPRINT' => json_encode($footprint),
             'BOTAO_DELETAR' => $deletar,
             'LINKS' => $this->links
@@ -315,7 +342,7 @@ class AdminController
             $this->professorStorage->adicionarMateriaPorProfessor($disciplina, $turma, $professor);
         }
 
-        header("Location: /admin/professores");
+        header("Location: /admin/professor/$data[id]");
     }
     
     public function verResponsaveis()
@@ -328,7 +355,7 @@ class AdminController
             $is_deleted = ($responsavel->is_deleted) ? "<span class='label-status_$responsavel->id label-success'>Ativo</span>" : "<span class='label-status_$responsavel->id label-danger'>Inativo</span>";
             $responsaveis .=
              "<tr id='row-$responsavel->id'><td>$responsavel->nome </td>
-             <td>$is_deleted</td><td><a href='responsavel/$responsavel->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
+             <td>$is_deleted</td><td style='text-align: center;'><a href='responsavel/$responsavel->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
              <a href='#' class='btn desativar' id='$responsavel->id' ><span class='glyphicon glyphicon-ban-circle'></span></a></td></tr>";
         }
         
