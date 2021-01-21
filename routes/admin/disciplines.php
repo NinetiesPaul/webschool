@@ -1,30 +1,29 @@
 <?php
 
 use Pecee\SimpleRouter\SimpleRouter;
-use App\Controllers\AdminController;
-use App\Controllers\AjaxControllers\AdminController as AjaxAdmin;
+use App\Controllers\Admin\MateriasController as AdminMateriasController;
 
 SimpleRouter::get('/admin/disciplinas', function() {
-    $admin = new AdminController();
+    $admin = new AdminMateriasController();
     $admin->verMaterias();
 });
 
 SimpleRouter::get('/admin/disciplina/{idDisciplina}', function($idDisciplina) {
-    $admin = new AdminController();
+    $admin = new AdminMateriasController();
     $admin->verMateria($idDisciplina);
 });
 
 SimpleRouter::delete('/admin/disciplina/{idDisciplina}/delete', function($idDisciplina) {
-    $ajaxAdmin = new AjaxAdmin();
+    $ajaxAdmin = new AdminMateriasController();
     $ajaxAdmin->removerMateria($idDisciplina);
 });
 
 SimpleRouter::put('/admin/disciplina', function() {
-    $admin = new AdminController();
+    $admin = new AdminMateriasController();
     $admin->atualizarMateria();
 });
 
 SimpleRouter::post('/admin/disciplina', function() {
-    $admin = new AdminController();
+    $admin = new AdminMateriasController();
     $admin->adicionarMateria();
 });

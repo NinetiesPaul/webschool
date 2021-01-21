@@ -3,7 +3,6 @@
 use Pecee\SimpleRouter\SimpleRouter;
 use App\Controllers\AuthController;
 use App\Controllers\GeneralController;
-use App\Controllers\AjaxControllers\GeneralController as AjaxGeneral;
 
 //general
 
@@ -23,7 +22,7 @@ SimpleRouter::post('/gerarHistorico', function() {
 });
 
 SimpleRouter::post('/pesquisarFaltas', function() {
-    $generalAjax = new AjaxGeneral();
+    $generalAjax = new GeneralController();
     $generalAjax->pesquisarFaltas();
 });
 

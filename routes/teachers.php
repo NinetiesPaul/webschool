@@ -2,7 +2,6 @@
 
 use Pecee\SimpleRouter\SimpleRouter;
 use App\Controllers\ProfessorController;
-use App\Controllers\AjaxControllers\ProfessorController as AjaxProfessor;
 
 SimpleRouter::get('/professor/home', function() {
     $professor = new ProfessorController();
@@ -25,36 +24,36 @@ SimpleRouter::get('/professor/diariodeclasse/{idTurma}', function($idTurma) {
 });
 
 SimpleRouter::post('/professor/inserirNota', function() {
-    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor = new ProfessorController();
     $ajaxProfessor->inserirNota();
 });
 
 SimpleRouter::post('/professor/pesquisarFrequencia', function() {
-    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor = new ProfessorController();
     $ajaxProfessor->pesquisarFrequencia();
 });
 
 SimpleRouter::post('/professor/alterarFrequencia', function() {
-    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor = new ProfessorController();
     $ajaxProfessor->alterarFrequencia();
 });
 
 SimpleRouter::post('/professor/visualizarComentarios', function() {
-    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor = new ProfessorController();
     $ajaxProfessor->verComentarios();
 });
 
 SimpleRouter::post('/professor/comentario', function() {
-    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor = new ProfessorController();
     $ajaxProfessor->adicionarComentario();
 });
 
 SimpleRouter::delete('/professor/comentario/{idComentario}', function($idComentario) {
-    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor = new ProfessorController();
     $ajaxProfessor->deletarComentario($idComentario);
 });
 
 SimpleRouter::delete('/professor/arquivo/{idArquivo}', function($idArquivo) {
-    $ajaxProfessor = new AjaxProfessor();
+    $ajaxProfessor = new ProfessorController();
     $ajaxProfessor->deletarArquivoDeComentario($idArquivo);
 });
