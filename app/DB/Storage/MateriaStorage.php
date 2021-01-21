@@ -86,6 +86,18 @@ class MateriaStorage
         return $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
+    public function verMateriasDoProfessorAdmin($professor)
+    {
+        $disciplinaQuery = $this->db->query("
+            select dpp.id, CONCAT(t.serie, 'º Série ', t.nome) as turma, d.nome from disciplina_por_professor dpp
+            join disciplina d on d.id = dpp.disciplina 
+            join turma t on t.id = dpp.turma 
+            where dpp.professor = $professor
+            order by turma;
+        ");
+        return $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
+    }
+
     public function verMateriaDoProfessor($id)
     {
         $disciplinaQuery = $this->db->query("
