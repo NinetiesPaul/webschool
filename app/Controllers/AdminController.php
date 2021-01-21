@@ -211,7 +211,7 @@ class AdminController
             $disciplina_array[$disciplina->id] = $disciplina->nome;
         }
 
-        $disciplinaPorProfessorQuery = $this->materiaStorage->verMateriaPorProfessor();
+        $disciplinaPorProfessorQuery = $this->materiaStorage->verMateriasPorProfessor();
         
         $disciplinasProProfessor = '';
         

@@ -63,7 +63,7 @@ class MateriaStorage
         }
     }
     
-    public function verMateriaPorProfessor()
+    public function verMateriasPorProfessor()
     {
         $disciplinasQuery = $this->db->query("select * from disciplina_por_professor order by turma");
         return $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
