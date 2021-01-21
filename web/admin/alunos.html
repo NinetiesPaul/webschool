@@ -70,6 +70,9 @@
         
         $(document).ready( function () {
             $('#tableAlunos').DataTable({
+                "columnDefs": [
+                    { orderable: false, targets: 3 }
+                ],
                 "paging": true,
                 "language": {
                     "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"
@@ -141,9 +144,9 @@
                 <div class="alert alert-danger" role="alert" style="display: none;">
                 </div>
 
-                <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table hover" id="tableAlunos">
+                <table style="width: 100%; font-size: 13px;" class="table hover" id="tableAlunos">
                     <thead>
-                        <tr><td>Nome</td><td>Turma</td><td>Status</td><td>Ações</td></tr>
+                        <tr><td>Nome</td><td style="width: 20%">Turma</td><td style="width: 15%;"></td><td style="width: 15%; text-align: center;"></td></tr>
                     </thead>
                     <tbody>
                         {ALUNOS}

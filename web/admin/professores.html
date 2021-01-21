@@ -95,6 +95,9 @@
         
         $(document).ready( function () {
             $('#tableProfessores').DataTable({
+                "columnDefs": [
+                    { orderable: false, targets: 2 }
+                ],
                 "paging": true,
                 "language": {
                     "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"
@@ -157,9 +160,9 @@
                 <div class="alert alert-danger" role="alert" style="display: none;">
                 </div>
                 
-                <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table hover" id="tableProfessores">
+                <table style="width: 100%; font-size: 13px;" class="table hover" id="tableProfessores">
                     <thead>
-                        <tr><td>Nome</td><td>Status</td><td>Opções</td></tr>
+                        <tr><td>Nome</td><td style="width: 15%"></td><td style="width: 15%; text-align: center;"></td></tr>
                     </thead>
                     <tbody>
                         {PROFESSORES}

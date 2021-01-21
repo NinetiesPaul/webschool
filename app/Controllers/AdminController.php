@@ -79,7 +79,7 @@ class AdminController
             "<tr id='row-$aluno->id'><td>$aluno->nome </td>
             <td>$aluno->nome_turma</td>
             <td>$is_deleted</td>
-            <td><a href='aluno/$aluno->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
+            <td style='text-align: center;'><a href='aluno/$aluno->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
             <a href='#' class='btn desativar' id='$aluno->id'><span class='glyphicon glyphicon-ban-circle'></span> </a></td></tr>";
         }
         
@@ -185,7 +185,7 @@ class AdminController
             $is_deleted = ($professor->is_deleted) ? "<span class='label-status_$professor->id label-success'>Ativo</span>" : "<span class='label-status_$professor->id label-danger'>Inativo</span>";
             $professores .=
             "<tr id='row-$professor->id'><td>$professor->nome </td>
-            <td>$is_deleted</td><td><a href='professor/$professor->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
+            <td>$is_deleted</td><td style='text-align: center;'><a href='professor/$professor->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
             <a href='#' class='btn desativar' id='$professor->id'><span class='glyphicon glyphicon-ban-circle'></span></a></td></tr>";
             $professores_select .= "<option data-tokens='$data_token' value='$professor->professor'>$professor->nome</option>";
             $professor_array[$professor->professor] = $professor->nome;
@@ -328,7 +328,7 @@ class AdminController
             $is_deleted = ($responsavel->is_deleted) ? "<span class='label-status_$responsavel->id label-success'>Ativo</span>" : "<span class='label-status_$responsavel->id label-danger'>Inativo</span>";
             $responsaveis .=
              "<tr id='row-$responsavel->id'><td>$responsavel->nome </td>
-             <td>$is_deleted</td><td><a href='responsavel/$responsavel->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
+             <td>$is_deleted</td><td style='text-align: center;'><a href='responsavel/$responsavel->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
              <a href='#' class='btn desativar' id='$responsavel->id' ><span class='glyphicon glyphicon-ban-circle'></span></a></td></tr>";
         }
         
