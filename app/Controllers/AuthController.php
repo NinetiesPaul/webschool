@@ -6,8 +6,6 @@ use App\DB\Storage\EnderecoStorage;
 use App\DB\Storage\UsuarioStorage;
 use App\Enum;
 use App\ErrorHandler;
-use App\Templates;
-use App\Util;
 
 class AuthController
 {
