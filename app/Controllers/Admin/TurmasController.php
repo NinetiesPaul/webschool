@@ -4,6 +4,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\ResponseHandler;
 
 class TurmasController extends AdminController
 {
@@ -73,9 +74,9 @@ class TurmasController extends AdminController
         try {
             $this->turmaStorage->removerTurma($turma);
         } catch (\Exception $ex) {
-            $this->throwError($ex, "turma");
+            ResponseHandler::throwError($ex, "turma");
         }
 
-        $this->response();
+        ResponseHandler::response();
     }
 }

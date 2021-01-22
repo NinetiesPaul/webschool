@@ -13,15 +13,11 @@ class AuthController
 {
     protected $enderecoStorage;
     protected $usuarioStorage;
-    protected $template;
-    protected $util;
 
     public function __construct()
     {
         $this->enderecoStorage = new EnderecoStorage();
         $this->usuarioStorage = new UsuarioStorage();
-        $this->template = new Templates();
-        $this->util = new Util();
     }
     
     public function login()

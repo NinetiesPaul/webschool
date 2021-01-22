@@ -4,6 +4,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\ResponseHandler;
 
 class AlunoController extends AdminController
 {
@@ -141,10 +142,10 @@ class AlunoController extends AdminController
         try {
             $this->alunoStorage->removerAluno($aluno->aluno, $aluno->id, $aluno->endereco, $footprint);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
-        $this->response();
+        ResponseHandler::response();
     }
 
     public function desativarAluno($idAluno)
@@ -152,7 +153,9 @@ class AlunoController extends AdminController
         try {
             $this->alunoStorage->desativarAluno($idAluno);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
+
+        ResponseHandler::response();
     }
 }

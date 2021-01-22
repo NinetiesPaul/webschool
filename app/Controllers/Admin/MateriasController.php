@@ -4,6 +4,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\ResponseHandler;
 
 class MateriasController extends AdminController
 {
@@ -69,9 +70,9 @@ class MateriasController extends AdminController
         try {
             $this->materiaStorage->removerMateria($disciplina);
         } catch (\Exception $ex) {
-            $this->throwError($ex, "materia");
+            ResponseHandler::throwError($ex, "materia");
         }
 
-        $this->response();
+        ResponseHandler::response();
     }
 }

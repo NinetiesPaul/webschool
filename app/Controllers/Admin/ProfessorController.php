@@ -4,6 +4,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\ResponseHandler;
 
 class ProfessorController extends AdminController
 {
@@ -203,10 +204,10 @@ class ProfessorController extends AdminController
         try {
             $this->professorStorage->removerProfessor($professor->professor, $professor->id, $professor->endereco, $footprint);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
-        $this->response();
+        ResponseHandler::response();
     }
 
     public function desativarProfessor($idProfessor)
@@ -214,10 +215,10 @@ class ProfessorController extends AdminController
         try {
             $this->professorStorage->desativarProfessor($idProfessor);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
-        $this->response();
+        ResponseHandler::response();
     }
 
     public function removerProfessorPorMateria($id)
@@ -225,9 +226,9 @@ class ProfessorController extends AdminController
         try {
             $this->professorStorage->removerProfessorPorMateria($id);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
-        $this->response();
+        ResponseHandler::response();
     }
 }

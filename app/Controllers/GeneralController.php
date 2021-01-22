@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Controllers;
 
 use App\DB\DB;
@@ -15,10 +9,12 @@ use App\DB\Storage\NotaStorage;
 use App\DB\Storage\TurmaStorage;
 use App\DB\Storage\UsuarioStorage;
 use App\Enum;
+use App\ResponseHandler;
 use App\Templates;
 use App\Util;
 use PDO;
 use tFPDF;
+use DateTime;
 
 class GeneralController
 {
@@ -35,15 +31,16 @@ class GeneralController
     public function __construct()
     {
         $this->connection = new DB;
-        $this->util = new Util();
         $this->template = new Templates();
+        $this->util = new Util();
+        $this->links = $this->util->generateLinks();
+        session_start();
+
         $this->enderecoStorage = new EnderecoStorage();
         $this->materiaStorage = new MateriaStorage();
         $this->turmaStorage = new TurmaStorage();
         $this->usuarioStorage = new UsuarioStorage();
         $this->notaStorage = new NotaStorage();
-        $this->links = $this->util->generateLinks();
-        session_start();
     }
 
     public function index()
@@ -453,7 +450,7 @@ class GeneralController
         try {
             $faltas = $this->diarioStorage->verFaltasPorAlunoDaMateriaETurma($turma, $aluno, $disciplina);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
         $message =  "Este aluno possui " . count($faltas) . " falta(s) nesta matéria:<p/>";
@@ -466,7 +463,7 @@ class GeneralController
         try {
             $comentarios = $this->diarioStorage->verComentariosPorAlunoDaMateriaETurma($turma, $aluno, $disciplina);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
         $message .= "<p/>Este aluno possui " . count($comentarios) . " comentários(s) por professores:<p/>";
@@ -476,6 +473,6 @@ class GeneralController
             $message .= $data->format('d/m/Y') . "<br/>$comentario->observacao<br/>";
         }
 
-        $this->response($message);
+        ResponseHandler::response($message);
     }
 }
