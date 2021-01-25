@@ -40,16 +40,6 @@
                 $(".contato").hide();
                 $(".endereco").hide();
 
-                $(".fotoBotao").css({
-                    "font-weight": "bold"
-                });
-                $(".contatoBotao").css({
-                    "font-weight": "normal"
-                });
-                $(".enderecoBotao").css({
-                    "font-weight": "normal"
-                });
-
                 $(".fotoBotao").click(function(){
                     $(".foto").show();
                     $(".contato").hide();
@@ -128,13 +118,13 @@
                 <a href="#" class="fotoBotao btn btn-secondary">Foto de Avatar</a>
                 <a href="#" class="contatoBotao btn btn-secondary">Contato</a>
                 <a href="#" class="enderecoBotao btn btn-secondary">Endereço</a>
+
                 <div class="foto">
+                    {AVATAR}
+                    <br/>
+                    {MSG}
 
-                {AVATAR}
-                <br/>
-                {MSG}
-
-                <form action="atualizarPerfil" method="post" enctype="multipart/form-data" role="form" class="form-horizontal">
+                    <form action="atualizarPerfil" method="post" enctype="multipart/form-data" role="form" class="form-horizontal">
                     <input type="hidden" name="_method" value="PUT" />
                     <input type="hidden" name="tipo_update" value="avatar">
                     <input type="hidden" name="usuario" value="{ID}">
@@ -146,11 +136,9 @@
                     </div>
                     <button type="submit" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Carregar</button>
                 </form>
-
                 </div>
 
                 <div class="contato">
-
                     <form action="atualizarPerfil" method="post" role="form" class="form-horizontal">
                         <input type="hidden" name="_method" value="PUT" />
                         <input type="hidden" name="tipo" id="tipo" value="{TIPO}">
@@ -195,10 +183,9 @@
 
                         <button type="submit" class="btn btn-success btn-sm" id="atualizar"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
                     </form>
-
                 </div>
-                <div class="endereco">
 
+                <div class="endereco">
                     <form action="atualizarPerfil" method="post" role="form" class="form-horizontal">
                         <input type="hidden" name="_method" value="PUT" />
                         <input type="hidden" name="tipo_update" value="endereco">
@@ -259,6 +246,7 @@
                         <button type="submit" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
                     </form>
                 </div>
+
                 <a class="mobile back btn btn-light btn btn-block" >Voltar</a>
             </div>
         </div>
