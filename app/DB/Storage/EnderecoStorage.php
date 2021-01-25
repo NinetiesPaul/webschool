@@ -24,6 +24,26 @@ class EnderecoStorage
 
         return (int) $this->db->lastInsertId();
     }
+
+    public function atualizarEndereco($rua, $numero, $bairro, $complemento, $cidade, $cep, $estado, $endereco)
+    {
+        $user = $this->db->prepare("
+                    UPDATE endereco
+                    SET rua=:rua, numero=:numero, bairro=:bairro, complemento=:complemento, cidade=:cidade, cep=:cep, estado=:estado
+                    where id=:endereco
+                ");
+
+        $user->execute([
+            'rua' => $rua,
+            'numero' => $numero,
+            'bairro' => $bairro,
+            'complemento' => $complemento,
+            'cidade' => $cidade,
+            'cep' => $cep,
+            'estado' => $estado,
+            'endereco' => $endereco,
+        ]);
+    }
     
     public function verEndereco($id)
     {
@@ -37,5 +57,11 @@ class EnderecoStorage
         $estado = $estadoQuery->fetchObject();
 
         return $estado->nome.', '.$estado->sigla;
+    }
+
+    public function pegarEstados()
+    {
+        $estadoQuery = $this->db->query("select * from estado order by nome");
+        return $estadoQuery->fetchAll(PDO::FETCH_OBJ);
     }
 }
