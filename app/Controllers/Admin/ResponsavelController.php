@@ -4,6 +4,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\ResponseHandler;
 
 class ResponsavelController extends AdminController
 {
@@ -125,10 +126,10 @@ class ResponsavelController extends AdminController
         try {
             $this->responsavelStorage->desativarResponsavel($idResponsavel);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
-        $this->response();
+        ResponseHandler::response();
     }
 
     public function removerResponsavel($idResponsavel)
@@ -149,10 +150,10 @@ class ResponsavelController extends AdminController
         try {
             $this->responsavelStorage->removerResponsavel($responsavel->responsavel, $responsavel->id, $responsavel->endereco, $footprint);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
-        $this->response();
+        ResponseHandler::response();
     }
 
     public function removerAlunoPorResponsavel($id)
@@ -160,9 +161,9 @@ class ResponsavelController extends AdminController
         try {
             $this->responsavelStorage->removerAlunoPorResponsavel($id);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
-        $this->response();
+        ResponseHandler::response();
     }
 }

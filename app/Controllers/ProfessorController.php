@@ -9,6 +9,7 @@ use App\DB\Storage\DiarioDeClasseStorage;
 use App\DB\Storage\NotaStorage;
 use App\DB\Storage\ArquivoStorage;
 use App\Enum;
+use App\ResponseHandler;
 use App\Templates;
 use App\Util;
 use DateTime;
@@ -137,10 +138,10 @@ class ProfessorController
         try {
             $this->notaStorage->adicionarNota(json_decode(json_encode($_POST), true));
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
-        $this->response();
+        ResponseHandler::response();
     }
 
     public function pesquisarFrequencia()
@@ -163,7 +164,7 @@ class ProfessorController
         try {
             $alunos = $this->diarioDeClasseStorage->verFaltasDoAlunoDaTurma($turma, $disc);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
         $output = "<table style='margin-left: auto; margin-right: auto; font-size: 13px;' class='table table-striped table-responsive'>";
@@ -178,7 +179,7 @@ class ProfessorController
                 try {
                     $diario = $this->diarioDeClasseStorage->verFaltasDoAlunoDaturmaPorData($aluno->aluno, $turma, $disc, $date->format('Y-m-d'));
                 } catch (\Exception $ex) {
-                    $this->throwError($ex);
+                    ResponseHandler::throwError($ex);
                 }
 
                 $date = explode('-', $date->format('Y-m-d'));
@@ -227,7 +228,7 @@ class ProfessorController
         try {
             $diario = $this->diarioDeClasseStorage->verFaltasDoAlunoDaturmaPorData($aluno, $turma, $disciplina, $data);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
         $span = '';
@@ -236,7 +237,7 @@ class ProfessorController
             try {
                 $this->diarioDeClasseStorage->adicionarFalta($aluno, $turma, $disciplina, $data);
             } catch (\Exception $ex) {
-                $this->throwError($ex);
+                ResponseHandler::throwError($ex);
             }
 
             $span = "<span class='glyphicon glyphicon-ok'></span>";
@@ -255,7 +256,7 @@ class ProfessorController
             try {
                 $this->diarioDeClasseStorage->alterarFalta($presenca, $diario->id);
             } catch (\Exception $ex) {
-                $this->throwError($ex);
+                ResponseHandler::throwError($ex);
             }
         }
 
@@ -352,7 +353,7 @@ class ProfessorController
         try {
             $id_comentario = $this->diarioDeClasseStorage->adicionarComentario($turma, $aluno, $disciplina, $mensagem, $dataComentario, $prof);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
         $id_arquivo = '';
@@ -361,7 +362,7 @@ class ProfessorController
             try {
                 $id_arquivo = $this->arquivoStorage->adicionarArquivo($file_name, $urlThumbFinal, $urlFinal, $dataComentario, $id_comentario);
             } catch (\Exception $ex) {
-                $this->throwError($ex);
+                ResponseHandler::throwError($ex);
             }
         }
 
@@ -411,7 +412,7 @@ class ProfessorController
         try {
             $comentarios = $this->diarioDeClasseStorage->verComentariosDoAlunoDaTurma($aluno, $disciplina, $turma, $data, $user->professor);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
         $output = '';
@@ -421,7 +422,7 @@ class ProfessorController
             try {
                 $arquivo = $this->arquivoStorage->verArquivosDoDiario($comentario->id);
             } catch (\Exception $ex) {
-                $this->throwError($ex);
+                ResponseHandler::throwError($ex);
             }
 
             $span = 'colspan=2';
@@ -452,7 +453,7 @@ class ProfessorController
         try {
             $arquivo = $this->arquivoStorage->verArquivoDoDiario($idComentario);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
         if ($arquivo) {
@@ -464,17 +465,17 @@ class ProfessorController
             try {
                 $this->arquivoStorage->removerArquivoDoComentario($arquivo->id);
             } catch (\Exception $ex) {
-                $this->throwError($ex);
+                ResponseHandler::throwError($ex);
             }
         }
 
         try {
             $this->diarioDeClasseStorage->removerComentario($idComentario);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
-        $this->response();
+        ResponseHandler::response();
     }
 
     public function deletarArquivoDeComentario($idArquivo)
@@ -482,7 +483,7 @@ class ProfessorController
         try {
             $arquivo = $this->arquivoStorage->verArquivoPorId($idArquivo);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
         if ($arquivo->endereco_thumb) {
@@ -493,9 +494,9 @@ class ProfessorController
         try {
             $this->arquivoStorage->removerArquivoDoComentario($idArquivo);
         } catch (\Exception $ex) {
-            $this->throwError($ex);
+            ResponseHandler::throwError($ex);
         }
 
-        $this->response();
+        ResponseHandler::response();
     }
 }

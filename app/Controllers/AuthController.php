@@ -6,22 +6,16 @@ use App\DB\Storage\EnderecoStorage;
 use App\DB\Storage\UsuarioStorage;
 use App\Enum;
 use App\ErrorHandler;
-use App\Templates;
-use App\Util;
 
 class AuthController
 {
     protected $enderecoStorage;
     protected $usuarioStorage;
-    protected $template;
-    protected $util;
 
     public function __construct()
     {
         $this->enderecoStorage = new EnderecoStorage();
         $this->usuarioStorage = new UsuarioStorage();
-        $this->template = new Templates();
-        $this->util = new Util();
     }
     
     public function login()
