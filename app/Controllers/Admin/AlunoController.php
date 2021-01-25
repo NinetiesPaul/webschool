@@ -4,6 +4,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\Enum;
 use App\ResponseHandler;
 
 class AlunoController extends AdminController
@@ -114,7 +115,8 @@ class AlunoController extends AdminController
         $salt = $data['salt'];
         $turma = $data['turma'];
 
-        $this->alunoStorage->alterarAluno($userId, $idAluno, $nome, $email, $password, $salt, $turma);
+        $this->usuarioStorage->alterarUsuario($userId, $nome, $email, $password, $salt, Enum::TIPO_ALUNO);
+        $this->alunoStorage->alterarAluno($userId, $idAluno, $turma);
         header('Location: /admin/alunos');
     }
 
