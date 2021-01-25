@@ -3,6 +3,7 @@
 namespace App\DB\Storage;
 
 use App\DB\DB;
+use App\Enum;
 use PDO;
 
 class UsuarioStorage
@@ -24,6 +25,48 @@ class UsuarioStorage
         $user->execute($usuario);
         
         return (int) $this->db->lastInsertId();
+    }
+
+    public function alterarUsuario($userId, $nome, $email, $password, $salt, $tipo, $telefone1 = false, $telefone2 = false)
+    {
+        if ($this->loginTaken($email, $tipo, $userId)) {
+            return false;
+        }
+
+        $sql = "
+            UPDATE usuario
+            SET nome=:nome, email=:email
+            ";
+
+        $fields = [
+            'nome' => $nome,
+            'email' => $email,
+        ];
+
+        if ($telefone1) {
+            $sql .= ", telefone1=:tel1";
+            $fields['tel1'] = $telefone1;
+        }
+
+        if ($telefone2) {
+            $sql .= ", telefone2=:tel2";
+            $fields['tel2'] = $telefone2;
+        }
+
+        if (strlen($password) > 0) {
+            $password = md5($password . $salt);
+
+            $sql .= ' ,pass=:pass';
+            $fields['pass'] = $password;
+        }
+
+        $sql .= ' where id=:userId';
+        $fields['userId'] = $userId;
+
+        $user = $this->db->prepare($sql);
+        $user->execute($fields);
+
+        return true;
     }
 
     public function loginTaken($login, $tipo, $id = false)
