@@ -9,3 +9,15 @@ strong{
 .mobile{
     display: none;
 }
+
+.fotoBotao{
+    font-weight: bold;
+}
+
+.contatoBotao{
+    font-weight: normal;
+}
+
+.enderecoBotao{
+    font-weight: normal;
+}

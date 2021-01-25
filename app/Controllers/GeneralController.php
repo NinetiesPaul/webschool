@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\DB\DB;
+use App\DB\Storage\AvatarStorage;
+use App\DB\Storage\DiarioDeClasseStorage;
 use App\DB\Storage\EnderecoStorage;
 use App\DB\Storage\MateriaStorage;
 use App\DB\Storage\NotaStorage;
@@ -26,6 +28,8 @@ class GeneralController
     protected $turmaStorage;
     protected $usuarioStorage;
     protected $notaStorage;
+    protected $diarioStorage;
+    protected $avatarStorage;
     protected $links;
 
     public function __construct()
@@ -41,6 +45,8 @@ class GeneralController
         $this->turmaStorage = new TurmaStorage();
         $this->usuarioStorage = new UsuarioStorage();
         $this->notaStorage = new NotaStorage();
+        $this->diarioStorage = new DiarioDeClasseStorage();
+        $this->avatarStorage = new AvatarStorage();
     }
 
     public function index()
@@ -209,16 +215,14 @@ class GeneralController
         
         $tipo = (isset($user->aluno)) ? 'aluno' : ((isset($user->professor) > 0) ? 'professor' : 'responsavel');
         
-        $estadoQuery = $this->connection->query("select * from estado order by nome");
-        $estadoQuery = $estadoQuery->fetchAll(PDO::FETCH_OBJ);
+        $estadoQuery = $this->enderecoStorage->pegarEstados();
         
         $estados = '';
         foreach ($estadoQuery as $estado) {
             $estados .= "<option value='".$estado->id."'>".$estado->nome."</option>";
         }
         
-        $avatarQuery = $this->connection->query("select * from fotos_de_avatar where usuario=$user->id");
-        $avatar = $avatarQuery->fetchObject();
+        $avatar = $this->avatarStorage->verAvatar($user->id);
 
         $img = "<img src='uploads/default_avatar.jpg' />";
         if (isset($avatar->endereco)) {
@@ -273,37 +277,12 @@ class GeneralController
                 $tipo = $_POST['tipo'];
                 $salt = $_POST['salt'];
 
-                if ($this->usuarioStorage->loginTaken($email, $tipo, (int) $userId)) {
+                $failed = $this->usuarioStorage->alterarUsuario($userId, $nome, $email, $password, $salt, $tipo, $tel1, $tel2);
+                if (!$failed) {
                     $_SESSION['msg'] = 'E-mail já está em uso';
                     header("Location: /perfil");
                     exit;
                 }
-                
-                $updateQuery = "
-                    UPDATE usuario
-                    SET nome=:nome, email=:email, telefone1=:tel1, telefone2=:tel2
-                ";
-                
-                $fields = [
-                    'nome' => $nome,
-                    'email' => $email,
-                    'tel1' => $tel1,
-                    'tel2' => $tel2,
-                ];
-                
-                if (strlen($password) > 0) {
-                    $password = md5($password . $salt);
-
-                    $updateQuery .= ' ,pass=:pass';
-                    $fields['pass'] = $password;
-                }
-                
-                $updateQuery .= " where id=:userId";
-                $fields['userId'] = $userId;
-                
-                $user = $this->connection->prepare($updateQuery);
-
-                $user->execute($fields);
 
                 $currentUser = $_SESSION['user'];
                 
@@ -331,22 +310,7 @@ class GeneralController
                 $estado = $_POST['estado'];
                 $endereco = $_POST['id'];
 
-                $user = $this->connection->prepare("
-                    UPDATE endereco
-                    SET rua=:rua, numero=:numero, bairro=:bairro, complemento=:complemento, cidade=:cidade, cep=:cep, estado=:estado
-                    where id=:endereco
-                ");
-
-                $user->execute([
-                    'rua' => $rua,
-                    'numero' => $numero,
-                    'bairro' => $bairro,
-                    'complemento' => $complemento,
-                    'cidade' => $cidade,
-                    'cep' => $cep,
-                    'estado' => $estado,
-                    'endereco' => $endereco,
-                ]);
+                $this->enderecoStorage->atualizarEndereco($rua, $numero, $bairro, $complemento, $cidade, $cep, $estado, $endereco);
 
                 unset($_POST['tipo_update']);
                 unset($_POST['_method']);
@@ -394,7 +358,7 @@ class GeneralController
                 $width=200;
                 $size=GetimageSize($images);
                 $height=round($width*$size[1]/$size[0]);
-                $images_orig = ImageCreateFromJPEG($images);
+                $images_orig = imagecreatefromjpeg($images);
                 $photoX = ImagesX($images_orig);
                 $photoY = ImagesY($images_orig);
                 $images_fin = ImageCreateTrueColor($width, $height);
@@ -408,30 +372,7 @@ class GeneralController
                 $urlFinal = 'uploads/images/'.$file_name;
                 $urlThumbFinal = 'uploads/images/thumbs/'.$file_name_thumb;
 
-                $avatarQuery = $this->connection->query("select * from fotos_de_avatar where usuario=$userId");
-                $avatar = $avatarQuery->fetchObject();
-
-                if ($avatar) {
-                    unlink($avatar->endereco_thumb);
-                    unlink($avatar->endereco);
-
-                    $deleteAvatar = $this->connection->prepare("DELETE FROM fotos_de_avatar WHERE usuario=:idUsuario");
-
-                    $deleteAvatar->execute([
-                        'idUsuario' => $userId,
-                    ]);
-                }
-
-                $user = $this->connection->prepare("
-                    INSERT INTO fotos_de_avatar (endereco_thumb, endereco, usuario) VALUES (:imagemThumbUrl, :imagemUrl, :idUsuario)
-                ");
-
-                $user->execute([
-                    'imagemThumbUrl' => $urlThumbFinal,
-                    'imagemUrl' => $urlFinal,
-                    'idUsuario' => $userId,
-                ]);
-                die();
+                $this->avatarStorage->atualizarAvatar($urlFinal, $urlThumbFinal, $userId);
                 break;
 
             case false:

@@ -51,7 +51,7 @@ class AlunoStorage
 
         $userId = $this->db->usuario()->inserirUsuario($usuario);
 
-        $this->db->avatar()->inserirAvatar($userId);
+        $this->db->avatar()->inserirUsuarioNaAvatar($userId);
 
         $aluno = $this->db->prepare("INSERT INTO aluno (usuario, turma) VALUES (:idUusuario, :idTurma)");
         $aluno->execute([
@@ -82,33 +82,8 @@ class AlunoStorage
         }
     }
 
-    public function alterarAluno($userId, $idAluno, $nome, $email, $password, $salt, $turma)
+    public function alterarAluno($userId, $idAluno, $turma)
     {
-        if ($this->db->usuario()->loginTaken($email, Enum::TIPO_ALUNO, $userId)) {
-            return false;
-        }
-
-        $sql = 'UPDATE usuario
-            SET nome=:nome, email=:email';
-
-        $fields = [
-            'nome' => $nome,
-            'email' => $email,
-        ];
-
-        if (strlen($password) > 0) {
-            $password = md5($password . $salt);
-
-            $sql .= ' ,pass=:pass';
-            $fields['pass'] = $password;
-        }
-
-        $sql .= ' where id=:userId';
-        $fields['userId'] = $userId;
-
-        $alunoQuery = $this->db->prepare($sql);
-        $alunoQuery->execute($fields);
-
         $turmaQuery = $this->db->prepare("UPDATE aluno SET turma=:idTurma WHERE usuario=:idUusuario");
         $turmaQuery->execute([
             'idTurma' => $turma,

@@ -4,6 +4,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\Enum;
 use App\ResponseHandler;
 
 class ProfessorController extends AdminController
@@ -161,7 +162,7 @@ class ProfessorController extends AdminController
         $password = $data['password'];
         $salt = $data['salt'];
 
-        $this->professorStorage->alterarProfessor($userId, $nome, $email, $password, $salt);
+        $this->usuarioStorage->alterarUsuario($userId, $nome, $email, $password, $salt, Enum::TIPO_PROFESSOR);
         header('Location: /admin/professores');
     }
 

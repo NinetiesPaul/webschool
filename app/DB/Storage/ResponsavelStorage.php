@@ -50,39 +50,9 @@ class ResponsavelStorage
             'idUusuario' => $userId,
         ]);
 
-        $this->db->avatar()->inserirAvatar($userId);
+        $this->db->avatar()->inserirUsuarioNaAvatar($userId);
     }
-    
-    public function alterarResponsavel($userId, $nome, $email, $password, $salt)
-    {
-        if ($this->db->usuario()->loginTaken($email, Enum::TIPO_RESPONSAVEL, $userId)) {
-            return false;
-        }
 
-        $sql = "
-            UPDATE usuario
-            SET nome=:nome, email=:email
-            ";
-
-        $fields = [
-            'nome' => $nome,
-            'email' => $email,
-        ];
-
-        if (strlen($password) > 0) {
-            $password = md5($password . $salt);
-
-            $sql .= ' ,pass=:pass';
-            $fields['pass'] = $password;
-        }
-
-        $sql .= ' where id=:userId';
-        $fields['userId'] = $userId;
-
-        $user = $this->db->prepare($sql);
-        $user->execute($fields);
-    }
-    
     public function removerResponsavel($responsavel, $usuario, $endereco, $footprint)
     {
         $user = $this->db->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");

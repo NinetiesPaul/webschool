@@ -45,42 +45,12 @@ class ProfessorStorage
 
         $userId = $this->db->usuario()->inserirUsuario($usuario);
 
-        $this->db->avatar()->inserirAvatar($userId);
+        $this->db->avatar()->inserirUsuarioNaAvatar($userId);
 
         $professor = $this->db->prepare("INSERT INTO professor (usuario) VALUES (:idUusuario)");
         $professor->execute([
             'idUusuario' => $userId,
         ]);
-    }
-    
-    public function alterarProfessor($userId, $nome, $email, $password, $salt)
-    {
-        if ($this->db->usuario()->loginTaken($email, Enum::TIPO_PROFESSOR, $userId)) {
-            return false;
-        }
-
-        $sql = "
-            UPDATE usuario
-            SET nome=:nome, email=:email
-            ";
-
-        $fields = [
-            'nome' => $nome,
-            'email' => $email,
-        ];
-
-        if (strlen($password) > 0) {
-            $password = md5($password . $salt);
-
-            $sql .= ' ,pass=:pass';
-            $fields['pass'] = $password;
-        }
-
-        $sql .= ' where id=:userId';
-        $fields['userId'] = $userId;
-
-        $user = $this->db->prepare($sql);
-        $user->execute($fields);
     }
     
     public function removerProfessor($professor, $usuario, $endereco, $footprint)

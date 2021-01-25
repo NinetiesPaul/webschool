@@ -4,6 +4,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\Enum;
 use App\ResponseHandler;
 
 class ResponsavelController extends AdminController
@@ -105,7 +106,7 @@ class ResponsavelController extends AdminController
         $password = $data['password'];
         $salt = $data['salt'];
 
-        $this->responsavelStorage->alterarResponsavel($userId, $nome, $email, $password, $salt);
+        $this->usuarioStorage->alterarUsuario($userId, $nome, $email, $password, $salt, Enum::TIPO_RESPONSAVEL);
         header('Location: /admin/responsaveis');
     }
 
