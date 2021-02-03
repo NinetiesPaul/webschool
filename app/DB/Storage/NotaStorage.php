@@ -20,6 +20,28 @@ class NotaStorage
         $save->execute($nota);
     }
 
+    public function adicionarNota($data)
+    {
+        $aluno = $data['aluno'];
+        $turma = $data['turma'];
+        $disciplina = $data['disciplina'];
+        $notaNum = $data['tipo'];
+        $nota = $data['nota'];
+
+        $user = $this->db->prepare("
+            UPDATE nota_por_aluno
+            SET ".$notaNum."=:nota
+            where aluno=:idAluno and disciplina=:idDisciplina and turma=:idTurma
+        ");
+
+        $user->execute([
+            'nota' => $nota,
+            'idAluno' => $aluno,
+            'idDisciplina' => $disciplina,
+            'idTurma' => $turma,
+        ]);
+    }
+
     public function verTurmasComNotaDoAluno($aluno)
     {
         $exec = $this->db->query("
@@ -46,28 +68,6 @@ class NotaStorage
         ORDER BY npa.disciplina");
         return $exec->fetchAll(PDO::FETCH_OBJ);
     }
-    
-    public function adicionarNota($data)
-    {
-        $aluno = $data['aluno'];
-        $turma = $data['turma'];
-        $disciplina = $data['disciplina'];
-        $notaNum = $data['tipo'];
-        $nota = $data['nota'];
-                
-        $user = $this->db->prepare("
-            UPDATE nota_por_aluno
-            SET ".$notaNum."=:nota
-            where aluno=:idAluno and disciplina=:idDisciplina and turma=:idTurma
-        ");
-
-        $user->execute([
-            'nota' => $nota,
-            'idAluno' => $aluno,
-            'idDisciplina' => $disciplina,
-            'idTurma' => $turma,
-        ]);
-    }
 
     public function verTurmasEMateriasComNotasDoAluno($aluno)
     {
@@ -88,7 +88,6 @@ class NotaStorage
             from usuario
             inner join aluno on aluno.usuario = usuario.id
             inner join nota_por_aluno on nota_por_aluno.aluno = aluno.id and nota_por_aluno.disciplina=$disciplina and nota_por_aluno.turma=$turma
-            group by usuario.nome
             order by usuario.nome
         ");
         return $alunosQuery->fetchAll(PDO::FETCH_OBJ);
