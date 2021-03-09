@@ -10,13 +10,6 @@ Composer packages used:
 * ```Simple-PHP-Router```
 * ```VLUCAS's PHPDOTENV```
 
-Before running the project:
-* Install PHP 7.0 or higher
-* Install MySQL 5.2 or higher
-* Set PHP installation folder and \AppData\Roaming\Composer\vendor\bin on your OS path
-* or ignore all that and just install XAMP
-* Install Composer 
-
 Configuring the project:
 * Install the project dependencies using Composer (https://getcomposer.org/):
 * ```Instalation depends on OS```
