@@ -13,7 +13,7 @@ Composer packages used:
 Configuring the project:  
 Install Docker   
 Run ```docker-compose build```  
-Run ```docker-compose up```  
+Run ```docker-compose up -d```  
 Run ```docker-compose exec php composer install```  
 Copy ```.env.dist to .env locally```  
 Configure ```the .env file with docker container data```  
