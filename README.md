@@ -20,3 +20,13 @@ Configuring the project:
 * ```Configure the phinx.yml file with DB connection info```
 * ```Run vendor/bin/phinx migrate```
 * ```Access local address depending on your hosting configuration. The project is ready to use!```
+
+Having Docker installed on your enviroment:
+Run ```docker-compose build```
+Run ```docker-compose up```
+Run ```docker-compose exec php composer install```
+Copy ```.env.dist to .env locally```
+Configure ```the .env file with docker container data```
+Copy ```phinx.yml.dist to phinx.yml locally```
+Configure ```the phinx.yml file with docker container data```
+Run ```docker-compose exec php vendor/bin/phinx migrate```

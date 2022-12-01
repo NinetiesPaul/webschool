@@ -35,7 +35,7 @@ class AdminBasico extends AbstractMigration
             [
                 'nome' => 'admin',
                 'email' => 'admin',
-                'pass' => 'a150d62572c2125532bdac83ef5a0eac',
+                'pass' => 'ce2eee50c900e43d9c13f804c3d7e633',
                 'salt' => '1599331881'
             ]
         ];
