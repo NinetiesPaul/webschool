@@ -1,6 +1,6 @@
 #Simple web system for small school management
 
-Project running on:
+Project running on:  
 ```PHP 7.2```  
 ```MySQL 5.2```  
 
