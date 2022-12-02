@@ -1,16 +1,16 @@
-#Simple web system for small school management
-
-Project running on:  
+# WebSchool
+Simple web system for small school management
+### Project running on:  
 ```PHP 7.2```  
 ```MySQL 5.2```  
 
-Composer packages used:  
+### Composer packages used:  
 ```Phinx```  
 ```PHP-Cs-Fixer```  
 ```Simple-PHP-Router```  
 ```VLUCAS's PHPDOTENV```  
 
-Configuring the project:  
+### Configuring the project:  
 Install Docker   
 Run ```docker-compose build```  
 Run ```docker-compose up -d```  
