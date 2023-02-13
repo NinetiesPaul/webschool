@@ -1,5 +1,7 @@
 # WebSchool
-Simple web system for small school management. Made in vanilla PHP with no frameworks and some libraries from composer.
+WebSchool is a simple web application for small school management.
+
+Project running on Docker, pure PHP, MySQL and using some libraries from Composer.
 
 ### Project running on:  
 ```PHP 7.2```  
