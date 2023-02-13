@@ -1,5 +1,6 @@
 # WebSchool
-Simple web system for small school management
+Simple web system for small school management. Made in vanilla PHP with no frameworks and some libraries from composer.
+
 ### Project running on:  
 ```PHP 7.2```  
 ```MySQL 5.2```  
