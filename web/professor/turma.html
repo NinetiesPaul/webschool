@@ -12,6 +12,7 @@
             }
         </style>
         <script src="../../includes/js/jquery.js"></script>
+        <script src="../../includes/js/height.js"></script>
         <script>
         function inserirNota(aluno,turma,disciplina,tipo,nota) {
             $.ajax({
@@ -72,8 +73,6 @@
                             Logado como {LOGADO}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            {LINKS}
-                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="../../perfil">Meu perfil</a>
                             <a class="dropdown-item" href="../../logout">Sair</a>
                         </div>
@@ -81,8 +80,14 @@
                 </ul>
             </div>
         </nav>
+        
+        <div class="text-center menu" style="width: 20%; float: left;  background-color: slategray;">
+            <div style="padding: 2em;">
+                {LINKS}
+            </div>
+        </div>
 
-        <div class="container">
+        <div class="" style="width: 80%; float: right; padding: 2em;">
             <div class="jumbotron text-center">
 
                 <strong>Detalhes da turma</strong> <p/>

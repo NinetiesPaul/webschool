@@ -8,6 +8,7 @@
         <link href="../../includes/css/css.css" rel="stylesheet">
         <link href="../../includes/css/navbar.css" rel="stylesheet">
         <script src="../../includes/js/jquery.js"></script>
+        <script src="../../includes/js/height.js"></script>
         <script>
             function pesquisarFrequencia(mes, ano, turma, disc, context) {
                 $.ajax({
@@ -226,52 +227,48 @@
                 </ul>
             </div>
         </nav>
-
-        <div class="container">
-            <div class="jumbotron text-center">
-                <strong>Diário de Classe</strong><p/>
-                
-                <input type="hidden" id="disc" value='{DISCIPLINA}' />
-                <input type="hidden" id="turma" value='{TURMA}' />
-                <input type="hidden" id="context" value='professor' />
-                
-                <br/><select id="ano" class="selectpicker">
-                    <option value="2013">2013</option>
-                    <option value="2014">2014</option>
-                    <option value="2015">2015</option>
-                    <option value="2016">2016</option>
-                    <option value="2017">2017</option>
-                    <option value="2018">2018</option>
-                    <option value="2019">2019</option>
-                    <option value="2020">2020</option>
-                    <option value="2021">2021</option>
-                </select>
-                
-                <select id="mes" class="selectpicker">
-                    <option value="1">Janeiro</option>
-                    <option value="2">Fevereiro</option>
-                    <option value="3">Março</option>
-                    <option value="4">Abril</option>
-                    <option value="5">Maio</option>
-                    <option value="6">Junho</option>
-                    <option value="7">Julho</option>
-                    <option value="8">Agosto</option>
-                    <option value="9">Setembro</option>
-                    <option value="10">Outubro</option>
-                    <option value="11">Novembro</option>
-                    <option value="12">Dezembro</option>
-                </select><p/>
-                
-                <button class="btn btn-primary btn-sm" id="search" ><span class='glyphicon glyphicon-search'></span> Pesquisar</button>
-
-                <div class="alert alert-danger" role="alert" style="display: none;">
-                </div>
-
-                <div id="result" >
-                    Selecione o mês e ano para pesquisar a frequencia da turma.
-                </div>
-                
+        
+        <div class="text-center menu" style="width: 20%; float: left;  background-color: slategray;">
+            <div style="padding: 2em;">
+                {LINKS}
             </div>
+        </div>
+
+        <div class="" style="width: 80%; float: right; padding: 2em;">
+            <strong>Diário de Classe</strong><p/>
+            
+            <input type="hidden" id="disc" value='{DISCIPLINA}' />
+            <input type="hidden" id="turma" value='{TURMA}' />
+            <input type="hidden" id="context" value='professor' />
+            
+            <br/><select id="ano" class="selectpicker">
+                <option value="2024">2024</option>
+            </select>
+            
+            <select id="mes" class="selectpicker">
+                <option value="1">Janeiro</option>
+                <option value="2">Fevereiro</option>
+                <option value="3">Março</option>
+                <option value="4">Abril</option>
+                <option value="5">Maio</option>
+                <option value="6">Junho</option>
+                <option value="7">Julho</option>
+                <option value="8">Agosto</option>
+                <option value="9">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+            </select><p/>
+            
+            <button class="btn btn-primary btn-sm" id="search" ><span class='glyphicon glyphicon-search'></span> Pesquisar</button>
+
+            <div class="alert alert-danger" role="alert" style="display: none;">
+            </div>
+
+            <div id="result" >
+                Selecione o mês e ano para pesquisar a frequencia da turma.
+            </div>
+            
         </div>
 
         <!-- Modal -->

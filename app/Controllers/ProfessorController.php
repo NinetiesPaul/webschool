@@ -23,13 +23,11 @@ class ProfessorController
     protected $diarioDeClasseStorage;
     protected $arquivoStorage;
     protected $notaStorage;
-    protected $links;
 
     public function __construct()
     {
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_PROFESSOR);
-        $this->links = $this->util->generateLinks();
         new LogStorage();
 
         $this->materiaStorage = new MateriaStorage();
@@ -64,8 +62,7 @@ class ProfessorController
                     
         $args = [
             'LOGADO' => $user->nome,
-            'TURMAS' => $turmas,
-            'LINKS' => $this->links
+            'TURMAS' => $turmas
         ];
 
         new Templates('professor/turmas.html', $args);
@@ -73,8 +70,6 @@ class ProfessorController
     
     public function verTurma($id)
     {
-        $this->links = $this->util->generateLinks('../');
-
         $user = $_SESSION['user'];
         $result = $this->materiaStorage->verMateriaDoProfessor($id);
 
@@ -108,16 +103,13 @@ class ProfessorController
         $args = [
             'LOGADO' => $user->nome,
             'DETALHES' => $detalhes,
-            'LINKS' => $this->links
         ];
 
-        new Templates('professor/turma.html', $args);
+        new Templates('professor/turma.html', $args, '../');
     }
     
     public function verDiarioDeClasse($id)
     {
-        $this->links = $this->util->generateLinks('../');
-
         $user = $_SESSION['user'];
         
         $id = explode('_', $id);
@@ -125,11 +117,10 @@ class ProfessorController
         $args = [
             'LOGADO' => $user->nome,
             'DISCIPLINA' => $id[1],
-            'TURMA' => $id[0],
-            'LINKS' => $this->links
+            'TURMA' => $id[0]
         ];
 
-        new Templates('professor/diariodeclasse.html', $args);
+        new Templates('professor/diariodeclasse.html', $args, '../');
     }
 
     public function inserirNota()
