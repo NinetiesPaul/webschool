@@ -33,14 +33,11 @@ class AdminController
     protected $usuarioStorage;
     protected $professorStorage;
     protected $responsavelStorage;
-    protected $links;
 
     public function __construct()
     {
-        $this->template = new Templates();
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_ADMIN);
-        $this->links = $this->util->generateLinks();
         new LogStorage();
         
         $this->turmaStorage = new TurmaStorage();
@@ -58,6 +55,6 @@ class AdminController
     
     public function index()
     {
-        $this->util->loadTemplate('admin/index.html');
+        new Templates('admin/index.html');
     }
 }

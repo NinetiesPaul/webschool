@@ -35,7 +35,6 @@ class GeneralController
     public function __construct()
     {
         $this->connection = new DB;
-        $this->template = new Templates();
         $this->util = new Util();
         $this->links = $this->util->generateLinks();
         session_start();
@@ -68,7 +67,7 @@ class GeneralController
             }
         }
 
-        $this->util->loadTemplate('index.html');
+        new Templates('index.html');
     }
     
     public function gerarBoletim()
@@ -259,7 +258,7 @@ class GeneralController
             'LINKS' => $this->links
         ];
         
-        $this->util->loadTemplate('perfil.html', $args);
+        new Templates('perfil.html', $args);
     }
     
     public function alterarPerfil()

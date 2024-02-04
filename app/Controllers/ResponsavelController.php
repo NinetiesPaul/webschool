@@ -24,7 +24,6 @@ class ResponsavelController
 
     public function __construct()
     {
-        $this->template = new Templates();
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_RESPONSAVEL);
         $this->links = $this->util->generateLinks();
@@ -44,7 +43,7 @@ class ResponsavelController
             'LOGADO' => $user->nome
         ];
 
-        $this->util->loadTemplate('responsavel/index.html', $args);
+        new Templates('responsavel/index.html', $args);
     }
     
     public function verAlunos()
@@ -64,7 +63,7 @@ class ResponsavelController
             'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('responsavel/alunos.html', $args);
+        new Templates('responsavel/alunos.html', $args);
     }
     
     public function verAluno($idAluno)
@@ -119,6 +118,6 @@ class ResponsavelController
             'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('responsavel/aluno.html', $args);
+        new Templates('responsavel/aluno.html', $args);
     }
 }

@@ -27,7 +27,6 @@ class ProfessorController
 
     public function __construct()
     {
-        $this->template = new Templates();
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_PROFESSOR);
         $this->links = $this->util->generateLinks();
@@ -48,7 +47,7 @@ class ProfessorController
             'LOGADO' => $user->nome
         ];
 
-        $this->util->loadTemplate('professor/index.html', $args);
+        new Templates('professor/index.html', $args);
     }
     
     public function verTurmas()
@@ -69,7 +68,7 @@ class ProfessorController
             'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('professor/turmas.html', $args);
+        new Templates('professor/turmas.html', $args);
     }
     
     public function verTurma($id)
@@ -112,7 +111,7 @@ class ProfessorController
             'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('professor/turma.html', $args);
+        new Templates('professor/turma.html', $args);
     }
     
     public function verDiarioDeClasse($id)
@@ -130,7 +129,7 @@ class ProfessorController
             'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('professor/diariodeclasse.html', $args);
+        new Templates('professor/diariodeclasse.html', $args);
     }
 
     public function inserirNota()
@@ -202,7 +201,7 @@ class ProfessorController
         }
         $output .= "</tr></tbody></table>";
 
-        $this->response($output);
+        ResponseHandler::response($output);
     }
 
     public function alterarFrequencia()
@@ -260,7 +259,7 @@ class ProfessorController
             }
         }
 
-        $this->response($span);
+        ResponseHandler::response($span);
     }
 
     public function adicionarComentario()
@@ -385,7 +384,7 @@ class ProfessorController
         <td $span $cellid>$line</td>
         <td><a href='#' id='$id_comentario' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td></tr>";
 
-        $this->response($line);
+        ResponseHandler::response($line);
     }
 
     public function verComentarios()
@@ -443,7 +442,7 @@ class ProfessorController
             $output .= "<td><a href='#' id='$comentario->id' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td></tr>";
         }
 
-        $this->response($output);
+        ResponseHandler::response($output);
     }
 
     public function deletarComentario($idComentario)

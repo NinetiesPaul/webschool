@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
 use App\ResponseHandler;
+use App\Templates;
 
 class MateriasController extends AdminController
 {
@@ -23,25 +24,21 @@ class MateriasController extends AdminController
 
         $args = [
             'DISCIPLINAS' => $disciplinas,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('admin/disciplinas.html', $args);
+        new Templates('admin/disciplinas.html', $args);
     }
 
     public function verMateria($materia)
     {
-        $this->links = $this->util->generateLinks('../');
-
         $disciplina = $this->materiaStorage->verMateria($materia);
 
         $args = [
             'ID' => $disciplina->id,
             'NOME' => $disciplina->nome,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('admin/disciplina.html', $args);
+        new Templates('admin/disciplina.html', $args, '../');
     }
 
     public function adicionarMateria()

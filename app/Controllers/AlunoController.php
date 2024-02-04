@@ -22,7 +22,6 @@ class AlunoController
 
     public function __construct()
     {
-        $this->template = new Templates();
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_ALUNO);
         $this->links = $this->util->generateLinks();
@@ -41,7 +40,7 @@ class AlunoController
             'LOGADO' => $nome
         ];
         
-        $this->util->loadTemplate('aluno/index.html', $args);
+        new Templates('aluno/index.html', $args);
     }
     
     public function verTurmas()
@@ -93,6 +92,6 @@ class AlunoController
             'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('aluno/turmas.html', $args);
+        new Templates('aluno/turmas.html', $args);
     }
 }
