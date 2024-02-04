@@ -4,7 +4,18 @@ namespace App;
 
 class Templates
 {
-    public function getTemplate($template, $folder = "web/")
+    public function __construct($path, $args = null, $nivel = '')
+    {
+        $args['LINKS'] = Util::generateLinks($nivel);
+
+        $template 	= $this->getTemplate($path);
+        if ($args) {
+            $template = $this->parseTemplate($template, $args);
+        }
+        echo $template;
+    }
+
+    protected function getTemplate($template, $folder = "web/")
     {
         $arqTemp = $folder.$template; // criando var com caminho do arquivo
         $content = '';
@@ -16,7 +27,7 @@ class Templates
         return $content;
     }
     
-    public function parseTemplate($template, $array)
+    protected function parseTemplate($template, $array)
     {
         foreach ($array as $a => $b) {// recebemos um array com as tags
             if (strpos($a, 'list')) {
