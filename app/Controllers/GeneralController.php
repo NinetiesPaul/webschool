@@ -30,13 +30,11 @@ class GeneralController
     protected $notaStorage;
     protected $diarioStorage;
     protected $avatarStorage;
-    protected $links;
 
     public function __construct()
     {
         $this->connection = new DB;
         $this->util = new Util();
-        $this->links = $this->util->generateLinks();
         session_start();
 
         $this->enderecoStorage = new EnderecoStorage();
@@ -209,7 +207,6 @@ class GeneralController
     
     public function visualizarPerfil()
     {
-        $this->links = $this->util->generateLinks('', true);
         $user = $_SESSION['user'];
         
         $tipo = (isset($user->aluno)) ? 'aluno' : ((isset($user->professor) > 0) ? 'professor' : 'responsavel');
@@ -255,7 +252,7 @@ class GeneralController
             'LOGADO' => $user->nome,
             'ESTADOS' => $estados,
             'ESTADO_ATUAL' => $this->enderecoStorage->pegarEstadoPeloEstado($user->endereco->estado),
-            'LINKS' => $this->links
+            'ON_PROFILE' => true,
         ];
         
         new Templates('perfil.html', $args);

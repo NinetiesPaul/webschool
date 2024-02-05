@@ -6,7 +6,7 @@ class Templates
 {
     public function __construct($path, $args = null, $nivel = '')
     {
-        $args['LINKS'] = Util::generateLinks($nivel);
+        $args['LINKS'] = Util::generateLinks($nivel, ($args['ON_PROFILE'] ? true : false));
 
         $template 	= $this->getTemplate($path);
         if ($args) {
