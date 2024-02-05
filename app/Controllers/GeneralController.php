@@ -14,9 +14,8 @@ use App\Enum;
 use App\ResponseHandler;
 use App\Templates;
 use App\Util;
-use PDO;
-use tFPDF;
 use DateTime;
+use TCPDF;
 
 class GeneralController
 {
@@ -75,7 +74,7 @@ class GeneralController
 
         $notas = $this->notaStorage->verNotasPorTruma($aluno, $turma);
 
-        $pdf = new tFPDF();
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         $pdf->AddPage();
 
         // Colors, line width and bold font
@@ -83,8 +82,7 @@ class GeneralController
         $pdf->SetTextColor(255);
         $pdf->SetDrawColor(0, 0, 0);
         $pdf->SetLineWidth(.3);
-        $pdf->AddFont('DejaVu', '', 'DejaVuSansCondensed.ttf', true);
-        $pdf->SetFont('DejaVu', '', 8);
+        $pdf->SetFont('dejavusans', '', 14, '', true);
 
         // Header
 
@@ -98,11 +96,11 @@ class GeneralController
         // Color and font restoration
         $pdf->SetFillColor(224, 235, 255);
         $pdf->SetTextColor(0);
-        $pdf->SetFont('DejaVu', '', 8);
+        $pdf->SetFont('dejavusans', '', 14, '', true);
         // Data
         $fill = false;
         foreach ($notas as $row) {
-            $pdf->SetFont('DejaVu', '', 8);
+            $pdf->SetFont('dejavusans', '', 14, '', true);
             $pdf->Cell(40, 6, $row->materia, 'LR', 0, 'L', $fill);
             $pdf->Cell(10, 6, $row->nota1, 'LR', 0, 'L', $fill);
             $pdf->Cell(10, 6, $row->rec1, 'LR', 0, 'L', $fill);
@@ -113,7 +111,7 @@ class GeneralController
             $pdf->Cell(10, 6, $row->nota4, 'LR', 0, 'L', $fill);
             $pdf->Cell(10, 6, $row->rec4, 'LR', 0, 'L', $fill);
             $pdf->Ln();
-            $pdf->SetFont('DejaVu', '', 4);
+            $pdf->SetFont('dejavusans', '', 14, '', true);
             $pdf->Cell(40, 2, $row->nome_professor, 'LR', 0, 'L', $fill);
             $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
             $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
@@ -141,7 +139,7 @@ class GeneralController
 
         $turmas = $this->notaStorage->verTurmasEMateriasComNotasDoAluno($aluno[0]);
 
-        $pdf = new tFPDF();
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
         foreach ($turmas as $turma) {
             $notas = $this->notaStorage->verNotasPorTruma($aluno[0], $turma->turma);
@@ -153,8 +151,7 @@ class GeneralController
             $pdf->SetTextColor(255);
             $pdf->SetDrawColor(0, 0, 0);
             $pdf->SetLineWidth(.3);
-            $pdf->AddFont('DejaVu', '', 'DejaVuSansCondensed.ttf', true);
-            $pdf->SetFont('DejaVu', '', 8);
+            $pdf->SetFont('dejavusans', '', 14, '', true);
             // Header
 
             $pdf->Cell(120, 7, $turma->nome_da_turma, 1, 0, 'C', true);
@@ -169,11 +166,11 @@ class GeneralController
             // Color and font restoration
             $pdf->SetFillColor(224, 235, 255);
             $pdf->SetTextColor(0);
-            $pdf->SetFont('DejaVu', '', 8);
+            $pdf->SetFont('dejavusans', '', 14, '', true);
             // Data
             $fill = false;
             foreach ($notas as $row) {
-                $pdf->SetFont('DejaVu', '', 8);
+                $pdf->SetFont('dejavusans', '', 14, '', true);
                 $pdf->Cell(40, 6, $row->materia, 'LR', 0, 'L', $fill);
                 $pdf->Cell(10, 6, $row->nota1, 'LR', 0, 'L', $fill);
                 $pdf->Cell(10, 6, $row->rec1, 'LR', 0, 'L', $fill);
@@ -184,7 +181,7 @@ class GeneralController
                 $pdf->Cell(10, 6, $row->nota4, 'LR', 0, 'L', $fill);
                 $pdf->Cell(10, 6, $row->rec4, 'LR', 0, 'L', $fill);
                 $pdf->Ln();
-                $pdf->SetFont('DejaVu', '', 4);
+                $pdf->SetFont('dejavusans', '', 14, '', true);
                 $pdf->Cell(40, 2, $row->nome_professor, 'LR', 0, 'L', $fill);
                 $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
                 $pdf->Cell(10, 2, '', 'LR', 0, 'L', $fill);
