@@ -18,8 +18,8 @@ class MateriasController extends AdminController
         foreach ($disciplinaQuery as $disciplina) {
             $disciplinas .=
                 "<tr id='row-$disciplina->id'><td>$disciplina->nome</td>
-             <td><a href='disciplina/$disciplina->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>
-             <td><button class='btn btn-danger btn-sm' id='deletar' value='$disciplina->id'><span class='glyphicon glyphicon-trash'></span> Deletar</button></td></tr>";
+             <td><a href='disciplina/$disciplina->id' class='btn'><span class='glyphicon glyphicon-edit'></span> </a></td>
+             <td><a href='#' class='btn' id='deletar' value='$disciplina->id'> <span class='glyphicon glyphicon-trash'></span> </a></td></tr>";
         }
 
         $args = [
