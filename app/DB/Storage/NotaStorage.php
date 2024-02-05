@@ -45,9 +45,11 @@ class NotaStorage
     public function verTurmasComNotaDoAluno($aluno)
     {
         $exec = $this->db->query("
-        SELECT npa.turma, CONCAT(t.serie, 'º Série ', t.nome) AS nome_turma
+        SELECT npa.turma, CONCAT(t.serie, 'º Série ', t.nome) AS nome_turma, u.nome
         FROM nota_por_aluno npa
         JOIN turma t ON npa.turma = t.id
+        JOIN aluno a ON a.id = npa.aluno 
+        JOIN usuario u ON u.id = a.usuario 
         WHERE aluno=$aluno
         GROUP BY turma");
         return $exec->fetchAll(PDO::FETCH_OBJ);
