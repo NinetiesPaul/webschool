@@ -23,4 +23,10 @@ RUN docker-php-ext-install mysqli pdo_mysql gd
 
 RUN docker-php-ext-enable gd
 
+RUN docker-php-ext-configure calendar
+
+RUN docker-php-ext-install calendar
+
+RUN docker-php-ext-enable calendar
+
 RUN a2enmod rewrite
