@@ -57,7 +57,7 @@ class ProfessorController
         $turmas = '';
         
         foreach ($disciplinas as $disciplina) {
-            $turmas .= "<p/><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '>".$disciplina->nomeDisciplina.', '.$disciplina->serie.'º Série '.$disciplina->nome."</a><br/>";
+            $turmas .= "<p><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '>".$disciplina->nomeDisciplina.', '.$disciplina->serie.'º Série '.$disciplina->nome."</a><p/>";
         }
                     
         $args = [
@@ -78,12 +78,12 @@ class ProfessorController
 
         $detalhes = '';
         
-        $detalhes .= $result->nomeDisciplina.', '.$result->serie.'º Série '.$result->nome;
-        $detalhes .= "<p/><a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a><p/>";
+        $detalhes .= $result->nomeDisciplina . ' (' . $result->serie . 'º Série ' . $result->nome . ')';
+        $detalhes .= "<p><a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a></p>";
 
         $alunosQuery = $this->notaStorage->verNotasPorAlunosDaDisciplinaETurma($disciplina, $turma);
 
-        $detalhes .= "<table style='margin-left: auto; margin-right: auto; font-size: 13px;' class='table table-sm table-hover table-striped'>
+        $detalhes .= "<table style='margin-left: auto; margin-right: auto; font-size: 13px;' class='table'>
         <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2:</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th></tr></thead><tbody>";
         foreach ($alunosQuery as $aluno) {
             $detalhes .= "<tr><td>$aluno->nome</td>
@@ -162,7 +162,7 @@ class ProfessorController
         foreach ($dates as $date) {
             $output .= "<th scope='col'>".$date->format('d')."</th>";
         }
-        $output .= "<p/></tr></thead><tbody>";
+        $output .= "</tr></thead><tbody>";
         foreach ($alunos as $aluno) {
             $output .= "<tr><td>$aluno->nome</td>";
             foreach ($dates as $date) {
