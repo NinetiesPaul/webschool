@@ -3,6 +3,11 @@
 use Pecee\SimpleRouter\SimpleRouter;
 use App\Controllers\Admin\MateriasController as AdminMateriasController;
 
+SimpleRouter::get('/admin/disciplina', function() {
+    $admin = new AdminMateriasController();
+    $admin->criarDisciplina();
+});
+
 SimpleRouter::get('/admin/disciplinas', function() {
     $admin = new AdminMateriasController();
     $admin->verMaterias();

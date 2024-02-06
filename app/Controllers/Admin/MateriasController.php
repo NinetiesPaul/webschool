@@ -9,6 +9,11 @@ use App\Templates;
 
 class MateriasController extends AdminController
 {
+    public function criarDisciplina()
+    {
+        new Templates('admin/disciplinas/criar.html');
+    }
+
     public function verMaterias()
     {
         $disciplinaQuery = $this->materiaStorage->verMaterias();
@@ -32,7 +37,7 @@ class MateriasController extends AdminController
             'DISCIPLINAS' => $disciplinas,
         ];
 
-        new Templates('admin/disciplinas.html', $args);
+        new Templates('admin/disciplinas/listar.html', $args);
     }
 
     public function verMateria($materia)
@@ -44,7 +49,7 @@ class MateriasController extends AdminController
             'NOME' => $disciplina->nome,
         ];
 
-        new Templates('admin/disciplina.html', $args, '../');
+        new Templates('admin/disciplinas/editar.html', $args, '../');
     }
 
     public function adicionarMateria()
