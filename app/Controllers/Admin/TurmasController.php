@@ -9,6 +9,11 @@ use App\Templates;
 
 class TurmasController extends AdminController
 {
+    public function criarTurma()
+    {
+        new Templates('admin/turmas/criar.html');
+    }
+
     public function verTurmas()
     {
         $turmasQuery = $this->turmaStorage->verTurmas();
@@ -32,7 +37,7 @@ class TurmasController extends AdminController
             'TURMAS' => $turmas,
         ];
 
-        new Templates('admin/turmas.html', $args);
+        new Templates('admin/turmas/listar.html', $args);
     }
 
     public function verTurma($turma)
@@ -45,7 +50,7 @@ class TurmasController extends AdminController
             'LETRA' => $turma->nome,
         ];
 
-        new Templates('admin/turma/editar.html', $args, '../');
+        new Templates('admin/turmas/editar.html', $args);
     }
 
     public function adicionarTurma()

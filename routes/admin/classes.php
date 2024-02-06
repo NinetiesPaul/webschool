@@ -3,6 +3,11 @@
 use Pecee\SimpleRouter\SimpleRouter;
 use App\Controllers\Admin\TurmasController as AdminTurmaController;
 
+SimpleRouter::get('/admin/turma', function() {
+    $admin = new AdminTurmaController();
+    $admin->criarTurma();
+});
+
 SimpleRouter::get('/admin/turmas', function() {
     $admin = new AdminTurmaController();
     $admin->verTurmas();
