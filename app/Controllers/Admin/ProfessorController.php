@@ -21,10 +21,22 @@ class ProfessorController extends AdminController
         foreach ($professorQuery as $professor) {
             $data_token = strtolower($professor->nome);
             $is_deleted = ($professor->is_deleted) ? "<span class='label-status_$professor->id label-success'>Ativo</span>" : "<span class='label-status_$professor->id label-danger'>Inativo</span>";
-            $professores .=
-                "<tr id='row-$professor->id'><td>$professor->nome </td>
-            <td>$is_deleted</td><td style='text-align: center;'><a href='professor/$professor->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
-            <a href='#' class='btn desativar' id='$professor->id'><span class='glyphicon glyphicon-ban-circle'></span></a></td></tr>";
+            
+            $professores .="
+                <tr id='row-$professor->id'>
+                    <td>$professor->id</td>
+                    <td>
+                        $professor->nome<br/>
+                        $is_deleted
+                    </td>
+                    <td>
+                        <a href='professor/$professor->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span></a>
+                        <a href='#' class='btn btn-sm desativar' id='$professor->id'><span class='glyphicon glyphicon-ban-circle'></span></a>
+                    </td>
+                </tr>
+            ";
+
+
             $professores_select .= "<option data-tokens='$data_token' value='$professor->professor'>$professor->nome</option>";
             $professor_array[$professor->professor] = $professor->nome;
         }

@@ -16,14 +16,20 @@ class TurmasController extends AdminController
         $turmas = '';
 
         foreach ($turmasQuery as $turma) {
-            $turmas .=
-                "<tr id='row-$turma->id'><td>$turma->serie º Série $turma->nome</td>
-             <td><a href='turma/$turma->id' class='btn'><span class='glyphicon glyphicon-edit'></span> </a></td>
-             <td><a href='#' class='btn' id='deletar' value='$turma->id'><span class='glyphicon glyphicon-trash'></span> </a></td></tr>";
+            $turmas .="
+                <tr id='row-$turma->id'>
+                    <td>$turma->id</td>
+                    <td>$turma->serie º Série $turma->nome</td>
+                    <td>
+                        <a href='turma/$turma->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span> </a>
+                        <a href='#' class='btn btn-sm' id='deletar' value='$turma->id'><span class='glyphicon glyphicon-trash'></span> </a>
+                    </td>
+                </tr>
+            ";
         }
 
         $args = [
-            'ALUNOS' => $turmas,
+            'TURMAS' => $turmas,
         ];
 
         new Templates('admin/turmas.html', $args);
@@ -39,7 +45,7 @@ class TurmasController extends AdminController
             'LETRA' => $turma->nome,
         ];
 
-        new Templates('admin/turma.html', $args, '../');
+        new Templates('admin/turma/editar.html', $args, '../');
     }
 
     public function adicionarTurma()

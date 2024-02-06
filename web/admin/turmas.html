@@ -89,14 +89,19 @@
                 <button type="submit" class="btn btn-primary btn-sm btn-sm"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button>
             </form>
 
-            <p><strong>Lista de Turmas</strong></p>
-
             <div class="alert alert-danger" role="alert" style="display: none;">
             </div>
             
-            <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">Id</th>
+                        <th>Nome</th>
+                        <th style="width: 10%"></th>
+                    </tr>
+                </thead>
                 <tbody>
-                    {ALUNOS}
+                    {TURMAS}
                 </tbody>
             </table>
         </div>

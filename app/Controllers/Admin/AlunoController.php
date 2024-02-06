@@ -24,12 +24,21 @@ class AlunoController extends AdminController
         $alunos = '';
         foreach ($alunoQuery as $aluno) {
             $is_deleted = ($aluno->is_deleted) ? "<span class='label-status_$aluno->id label-success'>Ativo</span>" : "<span class='label-status_$aluno->id label-danger'>Inativo</span>";
-            $alunos .=
-                "<tr id='row-$aluno->id'><td>$aluno->nome </td>
-            <td>$aluno->nome_turma</td>
-            <td>$is_deleted</td>
-            <td style='text-align: center;'><a href='aluno/$aluno->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
-            <a href='#' class='btn desativar' id='$aluno->id'><span class='glyphicon glyphicon-ban-circle'></span> </a></td></tr>";
+            
+            $alunos .= "
+                <tr id='row-$aluno->id'>
+                    <td>$aluno->id</td>
+                    <td>
+                        $aluno->nome<br/>
+                        $is_deleted
+                        </td>
+                    <td>$aluno->nome_turma</td>
+                    <td>
+                        <a href='aluno/$aluno->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span></a>
+                        <a href='#' class='btn btn-sm desativar' id='$aluno->id'><span class='glyphicon glyphicon-ban-circle'></span> </a>
+                    </td>
+                </tr>
+            ";
         }
 
         $args = [
