@@ -28,8 +28,8 @@ class DiarioDeClasseStorage
             inner join aluno on aluno.usuario = usuario.id
             inner join diario_de_classe on diario_de_classe.aluno = aluno.id
             and diario_de_classe.disciplina = $disc and diario_de_classe.turma = $turma
-            group by usuario.nome
-            order by usuario.nome 
+            group by diario_de_classe.aluno
+            order by diario_de_classe.aluno 
         ");
         return $alunosQuery->fetchAll(PDO::FETCH_OBJ);
     }

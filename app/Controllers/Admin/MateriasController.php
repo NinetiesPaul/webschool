@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
 use App\ResponseHandler;
+use App\Templates;
 
 class MateriasController extends AdminController
 {
@@ -17,31 +18,27 @@ class MateriasController extends AdminController
         foreach ($disciplinaQuery as $disciplina) {
             $disciplinas .=
                 "<tr id='row-$disciplina->id'><td>$disciplina->nome</td>
-             <td><a href='disciplina/$disciplina->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>
-             <td><button class='btn btn-danger btn-sm' id='deletar' value='$disciplina->id'><span class='glyphicon glyphicon-trash'></span> Deletar</button></td></tr>";
+             <td><a href='disciplina/$disciplina->id' class='btn'><span class='glyphicon glyphicon-edit'></span> </a></td>
+             <td><a href='#' class='btn' id='deletar' value='$disciplina->id'> <span class='glyphicon glyphicon-trash'></span> </a></td></tr>";
         }
 
         $args = [
             'DISCIPLINAS' => $disciplinas,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('admin/disciplinas.html', $args);
+        new Templates('admin/disciplinas.html', $args);
     }
 
     public function verMateria($materia)
     {
-        $this->links = $this->util->generateLinks('../');
-
         $disciplina = $this->materiaStorage->verMateria($materia);
 
         $args = [
             'ID' => $disciplina->id,
             'NOME' => $disciplina->nome,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('admin/disciplina.html', $args);
+        new Templates('admin/disciplina.html', $args, '../');
     }
 
     public function adicionarMateria()

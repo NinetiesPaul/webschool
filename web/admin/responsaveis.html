@@ -6,9 +6,11 @@
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css">
         <link href="../includes/css/status.css" rel="stylesheet">
         <link href="../includes/css/glyphicons.css" rel="stylesheet">
+        <link href="../includes/css/css.css" rel="stylesheet">
         <link href="../includes/css/navbar.css" rel="stylesheet">
         <link href="../includes/css/datatables.css" rel="stylesheet">
         <script src="../includes/js/jquery.js"></script>
+        <script src="../includes/js/height.js"></script>
         <script>
         function verificarLogin(val) {
             $.ajax({
@@ -92,8 +94,6 @@
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            {LINKS}
-                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="../logout">Sair</a>
                         </div>
                     </li>
@@ -101,49 +101,52 @@
             </div>
         </nav>
 
-        <div class="container">
-            <div class="jumbotron text-center">
-                <strong>Cadastro de Responsaveis</strong> <p/>
-                <form action="/admin/responsavel" method="post" role="form" class="form-horizontal " >
-                    <div class="form-group row justify-content-center ">
-                        <label for="nome" class="col-form-label col-md-2 col-form-label-sm ">Nome:</label>
-                        <div class="col-md-3">
-                            <input type="text" name="nome" id="nome" class="form-control form-control-sm" required>
-                        </div>
-                    </div>
-                    <div class="form-group row justify-content-center ">
-                        <label for="email" class="col-form-label col-md-2 col-form-label-sm ">Login:</label>
-                        <div class="col-md-3">
-                            <input type="text" name="email" id="email" class="form-control form-control-sm" aria-describedby="disponibilidade" required>
-                            <small id="disponibilidade">
-                                Login em uso!
-                            </small>
-                        </div>
-                    </div>
-                    <div class="form-group row justify-content-center ">
-                        <label for="password" class="col-form-label col-md-2 col-form-label-sm ">Senha:</label>
-                        <div class="col-md-3">
-                            <input type="password" name="password" class="form-control form-control-sm" required>
-                        </div>
-                    </div>
-                    <button type="submit" id="btn" class="btn btn-primary btn-sm"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button>
-                </form>
-
-                <p><strong>Lista de Responsaveis</strong></p>
-
-                <div class="alert alert-danger" role="alert" style="display: none;">
-                </div>
-                
-                <table style="margin: 0 auto; width: 100%; font-size: 13px;" class="table hover" id="tableResponsaveis">
-                    <thead>
-                        <tr><td>Nome</td><td style="width: 15%"></td><td style="width: 15%; text-align: center;"></td></tr>
-                    </thead>
-                    <tbody>
-                        {RESPONSAVEIS}
-                    </tbody>
-                </table>
-
+        <div class="text-center menu" style="width: 20%; float: left; background-color: slategray;">
+            <div style="padding: 2em;">
+                {LINKS}
             </div>
+        </div>
+
+        <div class="" style="width: 80%; float: right; padding: 2em;">
+            <strong>Cadastro de Responsaveis</strong> <p/>
+            <form action="/admin/responsavel" method="post" role="form" class="form-horizontal " >
+                <div class="form-group row justify-content-center ">
+                    <label for="nome" class="col-form-label col-md-2 col-form-label-sm ">Nome:</label>
+                    <div class="col-md-3">
+                        <input type="text" name="nome" id="nome" class="form-control form-control-sm" required>
+                    </div>
+                </div>
+                <div class="form-group row justify-content-center ">
+                    <label for="email" class="col-form-label col-md-2 col-form-label-sm ">Login:</label>
+                    <div class="col-md-3">
+                        <input type="text" name="email" id="email" class="form-control form-control-sm" aria-describedby="disponibilidade" required>
+                        <small id="disponibilidade">
+                            Login em uso!
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group row justify-content-center ">
+                    <label for="password" class="col-form-label col-md-2 col-form-label-sm ">Senha:</label>
+                    <div class="col-md-3">
+                        <input type="password" name="password" class="form-control form-control-sm" required>
+                    </div>
+                </div>
+                <button type="submit" id="btn" class="btn btn-primary btn-sm"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button>
+            </form>
+
+            <p><strong>Lista de Responsaveis</strong></p>
+
+            <div class="alert alert-danger" role="alert" style="display: none;">
+            </div>
+            
+            <table style="margin: 0 auto; width: 100%; font-size: 13px;" class="table hover" id="tableResponsaveis">
+                <thead>
+                    <tr><td>Nome</td><td style="width: 15%"></td><td style="width: 15%; text-align: center;"></td></tr>
+                </thead>
+                <tbody>
+                    {RESPONSAVEIS}
+                </tbody>
+            </table>
         </div>
 
         <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>

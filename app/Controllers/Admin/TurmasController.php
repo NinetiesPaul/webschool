@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
 use App\ResponseHandler;
+use App\Templates;
 
 class TurmasController extends AdminController
 {
@@ -17,32 +18,28 @@ class TurmasController extends AdminController
         foreach ($turmasQuery as $turma) {
             $turmas .=
                 "<tr id='row-$turma->id'><td>$turma->serie º Série $turma->nome</td>
-             <td><a href='turma/$turma->id' class='btn btn-info btn-sm btn-sm'><span class='glyphicon glyphicon-edit'></span> Editar</a></td>
-             <td><button class='btn btn-danger btn-sm' id='deletar' value='$turma->id'><span class='glyphicon glyphicon-trash'></span> Deletar</button></td></tr>";
+             <td><a href='turma/$turma->id' class='btn'><span class='glyphicon glyphicon-edit'></span> </a></td>
+             <td><a href='#' class='btn' id='deletar' value='$turma->id'><span class='glyphicon glyphicon-trash'></span> </a></td></tr>";
         }
 
         $args = [
             'ALUNOS' => $turmas,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('admin/turmas.html', $args);
+        new Templates('admin/turmas.html', $args);
     }
 
     public function verTurma($turma)
     {
-        $this->links = $this->util->generateLinks('../');
-
         $turma = $this->turmaStorage->verTurma($turma);
 
         $args = [
             'ID' => $turma->id,
             'TURMA' => $turma->serie,
             'LETRA' => $turma->nome,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('admin/turma.html', $args);
+        new Templates('admin/turma.html', $args, '../');
     }
 
     public function adicionarTurma()

@@ -10,6 +10,7 @@
         <script src="includes/js/jquery.js"></script>
         <script src="includes/js/detect.js"></script>
         <script src="includes/js/back.js"></script>
+        <script src="includes/js/height.js"></script>
         <script>
             function verificarLogin(email, tipo, id) {
                 $.ajax({
@@ -103,152 +104,155 @@
                             Logado como {LOGADO}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            {LINKS}
-                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="logout">Sair</a>
                         </div>
                     </li>
                 </ul>
             </div>
         </nav>
+        
+        <div class="text-center menu" style="width: 20%; float: left;  background-color: slategray;">
+            <div style="padding: 2em;">
+                {LINKS}
+            </div>
+        </div>
 
-        <div class="container">
-            <div class="jumbotron text-center">
-                <strong>Meu Perfil</strong><p/>
+        <div class="" style="width: 80%; float: right; padding: 2em;">
+            <p>
                 <a href="#" class="fotoBotao btn btn-secondary">Foto de Avatar</a>
                 <a href="#" class="contatoBotao btn btn-secondary">Contato</a>
                 <a href="#" class="enderecoBotao btn btn-secondary">Endereço</a>
+            </p>
 
-                <div class="foto">
-                    {AVATAR}
-                    <br/>
-                    {MSG}
+            <div class="foto">
+                {AVATAR}
+                <br/>
+                {MSG}
 
-                    <form action="atualizarPerfil" method="post" enctype="multipart/form-data" role="form" class="form-horizontal">
+                <form action="atualizarPerfil" method="post" enctype="multipart/form-data" role="form" class="form-horizontal">
+                <input type="hidden" name="_method" value="PUT" />
+                <input type="hidden" name="tipo_update" value="avatar">
+                <input type="hidden" name="usuario" value="{ID}">
+                <div class="form-group row justify-content-center">
+                    <label for="fileToUpload" class="col-form-label col-md-2 col-form-label-sm">Selecione foto:</label>
+                    <div class="col-md-3">
+                        <input type="file" name="fileToUpload" >
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Carregar</button>
+            </form>
+            </div>
+
+            <div class="contato">
+                <form action="atualizarPerfil" method="post" role="form" class="form-horizontal">
                     <input type="hidden" name="_method" value="PUT" />
-                    <input type="hidden" name="tipo_update" value="avatar">
-                    <input type="hidden" name="usuario" value="{ID}">
+                    <input type="hidden" name="tipo" id="tipo" value="{TIPO}">
+                    <input type="hidden" name="tipo_update" value="usuario">
+                    <input type="hidden" name="id" id="usuario" value="{ID}">
+                    <input type="hidden" name="salt" value="{SALT}">
+
                     <div class="form-group row justify-content-center">
-                        <label for="fileToUpload" class="col-form-label col-md-2 col-form-label-sm">Selecione foto:</label>
+                        <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
                         <div class="col-md-3">
-                            <input type="file" name="fileToUpload" >
+                            <input type="text" class="form-control form-control-sm" name="nome" value="{NOME}" >
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Carregar</button>
+                    <div class="form-group row justify-content-center">
+                        <label for="email" class="col-form-label col-md-2 col-form-label-sm">E-Mail:</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control form-control-sm" aria-describedby="disponibilidade" name="email" id="email" value="{EMAIL}" >
+                            <small id="disponibilidade">
+                                Login em uso!
+                            </small>
+                        </div>
+                    </div>
+                    <div class="form-group row justify-content-center">
+                        <label for="senha" class="col-form-label col-md-2 col-form-label-sm">Senha:</label>
+                        <div class="col-md-3">
+                            <input type="password" class="form-control form-control-sm " name="senha" aria-describedby="avisoSenha">
+                            <small id="avisoSenha" class="form-text text-muted">Deixe em branco para manter a senha atual</small>
+                        </div>
+                    </div>
+                    <div class="form-group row justify-content-center">
+                        <label for="tel1" class="col-form-label col-md-2 col-form-label-sm">Telefone 1:</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control form-control-sm " name="telefone1" value="{TELEFONE1}">
+                        </div>
+                    </div>
+                    <div class="form-group row justify-content-center">
+                        <label for="tel2" class="col-form-label col-md-2 col-form-label-sm">Telefone  2:</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control form-control-sm " name="telefone2" value="{TELEFONE2}" >
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-sm" id="atualizar"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
                 </form>
-                </div>
-
-                <div class="contato">
-                    <form action="atualizarPerfil" method="post" role="form" class="form-horizontal">
-                        <input type="hidden" name="_method" value="PUT" />
-                        <input type="hidden" name="tipo" id="tipo" value="{TIPO}">
-                        <input type="hidden" name="tipo_update" value="usuario">
-                        <input type="hidden" name="id" id="usuario" value="{ID}">
-                        <input type="hidden" name="salt" value="{SALT}">
-
-                        <div class="form-group row justify-content-center">
-                            <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="nome" value="{NOME}" >
-                            </div>
-                        </div>
-                        <div class="form-group row justify-content-center">
-                            <label for="email" class="col-form-label col-md-2 col-form-label-sm">E-Mail:</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" aria-describedby="disponibilidade" name="email" id="email" value="{EMAIL}" >
-                                <small id="disponibilidade">
-                                    Login em uso!
-                                </small>
-                            </div>
-                        </div>
-                        <div class="form-group row justify-content-center">
-                            <label for="senha" class="col-form-label col-md-2 col-form-label-sm">Senha:</label>
-                            <div class="col-md-3">
-                                <input type="password" class="form-control form-control-sm " name="senha" aria-describedby="avisoSenha">
-                                <small id="avisoSenha" class="form-text text-muted">Deixe em branco para manter a senha atual</small>
-                            </div>
-                        </div>
-                        <div class="form-group row justify-content-center">
-                            <label for="tel1" class="col-form-label col-md-2 col-form-label-sm">Telefone 1:</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm " name="telefone1" value="{TELEFONE1}">
-                            </div>
-                        </div>
-                        <div class="form-group row justify-content-center">
-                            <label for="tel2" class="col-form-label col-md-2 col-form-label-sm">Telefone  2:</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm " name="telefone2" value="{TELEFONE2}" >
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-success btn-sm" id="atualizar"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
-                    </form>
-                </div>
-
-                <div class="endereco">
-                    <form action="atualizarPerfil" method="post" role="form" class="form-horizontal">
-                        <input type="hidden" name="_method" value="PUT" />
-                        <input type="hidden" name="tipo_update" value="endereco">
-                        <input type="hidden" name="id" value="{ENDERECO_ID}">
-
-                        <div class="form-group row justify-content-center">
-                            <label for="rua" class="col-form-label col-md-2 col-form-label-sm">Rua:</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="rua" value="{ENDERECO_RUA}" >
-                            </div>
-                        </div>
-
-                        <div class="form-group row justify-content-center">
-                            <label for="numero" class="col-form-label col-md-2 col-form-label-sm">Número:</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="numero" value="{ENDERECO_NUMERO}" >
-                            </div>
-                        </div>
-
-                        <div class="form-group row justify-content-center">
-                            <label for="bairro" class="col-form-label col-md-2 col-form-label-sm">Bairro:</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="bairro" value="{ENDERECO_BAIRRO}" >
-                            </div>
-                        </div>
-
-                        <div class="form-group row justify-content-center">
-                            <label for="cep" class="col-form-label col-md-2 col-form-label-sm">CEP:</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="cep" value="{ENDERECO_CEP}" >
-                            </div>
-                        </div>
-
-                        <div class="form-group row justify-content-center">
-                            <label for="complemento" class="col-form-label col-md-2 col-form-label-sm">Complemento:</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="complemento" value="{ENDERECO_COMPLEMENTO}" >
-                            </div>
-                        </div>
-
-                        <div class="form-group row justify-content-center">
-                            <label for="cidade" class="col-form-label col-md-2 col-form-label-sm">Cidade:</label>
-                            <div class="col-md-3">
-                                <input type="text" class="form-control form-control-sm" name="cidade" value="{ENDERECO_CIDADE}" >
-                            </div>
-                        </div>
-
-                        <div class="form-group row justify-content-center">
-                            <label for="estado" class="col-form-label col-md-2 col-form-label-sm">Estado:</label>
-                            <div class="col-md-3">
-                                <select name="estado" class="form-control form-control-sm selectpicker" aria-describedby="avisoEstado">
-                                    {ESTADOS}
-                                </select> 
-                                <small id="avisoEstado" class="form-text text-muted">Atualmente reside em ({ESTADO_ATUAL})</small>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
-                    </form>
-                </div>
-
-                <a class="mobile back btn btn-light btn btn-block" >Voltar</a>
             </div>
+
+            <div class="endereco">
+                <form action="atualizarPerfil" method="post" role="form" class="form-horizontal">
+                    <input type="hidden" name="_method" value="PUT" />
+                    <input type="hidden" name="tipo_update" value="endereco">
+                    <input type="hidden" name="id" value="{ENDERECO_ID}">
+
+                    <div class="form-group row justify-content-center">
+                        <label for="rua" class="col-form-label col-md-2 col-form-label-sm">Rua:</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control form-control-sm" name="rua" value="{ENDERECO_RUA}" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row justify-content-center">
+                        <label for="numero" class="col-form-label col-md-2 col-form-label-sm">Número:</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control form-control-sm" name="numero" value="{ENDERECO_NUMERO}" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row justify-content-center">
+                        <label for="bairro" class="col-form-label col-md-2 col-form-label-sm">Bairro:</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control form-control-sm" name="bairro" value="{ENDERECO_BAIRRO}" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row justify-content-center">
+                        <label for="cep" class="col-form-label col-md-2 col-form-label-sm">CEP:</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control form-control-sm" name="cep" value="{ENDERECO_CEP}" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row justify-content-center">
+                        <label for="complemento" class="col-form-label col-md-2 col-form-label-sm">Complemento:</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control form-control-sm" name="complemento" value="{ENDERECO_COMPLEMENTO}" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row justify-content-center">
+                        <label for="cidade" class="col-form-label col-md-2 col-form-label-sm">Cidade:</label>
+                        <div class="col-md-3">
+                            <input type="text" class="form-control form-control-sm" name="cidade" value="{ENDERECO_CIDADE}" >
+                        </div>
+                    </div>
+
+                    <div class="form-group row justify-content-center">
+                        <label for="estado" class="col-form-label col-md-2 col-form-label-sm">Estado:</label>
+                        <div class="col-md-3">
+                            <select name="estado" class="form-control form-control-sm selectpicker" aria-describedby="avisoEstado">
+                                {ESTADOS}
+                            </select> 
+                            <small id="avisoEstado" class="form-text text-muted">Atualmente reside em ({ESTADO_ATUAL})</small>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
+                </form>
+            </div>
+
+            <a class="mobile back btn btn-light btn btn-block" >Voltar</a>
         </div>
 
         <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>

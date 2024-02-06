@@ -17,7 +17,6 @@ require_once 'routes/admin/disciplines.php';
 require_once 'routes/admin/relatives.php';
 require_once 'routes/admin/students.php';
 require_once 'routes/admin/teachers.php';
-require_once 'includes/php/lib/tfpdf/tfpdf.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();

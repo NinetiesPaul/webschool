@@ -20,14 +20,11 @@ class ResponsavelController
     protected $alunoStorage;
     protected $materiaStorage;
     protected $turmaStorage;
-    protected $links;
 
     public function __construct()
     {
-        $this->template = new Templates();
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_RESPONSAVEL);
-        $this->links = $this->util->generateLinks();
 
         $this->responsavelStorage = new ResponsavelStorage();
         $this->notaStorage = new NotaStorage();
@@ -44,7 +41,7 @@ class ResponsavelController
             'LOGADO' => $user->nome
         ];
 
-        $this->util->loadTemplate('responsavel/index.html', $args);
+        new Templates('responsavel/index.html', $args);
     }
     
     public function verAlunos()
@@ -60,32 +57,29 @@ class ResponsavelController
         
         $args = [
             'LOGADO' => $user->nome,
-            'ALUNOS' => $alunos,
-            'LINKS' => $this->links
+            'ALUNOS' => $alunos
         ];
 
-        $this->util->loadTemplate('responsavel/alunos.html', $args);
+        new Templates('responsavel/alunos.html', $args);
     }
     
     public function verAluno($idAluno)
     {
-        $this->links = $this->util->generateLinks('../');
-
         $user = $_SESSION['user'];
         
         $turmas = $this->notaStorage->verTurmasComNotaDoAluno($idAluno);
 
         $notas = '';
-        
-        foreach ($turmas as $turma) {
-            $turmaAtual = ($this->alunoStorage->pegarIdDaTurmaDoAlunoPorAlunoId($idAluno) === $turma->turma) ? ' (<b>atual</b>) ' : '';
 
-            $notas .= $turma->nome_turma . ' ' . $turmaAtual;
+        $aluno = '';
+        foreach ($turmas as $turma) {
+            $aluno = $turma->nome;
+            $notas .= $turma->nome_turma;
             
             $notas .=
-                "<button class='btn btn-sm btn-info boletim' id='$idAluno.$turma->turma'>
+                "<p><button class='btn btn-sm btn-info boletim' id='$idAluno.$turma->turma'>
                     <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
-                </button><br/>";
+                </button></p>";
             
             $notasQuery = $this->notaStorage->verNotasPorTruma($idAluno, $turma->turma);
 
@@ -115,10 +109,10 @@ class ResponsavelController
         $args = [
             'LOGADO' => $user->nome,
             'ALUNOID_USERID' => $idAluno.'.'.$user->id,
+            'ALUNO' => $aluno,
             'NOTAS' => $notas,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('responsavel/aluno.html', $args);
+        new Templates('responsavel/aluno.html', $args, '../');
     }
 }

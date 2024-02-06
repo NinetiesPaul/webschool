@@ -1,25 +1,63 @@
-# WebSchool
-WebSchool is a simple web application for small school management.
+## WebSchool
+WebSchool é uma aplicação web para gerenciamento de escolas.
 
-Project running on Docker, pure PHP, MySQL and using some libraries from Composer.
+## Requisitos
+Para executar essa aplicação você deve ter instalado no seu ambiente o Docker para configuração e execução dos containers do projeto.
 
-### Project running on:  
-```PHP 7.2```  
-```MySQL 5.2```  
+Esse projeto utiliza containers com:
 
-### Composer packages used:  
-```Phinx```  
-```PHP-Cs-Fixer```  
-```Simple-PHP-Router```  
-```VLUCAS's PHPDOTENV```  
+- PHP 7.4 com Apache e Composer
+- MySQL 5.7
 
-### Configuring the project:  
-Install Docker   
-Run ```docker-compose build```  
-Run ```docker-compose up -d```  
-Run ```docker-compose exec php composer install```  
-Copy ```.env.dist to .env locally```  
-Configure ```the .env file with docker container data```  
-Copy ```phinx.yml.dist to phinx.yml locally```  
-Configure ```the phinx.yml file with docker container data```  
-Run ```docker-compose exec php vendor/bin/phinx migrate```  
+Quando em desenvolvimento, sugiro a instalação de algum cliente de bancos de dados cliente, como MySQL Workbench ou DBeaver
+
+## Instalação e Configuração
+Tendo Docker instalado no seu ambiente, execute os seguintes comandos para rodar a aplicação:
+
+1) Instala os containers e prepara as imagens
+```
+docker-compose build
+```
+
+2) Executa o container em plano de fundo
+```
+docker-compose up -d
+```
+
+3) Instala as bibliotecas do composer
+```
+docker-compose exec php composer install
+```
+
+4) Crie cópias locais dos arquivos de configuração de ambiente do projeto
+```
+cp .env.dist .env
+cp phinx.yml.dist phinx.yml
+```
+
+5) Configure o arquivo `.env` criado com as credenciais do banco de dados do container MySQL. Por exemplo
+```
+DB_HOST=webschool_mysql
+DB_NAME=webschool
+DB_USER=root
+DB_PASSWORD=root
+```
+
+6) Configure o arquivo `phinx.yml` criado com as credenciais do banco de dados do container MySQL. Por exemplo
+```
+    development:
+        adapter: mysql
+        host: webschool_mysql
+        name: webschool
+        user: root
+        pass: 'root'
+        port: 3306
+        charset: utf8
+```
+
+7) Executar o comando de migração para gerar as tabelas e dados iniciais do projeto
+```
+docker-compose exec php vendor/bin/phinx migrate
+```
+
+8) Tudo pronto! Se nenhum dos comandos acima apresentaram erros de nenhum tipo o projeto está pronto para ser executado. Acesse através do endereço `http://localhost:8015`. Em dev, o software já vem com uma conta admin padrão, usuario `admin` e senha `admin`

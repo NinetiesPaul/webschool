@@ -6,6 +6,7 @@ namespace App\Controllers\Admin;
 use App\Controllers\AdminController;
 use App\Enum;
 use App\ResponseHandler;
+use App\Templates;
 
 class ResponsavelController extends AdminController
 {
@@ -25,16 +26,13 @@ class ResponsavelController extends AdminController
 
         $args = [
             'RESPONSAVEIS' => $responsaveis,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('admin/responsaveis.html', $args);
+        new Templates('admin/responsaveis.html', $args);
     }
 
     public function verResponsavel($idResponsavel)
     {
-        $this->links = $this->util->generateLinks('../');
-
         $responsavel = $this->responsavelStorage->verResponsavel($idResponsavel);
 
         $alunosQuery = $this->alunoStorage->verAlunos();
@@ -76,10 +74,9 @@ class ResponsavelController extends AdminController
             'FILHOS' => $filhos,
             'FOOTPRINT' => json_encode($footprint),
             'BOTAO_DELETAR' => $deletar,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('admin/responsavel.html', $args);
+        new Templates('admin/responsavel.html', $args, '../');
     }
 
     public function adicionarResponsavel()

@@ -6,6 +6,7 @@ namespace App\Controllers\Admin;
 use App\Controllers\AdminController;
 use App\Enum;
 use App\ResponseHandler;
+use App\Templates;
 
 class ProfessorController extends AdminController
 {
@@ -64,16 +65,13 @@ class ProfessorController extends AdminController
 
         $args = [
             'PROFESSORES' => $professores,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('admin/professores.html', $args);
+        new Templates('admin/professores.html', $args);
     }
 
     public function verProfessor($idProfessor)
     {
-        $this->links = $this->util->generateLinks('../');
-
         $professor = $this->professorStorage->verProfessor($idProfessor);
 
         $endereco = $this->enderecoStorage->verEndereco($professor->endereco);
@@ -132,10 +130,9 @@ class ProfessorController extends AdminController
             'DISCIPLINAS_PROFESSOR' => $disciplinasProProfessor,
             'FOOTPRINT' => json_encode($footprint),
             'BOTAO_DELETAR' => $deletar,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('admin/professor.html', $args);
+        new Templates('admin/professor.html', $args, '../');
     }
 
     public function adicionarProfessor()

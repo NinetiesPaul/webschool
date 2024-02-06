@@ -12,6 +12,7 @@
             }
         </style>
         <script src="../includes/js/jquery.js"></script>
+        <script src="../includes/js/height.js"></script>
         <title>Professor :: Minhas Turmas</title>
     </head>
     <body>
@@ -24,8 +25,6 @@
                             Logado como {LOGADO}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            {LINKS}
-                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="../perfil">Meu perfil</a>
                             <a class="dropdown-item" href="../logout">Sair</a>
                         </div>
@@ -33,12 +32,16 @@
                 </ul>
             </div>
         </nav>
-
-        <div class="container">
-            <div class="jumbotron text-center">
-                <strong>Minhas turmas</strong><p/>
-                {TURMAS}
+        
+        <div class="text-center menu" style="width: 20%; float: left;  background-color: slategray;">
+            <div style="padding: 2em;">
+                {LINKS}
             </div>
+        </div>
+
+        <div class="" style="width: 80%; float: right; padding: 2em;">
+            <strong>Minhas turmas</strong><p/>
+            {TURMAS}
         </div>
 
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

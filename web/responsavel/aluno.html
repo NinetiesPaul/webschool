@@ -8,6 +8,7 @@
         <link href="../../includes/css/glyphicons.css" rel="stylesheet">
         <script src="../../includes/js/jquery.js"></script>
         <script src="../../includes/js/detect.js"></script>
+        <script src="../../includes/js/height.js"></script>
         <script>
         function pesquisarFaltas(aluno,turma,disciplina) {
             $.ajax({
@@ -72,8 +73,6 @@
                             Logado como {LOGADO}
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            {LINKS}
-                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="../../perfil">Perfil</a>
                             <a class="dropdown-item" href="../../logout">Sair</a>
                         </div>
@@ -81,21 +80,32 @@
                 </ul>
             </div>
         </nav>
+        
+        <div class="text-center menu" style="width: 20%; float: left;  background-color: slategray;">
+            <div style="padding: 2em;">
+                {LINKS}
+            </div>
+        </div>
 
-        <div class="container">
-            <div class="jumbotron text-center">
+        <div class="" style="width: 80%; float: right; padding: 2em;">
+            <p>
+                <b>Aluno: </b> {ALUNO}<br/>
+                <b>Matricula: </b> 000<br/>
+                <b>Matriculado em:</b> 01/01/2020<br/>
+            </p>
+
+            <p>
+                <a href='#' class='historico btn btn-sm btn-primary' id="{ALUNOID_USERID}"><span class='glyphicon glyphicon-save-file'></span> Baixar histórico completo</a> <p/>
+            </p>
+
+            <div class="text-center border rounded" style="padding: 1em;">
                 <form action="" method="post" role="form" class="form-horizontal " style="display: none;" id="gerarDocumento">
                     <input type="hidden" name="aluno-pdf" id="aluno-pdf" value="" />
                     <input type="hidden" name="turma-pdf" id="turma-pdf" value="" />
                     <input type="hidden" name="document-type-pdf" id="document-type-pdf" value="" />
                 </form>
-                
-                <a href='#' class='historico' id="{ALUNOID_USERID}">Baixar histórico completo do aluno</a> <p/>
-
-                <strong>Detalhes do Aluno</strong><p/>
 
                 {NOTAS}
-
             </div>
         </div>
 

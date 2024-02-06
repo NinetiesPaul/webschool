@@ -6,6 +6,7 @@ namespace App\Controllers\Admin;
 use App\Controllers\AdminController;
 use App\Enum;
 use App\ResponseHandler;
+use App\Templates;
 
 class AlunoController extends AdminController
 {
@@ -34,16 +35,13 @@ class AlunoController extends AdminController
         $args = [
             'TURMAS' => $turmas,
             'ALUNOS' => $alunos,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('admin/alunos.html', $args);
+        new Templates('admin/alunos.html', $args);
     }
 
     public function verAluno($idAluno)
     {
-        $this->links = $this->util->generateLinks('../');
-
         $aluno = $this->alunoStorage->verAluno($idAluno);
         $turmaQuery = $this->turmaStorage->verTurmas();
 
@@ -82,10 +80,9 @@ class AlunoController extends AdminController
             'TURMAS' => $turmas,
             'FOOTPRINT' => json_encode($footprint),
             'BOTAO_DELETAR' => $deletar,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('admin/aluno.html', $args);
+        new Templates('admin/aluno.html', $args, '../');
     }
 
     public function adicionarAluno()

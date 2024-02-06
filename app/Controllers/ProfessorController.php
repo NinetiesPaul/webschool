@@ -23,14 +23,11 @@ class ProfessorController
     protected $diarioDeClasseStorage;
     protected $arquivoStorage;
     protected $notaStorage;
-    protected $links;
 
     public function __construct()
     {
-        $this->template = new Templates();
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_PROFESSOR);
-        $this->links = $this->util->generateLinks();
         new LogStorage();
 
         $this->materiaStorage = new MateriaStorage();
@@ -48,7 +45,7 @@ class ProfessorController
             'LOGADO' => $user->nome
         ];
 
-        $this->util->loadTemplate('professor/index.html', $args);
+        new Templates('professor/index.html', $args);
     }
     
     public function verTurmas()
@@ -60,22 +57,19 @@ class ProfessorController
         $turmas = '';
         
         foreach ($disciplinas as $disciplina) {
-            $turmas .= "<p/><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '>".$disciplina->nomeDisciplina.', '.$disciplina->serie.'º Série '.$disciplina->nome."</a><br/>";
+            $turmas .= "<p><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '>".$disciplina->nomeDisciplina.', '.$disciplina->serie.'º Série '.$disciplina->nome."</a><p/>";
         }
                     
         $args = [
             'LOGADO' => $user->nome,
-            'TURMAS' => $turmas,
-            'LINKS' => $this->links
+            'TURMAS' => $turmas
         ];
 
-        $this->util->loadTemplate('professor/turmas.html', $args);
+        new Templates('professor/turmas.html', $args);
     }
     
     public function verTurma($id)
     {
-        $this->links = $this->util->generateLinks('../');
-
         $user = $_SESSION['user'];
         $result = $this->materiaStorage->verMateriaDoProfessor($id);
 
@@ -84,12 +78,12 @@ class ProfessorController
 
         $detalhes = '';
         
-        $detalhes .= $result->nomeDisciplina.', '.$result->serie.'º Série '.$result->nome;
-        $detalhes .= "<p/><a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a><p/>";
+        $detalhes .= $result->nomeDisciplina . ' (' . $result->serie . 'º Série ' . $result->nome . ')';
+        $detalhes .= "<p><a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a></p>";
 
         $alunosQuery = $this->notaStorage->verNotasPorAlunosDaDisciplinaETurma($disciplina, $turma);
 
-        $detalhes .= "<table style='margin-left: auto; margin-right: auto; font-size: 13px;' class='table table-sm table-hover table-striped'>
+        $detalhes .= "<table style='margin-left: auto; margin-right: auto; font-size: 13px;' class='table'>
         <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2:</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th></tr></thead><tbody>";
         foreach ($alunosQuery as $aluno) {
             $detalhes .= "<tr><td>$aluno->nome</td>
@@ -109,16 +103,13 @@ class ProfessorController
         $args = [
             'LOGADO' => $user->nome,
             'DETALHES' => $detalhes,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('professor/turma.html', $args);
+        new Templates('professor/turma.html', $args, '../');
     }
     
     public function verDiarioDeClasse($id)
     {
-        $this->links = $this->util->generateLinks('../');
-
         $user = $_SESSION['user'];
         
         $id = explode('_', $id);
@@ -126,11 +117,10 @@ class ProfessorController
         $args = [
             'LOGADO' => $user->nome,
             'DISCIPLINA' => $id[1],
-            'TURMA' => $id[0],
-            'LINKS' => $this->links
+            'TURMA' => $id[0]
         ];
 
-        $this->util->loadTemplate('professor/diariodeclasse.html', $args);
+        new Templates('professor/diariodeclasse.html', $args, '../');
     }
 
     public function inserirNota()
@@ -172,7 +162,7 @@ class ProfessorController
         foreach ($dates as $date) {
             $output .= "<th scope='col'>".$date->format('d')."</th>";
         }
-        $output .= "<p/></tr></thead><tbody>";
+        $output .= "</tr></thead><tbody>";
         foreach ($alunos as $aluno) {
             $output .= "<tr><td>$aluno->nome</td>";
             foreach ($dates as $date) {
@@ -202,7 +192,7 @@ class ProfessorController
         }
         $output .= "</tr></tbody></table>";
 
-        $this->response($output);
+        ResponseHandler::response($output);
     }
 
     public function alterarFrequencia()
@@ -260,7 +250,7 @@ class ProfessorController
             }
         }
 
-        $this->response($span);
+        ResponseHandler::response($span);
     }
 
     public function adicionarComentario()
@@ -385,7 +375,7 @@ class ProfessorController
         <td $span $cellid>$line</td>
         <td><a href='#' id='$id_comentario' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td></tr>";
 
-        $this->response($line);
+        ResponseHandler::response($line);
     }
 
     public function verComentarios()
@@ -443,7 +433,7 @@ class ProfessorController
             $output .= "<td><a href='#' id='$comentario->id' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td></tr>";
         }
 
-        $this->response($output);
+        ResponseHandler::response($output);
     }
 
     public function deletarComentario($idComentario)

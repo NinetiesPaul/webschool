@@ -18,14 +18,11 @@ class AlunoController
     protected $turmaStorage;
     protected $notaStorage;
     protected $materiaStorage;
-    protected $links;
 
     public function __construct()
     {
-        $this->template = new Templates();
         $this->util = new Util();
         $this->util->userPermission(Enum::TIPO_ALUNO);
-        $this->links = $this->util->generateLinks();
 
         $this->alunoStorage = new AlunoStorage();
         $this->turmaStorage = new TurmaStorage();
@@ -41,7 +38,7 @@ class AlunoController
             'LOGADO' => $nome
         ];
         
-        $this->util->loadTemplate('aluno/index.html', $args);
+        new Templates('aluno/index.html', $args);
     }
     
     public function verTurmas()
@@ -52,14 +49,12 @@ class AlunoController
 
         $minhasTurmas = '';
         foreach ($turmas as $turma) {
-            $turmaAtual = ($user->turma_atual === $turma->turma) ? ' (<b>atual</b>) ' : '';
-
-            $minhasTurmas .= $turma->nome_turma . ' ' . $turmaAtual;
+            $minhasTurmas .= $turma->nome_turma;
             
             $minhasTurmas .=
-                "<br/><button class='btn btn-sm btn-info boletim' id='$user->aluno.$turma->turma'>
+                "<p><button class='btn btn-sm btn-info boletim' id='$user->aluno.$turma->turma'>
                     <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
-                </button><br/>";
+                </button></p>";
 
             $notas = $this->notaStorage->verNotasPorTruma($user->aluno, $turma->turma);
 
@@ -90,9 +85,8 @@ class AlunoController
             'ALUNOID_USERID' => $user->aluno.'.'.$user->id,
             'LOGADO' => $user->nome,
             'TURMAS' => $minhasTurmas,
-            'LINKS' => $this->links
         ];
 
-        $this->util->loadTemplate('aluno/turmas.html', $args);
+        new Templates('aluno/turmas.html', $args);
     }
 }
