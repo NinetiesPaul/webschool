@@ -10,6 +10,11 @@ use App\Templates;
 
 class ProfessorController extends AdminController
 {
+    public function criarProfessor()
+    {
+        new Templates('admin/professores/criar.html');
+    }
+
     public function verProfessores()
     {
         $professorQuery = $this->professorStorage->verProfessores();
@@ -79,7 +84,7 @@ class ProfessorController extends AdminController
             'PROFESSORES' => $professores,
         ];
 
-        new Templates('admin/professores.html', $args);
+        new Templates('admin/professores/listar.html', $args);
     }
 
     public function verProfessor($idProfessor)
@@ -144,7 +149,7 @@ class ProfessorController extends AdminController
             'BOTAO_DELETAR' => $deletar,
         ];
 
-        new Templates('admin/professor.html', $args, '../');
+        new Templates('admin/professores/editar.html', $args, '../');
     }
 
     public function adicionarProfessor()
