@@ -10,6 +10,11 @@ use App\Templates;
 
 class ResponsavelController extends AdminController
 {
+    public function criarResponsavel()
+    {
+        new Templates('admin/responsaveis/criar.html');
+    }
+
     public function verResponsaveis()
     {
         $responsavelQuery = $this->responsavelStorage->verResponsaveis();
@@ -18,17 +23,27 @@ class ResponsavelController extends AdminController
 
         foreach ($responsavelQuery as $responsavel) {
             $is_deleted = ($responsavel->is_deleted) ? "<span class='label-status_$responsavel->id label-success'>Ativo</span>" : "<span class='label-status_$responsavel->id label-danger'>Inativo</span>";
-            $responsaveis .=
-                "<tr id='row-$responsavel->id'><td>$responsavel->nome </td>
-             <td>$is_deleted</td><td style='text-align: center;'><a href='responsavel/$responsavel->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
-             <a href='#' class='btn desativar' id='$responsavel->id' ><span class='glyphicon glyphicon-ban-circle'></span></a></td></tr>";
+           
+            $responsaveis .= "
+                <tr id='row-$responsavel->id'>
+                    <td>$responsavel->id </td>
+                    <td>
+                        $responsavel->nome<br/>
+                        $is_deleted
+                    </td>
+                    <td>
+                        <a href='responsavel/$responsavel->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span></a>
+                        <a href='#' class='btn btn-sm desativar' id='$responsavel->id' ><span class='glyphicon glyphicon-ban-circle'></span></a>
+                    </td>
+                </tr>
+            ";
         }
 
         $args = [
             'RESPONSAVEIS' => $responsaveis,
         ];
 
-        new Templates('admin/responsaveis.html', $args);
+        new Templates('admin/responsaveis/listar.html', $args);
     }
 
     public function verResponsavel($idResponsavel)
@@ -48,7 +63,7 @@ class ResponsavelController extends AdminController
         $filhos = '';
         foreach ($alunosDoResponsavel as $user) {
             $filhos .= "<tr id='row-$user->rpa'><td>$user->nome</td><td>$user->nome_turma</td>
-            <td><button class='btn btn-danger btn-sm' id='deletar' value='$user->rpa'><span class='glyphicon glyphicon-trash'></span> Deletar</button></td></tr>";
+            <td><a class='btn btn-sm' id='deletar' href='#' value='$user->rpa'><span class='glyphicon glyphicon-trash'></span> </a></td></tr>";
         }
 
         $endereco = $this->enderecoStorage->verEndereco($responsavel->endereco);
@@ -76,7 +91,7 @@ class ResponsavelController extends AdminController
             'BOTAO_DELETAR' => $deletar,
         ];
 
-        new Templates('admin/responsavel.html', $args, '../');
+        new Templates('admin/responsaveis/editar.html', $args, '../');
     }
 
     public function adicionarResponsavel()

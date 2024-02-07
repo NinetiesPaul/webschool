@@ -3,6 +3,11 @@
 use Pecee\SimpleRouter\SimpleRouter;
 use App\Controllers\Admin\ProfessorController as AdminProfessorController;
 
+SimpleRouter::get('/admin/professor', function() {
+    $admin = new AdminProfessorController();
+    $admin->criarProfessor();
+});
+
 SimpleRouter::get('/admin/professores', function() {
     $admin = new AdminProfessorController();
     $admin->verProfessores();

@@ -3,6 +3,11 @@
 use Pecee\SimpleRouter\SimpleRouter;
 use App\Controllers\Admin\ResponsavelController as AdminResponsavelController;
 
+SimpleRouter::get('/admin/responsavel', function() {
+    $admin = new AdminResponsavelController();
+    $admin->criarResponsavel();
+});
+
 SimpleRouter::get('/admin/responsaveis', function() {
     $admin = new AdminResponsavelController();
     $admin->verResponsaveis();

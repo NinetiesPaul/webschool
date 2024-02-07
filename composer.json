@@ -2,7 +2,7 @@
     "require": {
         "robmorgan/phinx": "^0.11.1",
         "friendsofphp/php-cs-fixer": "^2.16",
-        "pecee/simple-router": "4.2.0.6",
+        "pecee/simple-router": "5.4.1.7",
         "vlucas/phpdotenv": "^4.0",
         "twig/twig": "^3.8",
         "ext-calendar": "*",

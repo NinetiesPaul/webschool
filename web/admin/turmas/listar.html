@@ -3,6 +3,7 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link href="../includes/css/glyphicons.css" rel="stylesheet">
         <link href="../includes/css/css.css" rel="stylesheet">
@@ -10,9 +11,9 @@
         <script src="../includes/js/jquery.js"></script>
         <script src="../includes/js/height.js"></script>
         <script>
-        function deletarDisciplina(val) {
+        function deletarTurma(val) {
             $.ajax({
-                url: "disciplina/" + val + '/delete',
+                url: "turma/" + val + '/delete',
                 type: "DELETE",
                 success: function(data){
                     data = jQuery.parseJSON(data)
@@ -32,10 +33,10 @@
         }
 
         $(document).on('click', '#deletar', function(){
-            deletarDisciplina(this.value);
+            deletarTurma(this.value);
         });
         </script>
-        <title>webSchool :: Cadastro de Disciplina</title>
+        <title>webSchool :: Cadastro de Turma</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -47,15 +48,13 @@
                             Logado como admin
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            {LINKS}
-                            <div class="dropdown-divider"></div>
                             <a class="dropdown-item" href="../logout">Sair</a>
                         </div>
                     </li>
                 </ul>
             </div>
         </nav>
-
+        
         <div class="text-center menu" style="width: 20%; float: left; background-color: slategray;">
             <div style="padding: 2em;">
                 {LINKS}
@@ -63,30 +62,29 @@
         </div>
 
         <div class="" style="width: 80%; float: right; padding: 2em;">
-            <strong>Cadastro de Disciplina</strong>
-            <form action="/admin/disciplina" method="post" role="form" class="form-horizontal " >
-                <div class="form-group row justify-content-center ">
-                    <label for="nome" class="col-form-label col-md-2 col-form-label-sm ">Nome da disciplina:</label>
-                    <div class="col-md-3">
-                        <input type="text" name="nome" class="form-control form-control-sm">
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary btn-sm"><span class='glyphicon glyphicon-plus' required></span> Cadastrar</button>
-            </form>
-
-            <p><strong>Lista de Disciplina</strong></p>
-
-            <div class="alert alert-danger" role="alert" style="display: none;">
-            </div>
+            <p>
+                <strong>Turmas</strong>
+                <a href="/admin/turma" class="btn btn-sm btn-primary" style="float: right">Criar Turma</a>
+            </p>
             
-            <table style="margin-left: auto; margin-right: auto; font-size: 13; width: auto !important;" class="table">
-                {DISCIPLINAS}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">Id</th>
+                        <th>Nome</th>
+                        <th style="width: 10%"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {TURMAS}
+                </tbody>
             </table>
         </div>
 
         <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>	
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
     </body>
 </html>
 	

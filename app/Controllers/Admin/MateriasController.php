@@ -9,6 +9,11 @@ use App\Templates;
 
 class MateriasController extends AdminController
 {
+    public function criarDisciplina()
+    {
+        new Templates('admin/disciplinas/criar.html');
+    }
+
     public function verMaterias()
     {
         $disciplinaQuery = $this->materiaStorage->verMaterias();
@@ -16,17 +21,23 @@ class MateriasController extends AdminController
         $disciplinas = '';
 
         foreach ($disciplinaQuery as $disciplina) {
-            $disciplinas .=
-                "<tr id='row-$disciplina->id'><td>$disciplina->nome</td>
-             <td><a href='disciplina/$disciplina->id' class='btn'><span class='glyphicon glyphicon-edit'></span> </a></td>
-             <td><a href='#' class='btn' id='deletar' value='$disciplina->id'> <span class='glyphicon glyphicon-trash'></span> </a></td></tr>";
+            $disciplinas .= "
+                <tr id='row-$disciplina->id'>
+                    <td>$disciplina->id</td>
+                    <td>$disciplina->nome</td>
+                    <td>
+                        <a href='disciplina/$disciplina->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span> </a>
+                        <a href='#' class='btn btn-sm' id='deletar' value='$disciplina->id'> <span class='glyphicon glyphicon-trash'></span> </a>
+                    </td>
+                </tr>
+            ";
         }
 
         $args = [
             'DISCIPLINAS' => $disciplinas,
         ];
 
-        new Templates('admin/disciplinas.html', $args);
+        new Templates('admin/disciplinas/listar.html', $args);
     }
 
     public function verMateria($materia)
@@ -38,7 +49,7 @@ class MateriasController extends AdminController
             'NOME' => $disciplina->nome,
         ];
 
-        new Templates('admin/disciplina.html', $args, '../');
+        new Templates('admin/disciplinas/editar.html', $args, '../');
     }
 
     public function adicionarMateria()

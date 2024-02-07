@@ -2,11 +2,12 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <meta charset="UTF8">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link href="../../includes/css/glyphicons.css" rel="stylesheet">
         <link href="../../includes/css/css.css" rel="stylesheet">
         <link href="../../includes/css/navbar.css" rel="stylesheet">
+        <link href="../../includes/css/datatables.css" rel="stylesheet">
         <script src="../../includes/js/jquery.js"></script>
         <script src="../../includes/js/height.js"></script>
         <script>
@@ -14,7 +15,7 @@
             $.ajax({
                 type: "POST",
                 url: "/verificarLogin",
-                data: { login : val, tipo : "professor", id : $("#id").val()},
+                data: { login : val, tipo : "responsavel", id : $("#id").val()},
                 success: function(data){
                     data = jQuery.parseJSON(data)
                     if (data.loginTaken === true){
@@ -27,8 +28,29 @@
                 }
             });
         }
+        
+        function deletarResponsavelPorAluno(val) {
+            $.ajax({
+                url: "/admin/alunoPorResponsavel/" + val,
+                type: "DELETE",
+                success: function(data){
+                    data = jQuery.parseJSON(data)
+                    if (data.error === true) {
+                        $('.alert').css('display', 'block');
+                        $('.alert').text(data.msg);
+                        $('.alert').delay(5000).fadeOut(1000, function(){
+                            $('.alert').css('display', 'none');
+                        });
+                    } else {
+                        $('#row-' + val).fadeOut(400, function () {
+                            this.remove();
+                        });
+                    }
+                }
+            });
+        }
             
-        function deletarProfessor(val) {
+        function deletarResponsavel(val) {
             $.ajax({
                 url: val + '/delete',
                 type: "DELETE",
@@ -41,7 +63,7 @@
                             $('.alert').css('display', 'none');
                         });
                     } else {
-                        window.location.href = '../professores'
+                        window.location.href = '../responsaveis'
                     }
                 }
             });
@@ -52,8 +74,25 @@
             $("#footprint").text(JSON.stringify(data, undefined, 2))
         }
 
+        $(document).on('click', '#deletar-responsavel', function(){
+            deletarResponsavel(this.value);
+        });
+
+        $(document).on('click', '#submit-app', function(){
+            if ($('#aluno').val() !== "") {
+                console.log($('#aluno').val() !== "");
+                $('#alunoPorResponsavelform').submit();
+            }
+        });
+
         $(document).on('click', '#deletar', function(){
-            deletarProfessor(this.value);
+            deletarResponsavelPorAluno(this.value);
+        });
+
+        $(document).on('click', '.escolher_aluno', function(){
+            $('#aluno').val(this.value);
+            $('#nome_aluno').val(this.id);
+            $('#nome_aluno').attr('disabled', false);
         });
 
         $(document).on('focusout', '#email', function(){
@@ -63,9 +102,16 @@
         $(document).ready(function(){
            $("#disponibilidade").hide();
            formatjson();
+
+            $('#tableAlunos').DataTable({
+                "paging": true,
+                "language": {
+                    "url": "https://cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"
+                }
+            });
         });
         </script>
-        <title>webSchool :: Alteração de Professor</title>
+        <title>webSchool :: Alteração de Responsável</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
@@ -91,15 +137,15 @@
         </div>
 
         <div class="" style="width: 80%; float: right; padding: 2em;">
-            <strong>Alteração de Professor</strong> <p/>
-            <form action="/admin/professor" method="post" role="form" class="form-horizontal " >
+            <strong>Alteração de Responsável</strong> <p/>
+            <form action="/admin/responsavel" method="post" role="form" class="form-horizontal " >
                 <input type="hidden" name="_method" value="PUT" />
                 <input type="hidden" name="id" id="id" value="{ID}" />
                 <input type="hidden" name="salt" value="{SALT}" />
                 <div class="form-group row justify-content-center ">
                     <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
                     <div class="col-md-3">
-                            <input type="text" name="nome" id="nome" placeholder="Nome" aria-describedby="disponibilidade" value="{NOME}" class="form-control form-control-sm" required >
+                        <input type="text" name="nome" id="nome" placeholder="Nome" aria-describedby="disponibilidade" value="{NOME}" class="form-control form-control-sm" required >
                     </div>
                 </div>
                 <div class="form-group row justify-content-center ">
@@ -114,41 +160,35 @@
                 <div class="form-group row justify-content-center ">
                     <label for="password" class="col-form-label col-md-2 col-form-label-sm">Senha:</label>
                     <div class="col-md-3">
-                            <input type="password" name="password" class="form-control form-control-sm" >
+                        <input type="password" name="password" class="form-control form-control-sm" >
                     </div>
                 </div>
                 <button type="submit" id="btn" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
             </form>
 
-            <strong>Disciplinas por Turma deste Professor</strong><p/>
+            <p><strong>Alunos deste Responsavel</strong></p>
 
-            <form action="/admin/professorPorMateria" method="post" role="form" class="form-horizontal " >
-
-                <input type="hidden" name="professor" value="{PROFESSOR}">
-                <input type="hidden" name="id" value="{ID}">
-
-                <div class="form-group row justify-content-center ">
-                    <label for="disciplina" class="col-form-label col-md-2 col-form-label-sm">Disciplina:</label>
+            <form action="/admin/alunoPorResponsavel" method="post" role="form" class="form-inline justify-content-center " id="alunoPorResponsavelform">
+                <input type="hidden" name="id" value="{ID}" />
+                <input type="hidden" name="responsavel" value="{RESPONSAVEL}" />
+                <input type="hidden" name="aluno" id="aluno" value="" />
+                <div class="form-group row  ">
+                    <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
                     <div class="col-md-3" >
-                        <select name="disciplina" class="form-control form-control-sm selectpicker" title="Selecione uma disciplina">
-                            {DISCIPLINAS_SELECT}
-                        </select>
+                        <input type="text" name="nome_aluno" id="nome_aluno" class="form-control form-control-sm " data-toggle='modal' data-target='#modalExemplo' autocomplete="off">
                     </div>
                 </div>
-                <div class="form-group row justify-content-center ">
-                    <label for="turma" class="col-form-label col-md-2 col-form-label-sm">Turma:</label>
-                    <div class="col-md-3">
-                        <select name="turma" class="form-control form-control-sm selectpicker" title="Selecione uma turma">
-                            {TURMAS_SELECT}
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary btn-sm"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button><br/>
+                <button type="button" class="btn btn-primary btn-sm" id="submit-app"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button>
             </form>
 
-            <table style="margin-left: auto; margin-right: auto; font-size: 13px; width: auto !important;" class="table">
+            <table class="table">
+                <thead>
+                    <th>Aluno</th>
+                    <th>Turma</th>
+                    <th style="width: 5%;"></th>
+                </thead>
                 <tbody>
-                {DISCIPLINAS_PROFESSOR}
+                    {FILHOS}
                 </tbody>
             </table>
             
@@ -164,9 +204,36 @@
             </pre>
         </div>
 
+        <!-- Modal -->
+        <div class="modal fade" id="modalExemplo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Lista de alunos</h5>
+                    </div>
+                    <div class="modal-body">
+                        <table style="font-size: 13px; width: 100%;" class="table hover" id="tableAlunos">
+                            <thead>
+                                <tr>
+                                    <td>Nome</td><td></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {ALUNOS}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal" id="erase-fields">Ok</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>
+        <script type="application/json" charset="utf8" src="https://cdn.datatables.net/plug-ins/1.10.20/i18n/Portuguese-Brasil.json"></script>
     </body>
 </html>

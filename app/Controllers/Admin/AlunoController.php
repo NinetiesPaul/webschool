@@ -10,6 +10,20 @@ use App\Templates;
 
 class AlunoController extends AdminController
 {
+    public function criarAluno()
+    {
+        $turmaQuery = $this->turmaStorage->verTurmas();
+
+        $turmas = '';
+        foreach ($turmaQuery as $turma) {
+            $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
+        }
+
+        new Templates('admin/alunos/criar.html', [
+            'TURMAS' => $turmas,
+        ]);
+    }
+
     public function verAlunos()
     {
         $turmaQuery = $this->turmaStorage->verTurmas();
@@ -24,12 +38,21 @@ class AlunoController extends AdminController
         $alunos = '';
         foreach ($alunoQuery as $aluno) {
             $is_deleted = ($aluno->is_deleted) ? "<span class='label-status_$aluno->id label-success'>Ativo</span>" : "<span class='label-status_$aluno->id label-danger'>Inativo</span>";
-            $alunos .=
-                "<tr id='row-$aluno->id'><td>$aluno->nome </td>
-            <td>$aluno->nome_turma</td>
-            <td>$is_deleted</td>
-            <td style='text-align: center;'><a href='aluno/$aluno->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
-            <a href='#' class='btn desativar' id='$aluno->id'><span class='glyphicon glyphicon-ban-circle'></span> </a></td></tr>";
+            
+            $alunos .= "
+                <tr id='row-$aluno->id'>
+                    <td>$aluno->id</td>
+                    <td>
+                        $aluno->nome<br/>
+                        $is_deleted
+                        </td>
+                    <td>$aluno->nome_turma</td>
+                    <td>
+                        <a href='aluno/$aluno->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span></a>
+                        <a href='#' class='btn btn-sm desativar' id='$aluno->id'><span class='glyphicon glyphicon-ban-circle'></span> </a>
+                    </td>
+                </tr>
+            ";
         }
 
         $args = [
@@ -37,7 +60,7 @@ class AlunoController extends AdminController
             'ALUNOS' => $alunos,
         ];
 
-        new Templates('admin/alunos.html', $args);
+        new Templates('admin/alunos/listar.html', $args);
     }
 
     public function verAluno($idAluno)
@@ -82,7 +105,7 @@ class AlunoController extends AdminController
             'BOTAO_DELETAR' => $deletar,
         ];
 
-        new Templates('admin/aluno.html', $args, '../');
+        new Templates('admin/alunos/editar.html', $args, '../');
     }
 
     public function adicionarAluno()

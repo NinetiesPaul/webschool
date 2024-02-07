@@ -9,6 +9,11 @@ use App\Templates;
 
 class TurmasController extends AdminController
 {
+    public function criarTurma()
+    {
+        new Templates('admin/turmas/criar.html');
+    }
+
     public function verTurmas()
     {
         $turmasQuery = $this->turmaStorage->verTurmas();
@@ -16,17 +21,23 @@ class TurmasController extends AdminController
         $turmas = '';
 
         foreach ($turmasQuery as $turma) {
-            $turmas .=
-                "<tr id='row-$turma->id'><td>$turma->serie º Série $turma->nome</td>
-             <td><a href='turma/$turma->id' class='btn'><span class='glyphicon glyphicon-edit'></span> </a></td>
-             <td><a href='#' class='btn' id='deletar' value='$turma->id'><span class='glyphicon glyphicon-trash'></span> </a></td></tr>";
+            $turmas .="
+                <tr id='row-$turma->id'>
+                    <td>$turma->id</td>
+                    <td>$turma->serie º Série $turma->nome</td>
+                    <td>
+                        <a href='turma/$turma->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span> </a>
+                        <a href='#' class='btn btn-sm' id='deletar' value='$turma->id'><span class='glyphicon glyphicon-trash'></span> </a>
+                    </td>
+                </tr>
+            ";
         }
 
         $args = [
-            'ALUNOS' => $turmas,
+            'TURMAS' => $turmas,
         ];
 
-        new Templates('admin/turmas.html', $args);
+        new Templates('admin/turmas/listar.html', $args);
     }
 
     public function verTurma($turma)
@@ -39,7 +50,7 @@ class TurmasController extends AdminController
             'LETRA' => $turma->nome,
         ];
 
-        new Templates('admin/turma.html', $args, '../');
+        new Templates('admin/turmas/editar.html', $args);
     }
 
     public function adicionarTurma()

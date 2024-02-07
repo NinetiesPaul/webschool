@@ -10,6 +10,11 @@ use App\Templates;
 
 class ProfessorController extends AdminController
 {
+    public function criarProfessor()
+    {
+        new Templates('admin/professores/criar.html');
+    }
+
     public function verProfessores()
     {
         $professorQuery = $this->professorStorage->verProfessores();
@@ -21,10 +26,22 @@ class ProfessorController extends AdminController
         foreach ($professorQuery as $professor) {
             $data_token = strtolower($professor->nome);
             $is_deleted = ($professor->is_deleted) ? "<span class='label-status_$professor->id label-success'>Ativo</span>" : "<span class='label-status_$professor->id label-danger'>Inativo</span>";
-            $professores .=
-                "<tr id='row-$professor->id'><td>$professor->nome </td>
-            <td>$is_deleted</td><td style='text-align: center;'><a href='professor/$professor->id' class='btn'><span class='glyphicon glyphicon-edit'></span></a>
-            <a href='#' class='btn desativar' id='$professor->id'><span class='glyphicon glyphicon-ban-circle'></span></a></td></tr>";
+            
+            $professores .="
+                <tr id='row-$professor->id'>
+                    <td>$professor->id</td>
+                    <td>
+                        $professor->nome<br/>
+                        $is_deleted
+                    </td>
+                    <td>
+                        <a href='professor/$professor->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span></a>
+                        <a href='#' class='btn btn-sm desativar' id='$professor->id'><span class='glyphicon glyphicon-ban-circle'></span></a>
+                    </td>
+                </tr>
+            ";
+
+
             $professores_select .= "<option data-tokens='$data_token' value='$professor->professor'>$professor->nome</option>";
             $professor_array[$professor->professor] = $professor->nome;
         }
@@ -67,7 +84,7 @@ class ProfessorController extends AdminController
             'PROFESSORES' => $professores,
         ];
 
-        new Templates('admin/professores.html', $args);
+        new Templates('admin/professores/listar.html', $args);
     }
 
     public function verProfessor($idProfessor)
@@ -98,8 +115,10 @@ class ProfessorController extends AdminController
         foreach ($disciplinaPorProfessorQuery as $disciplinaProProfessor) {
             $disciplinasProProfessor .= "
                 <tr id='row-dpp-$disciplinaProProfessor->id'>
-                <td>$disciplinaProProfessor->turma</td><td>$disciplinaProProfessor->nome</td>
-                <td><button class='btn btn-danger btn-sm' id='deletar-dpp' value='$disciplinaProProfessor->id'><span class='glyphicon glyphicon-trash'></span> Deletar</button></td></tr>
+                    <td>$disciplinaProProfessor->turma</td>
+                    <td>$disciplinaProProfessor->nome</td>
+                    <td style='width: 5%'><a class='btn btn-sm' href='#' id='deletar-dpp' value='$disciplinaProProfessor->id'><span class='glyphicon glyphicon-trash'></span> </a></td>
+                </tr>
             ";
         }
 
@@ -132,7 +151,7 @@ class ProfessorController extends AdminController
             'BOTAO_DELETAR' => $deletar,
         ];
 
-        new Templates('admin/professor.html', $args, '../');
+        new Templates('admin/professores/editar.html', $args, '../');
     }
 
     public function adicionarProfessor()
