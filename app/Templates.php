@@ -8,11 +8,8 @@ class Templates
     {
         $args['LINKS'] = Util::generateLinks($nivel, ($args['ON_PROFILE'] ? true : false));
 
-        $template 	= $this->getTemplate($path);
-        if ($args) {
-            $template = $this->parseTemplate($template, $args);
-        }
-        echo $template;
+        $template = $this->getTemplate($path);
+        echo $this->parseTemplate($template, $args);
     }
 
     protected function getTemplate($template, $folder = "web/")
