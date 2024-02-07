@@ -10,6 +10,11 @@ use App\Templates;
 
 class ResponsavelController extends AdminController
 {
+    public function criarResponsavel()
+    {
+        new Templates('admin/responsaveis/criar.html');
+    }
+
     public function verResponsaveis()
     {
         $responsavelQuery = $this->responsavelStorage->verResponsaveis();
@@ -38,7 +43,7 @@ class ResponsavelController extends AdminController
             'RESPONSAVEIS' => $responsaveis,
         ];
 
-        new Templates('admin/responsaveis.html', $args);
+        new Templates('admin/responsaveis/listar.html', $args);
     }
 
     public function verResponsavel($idResponsavel)
@@ -86,7 +91,7 @@ class ResponsavelController extends AdminController
             'BOTAO_DELETAR' => $deletar,
         ];
 
-        new Templates('admin/responsavel.html', $args, '../');
+        new Templates('admin/responsaveis/editar.html', $args, '../');
     }
 
     public function adicionarResponsavel()
