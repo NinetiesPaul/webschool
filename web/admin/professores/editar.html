@@ -122,12 +122,12 @@
 
             <strong>Disciplinas por Turma deste Professor</strong><p/>
 
-            <form action="/admin/professorPorMateria" method="post" role="form" class="form-horizontal " >
+            <form action="/admin/professorPorMateria" method="post" role="form" class="form-inline justify-content-center" >
 
                 <input type="hidden" name="professor" value="{PROFESSOR}">
                 <input type="hidden" name="id" value="{ID}">
 
-                <div class="form-group row justify-content-center ">
+                <div class="form-group row  ">
                     <label for="disciplina" class="col-form-label col-md-2 col-form-label-sm">Disciplina:</label>
                     <div class="col-md-3" >
                         <select name="disciplina" class="form-control form-control-sm selectpicker" title="Selecione uma disciplina">
@@ -135,7 +135,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group row justify-content-center ">
+                <div class="form-group row  ">
                     <label for="turma" class="col-form-label col-md-2 col-form-label-sm">Turma:</label>
                     <div class="col-md-3">
                         <select name="turma" class="form-control form-control-sm selectpicker" title="Selecione uma turma">
@@ -146,9 +146,14 @@
                 <button type="submit" class="btn btn-primary btn-sm"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button><br/>
             </form>
 
-            <table style="margin-left: auto; margin-right: auto; font-size: 13px; width: auto !important;" class="table">
+            <table class="table">
+                <thead>
+                    <th>Turma</th>
+                    <th>Disciplina</th>
+                    <th></th>
+                </thead>
                 <tbody>
-                {DISCIPLINAS_PROFESSOR}
+                    {DISCIPLINAS_PROFESSOR}
                 </tbody>
             </table>
             

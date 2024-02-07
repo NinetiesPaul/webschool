@@ -166,13 +166,13 @@
                 <button type="submit" id="btn" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
             </form>
 
-            <p><strong>Cadastrar aluno para responsável</strong></p>
+            <p><strong>Alunos deste Responsavel</strong></p>
 
-            <form action="/admin/alunoPorResponsavel" method="post" role="form" class="form-horizontal " id="alunoPorResponsavelform">
+            <form action="/admin/alunoPorResponsavel" method="post" role="form" class="form-inline justify-content-center " id="alunoPorResponsavelform">
                 <input type="hidden" name="id" value="{ID}" />
                 <input type="hidden" name="responsavel" value="{RESPONSAVEL}" />
                 <input type="hidden" name="aluno" id="aluno" value="" />
-                <div class="form-group row justify-content-center ">
+                <div class="form-group row  ">
                     <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Nome:</label>
                     <div class="col-md-3" >
                         <input type="text" name="nome_aluno" id="nome_aluno" class="form-control form-control-sm " data-toggle='modal' data-target='#modalExemplo' autocomplete="off">
@@ -181,9 +181,12 @@
                 <button type="button" class="btn btn-primary btn-sm" id="submit-app"><span class='glyphicon glyphicon-plus'></span> Cadastrar</button>
             </form>
 
-            <strong>Lista de Alunos relacionados a esse Responsável</strong><p/><br>
-
-            <table style="margin-left: auto; margin-right: auto; font-size: 13px; width: auto !important;" class="table">
+            <table class="table">
+                <thead>
+                    <th>Aluno</th>
+                    <th>Turma</th>
+                    <th style="width: 5%;"></th>
+                </thead>
                 <tbody>
                     {FILHOS}
                 </tbody>

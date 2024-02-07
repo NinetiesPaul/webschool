@@ -63,7 +63,7 @@ class ResponsavelController extends AdminController
         $filhos = '';
         foreach ($alunosDoResponsavel as $user) {
             $filhos .= "<tr id='row-$user->rpa'><td>$user->nome</td><td>$user->nome_turma</td>
-            <td><button class='btn btn-danger btn-sm' id='deletar' value='$user->rpa'><span class='glyphicon glyphicon-trash'></span> Deletar</button></td></tr>";
+            <td><a class='btn btn-sm' id='deletar' href='#' value='$user->rpa'><span class='glyphicon glyphicon-trash'></span> </a></td></tr>";
         }
 
         $endereco = $this->enderecoStorage->verEndereco($responsavel->endereco);

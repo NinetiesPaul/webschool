@@ -115,8 +115,10 @@ class ProfessorController extends AdminController
         foreach ($disciplinaPorProfessorQuery as $disciplinaProProfessor) {
             $disciplinasProProfessor .= "
                 <tr id='row-dpp-$disciplinaProProfessor->id'>
-                <td>$disciplinaProProfessor->turma</td><td>$disciplinaProProfessor->nome</td>
-                <td><button class='btn btn-danger btn-sm' id='deletar-dpp' value='$disciplinaProProfessor->id'><span class='glyphicon glyphicon-trash'></span> Deletar</button></td></tr>
+                    <td>$disciplinaProProfessor->turma</td>
+                    <td>$disciplinaProProfessor->nome</td>
+                    <td style='width: 5%'><a class='btn btn-sm' href='#' id='deletar-dpp' value='$disciplinaProProfessor->id'><span class='glyphicon glyphicon-trash'></span> </a></td>
+                </tr>
             ";
         }
 
