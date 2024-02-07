@@ -10,6 +10,20 @@ use App\Templates;
 
 class AlunoController extends AdminController
 {
+    public function criarAluno()
+    {
+        $turmaQuery = $this->turmaStorage->verTurmas();
+
+        $turmas = '';
+        foreach ($turmaQuery as $turma) {
+            $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
+        }
+
+        new Templates('admin/alunos/criar.html', [
+            'TURMAS' => $turmas,
+        ]);
+    }
+
     public function verAlunos()
     {
         $turmaQuery = $this->turmaStorage->verTurmas();
@@ -46,7 +60,7 @@ class AlunoController extends AdminController
             'ALUNOS' => $alunos,
         ];
 
-        new Templates('admin/alunos.html', $args);
+        new Templates('admin/alunos/listar.html', $args);
     }
 
     public function verAluno($idAluno)
@@ -91,7 +105,7 @@ class AlunoController extends AdminController
             'BOTAO_DELETAR' => $deletar,
         ];
 
-        new Templates('admin/aluno.html', $args, '../');
+        new Templates('admin/alunos/editar.html', $args, '../');
     }
 
     public function adicionarAluno()

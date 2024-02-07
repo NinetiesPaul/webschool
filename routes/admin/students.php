@@ -3,6 +3,11 @@
 use Pecee\SimpleRouter\SimpleRouter;
 use App\Controllers\Admin\AlunoController as AdminAlunoController;
 
+SimpleRouter::get('/admin/aluno', function() {
+    $admin = new AdminAlunoController();
+    $admin->criarAluno();
+});
+
 SimpleRouter::get('/admin/alunos', function() {
     $admin = new AdminAlunoController();
     $admin->verAlunos();
