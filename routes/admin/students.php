@@ -11,7 +11,7 @@ SimpleRouter::get('/admin/aluno', function() {
 SimpleRouter::get('/admin/alunos', function() {
     $admin = new AdminAlunoController();
     $admin->verAlunos();
-});
+})->name('admin_alunos');
 
 SimpleRouter::get('/admin/aluno/{idAluno}', function($idAluno) {
     $admin = new AdminAlunoController();

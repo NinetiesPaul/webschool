@@ -11,7 +11,7 @@ SimpleRouter::get('/admin/disciplina', function() {
 SimpleRouter::get('/admin/disciplinas', function() {
     $admin = new AdminMateriasController();
     $admin->verMaterias();
-});
+})->name('admin_disciplinas');
 
 SimpleRouter::get('/admin/disciplina/{idDisciplina}', function($idDisciplina) {
     $admin = new AdminMateriasController();

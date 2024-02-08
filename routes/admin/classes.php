@@ -11,7 +11,7 @@ SimpleRouter::get('/admin/turma', function() {
 SimpleRouter::get('/admin/turmas', function() {
     $admin = new AdminTurmaController();
     $admin->verTurmas();
-});
+})->name('admin_turmas');
 
 SimpleRouter::get('/admin/turma/{idTurma}', function($idTurma) {
     $admin = new AdminTurmaController();
