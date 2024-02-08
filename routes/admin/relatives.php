@@ -11,7 +11,7 @@ SimpleRouter::get('/admin/responsavel', function() {
 SimpleRouter::get('/admin/responsaveis', function() {
     $admin = new AdminResponsavelController();
     $admin->verResponsaveis();
-});
+})->name('admin_responsaveis');
 
 SimpleRouter::get('/admin/responsavel/{idResponsavel}', function($idResponsavel) {
     $admin = new AdminResponsavelController();
