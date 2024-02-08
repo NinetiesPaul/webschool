@@ -227,10 +227,12 @@ class ProfessorController extends AdminController
         ResponseHandler::response();
     }
 
-    public function desativarProfessor($idProfessor)
+    public function desativarProfessor()
     {
+        $data = input()->all();
+
         try {
-            $this->professorStorage->desativarProfessor($idProfessor);
+            $this->professorStorage->desativarProfessor($data['id']);
         } catch (\Exception $ex) {
             ResponseHandler::throwError($ex);
         }

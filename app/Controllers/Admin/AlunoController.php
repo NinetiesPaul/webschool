@@ -170,10 +170,12 @@ class AlunoController extends AdminController
         ResponseHandler::response();
     }
 
-    public function desativarAluno($idAluno)
+    public function desativarAluno()
     {
+        $data = input()->all();
+
         try {
-            $this->alunoStorage->desativarAluno($idAluno);
+            $this->alunoStorage->desativarAluno($data['id']);
         } catch (\Exception $ex) {
             ResponseHandler::throwError($ex);
         }
