@@ -134,10 +134,12 @@ class ResponsavelController extends AdminController
         header("Location: /admin/responsavel/$responsavel");
     }
 
-    public function desativarResponsavel($idResponsavel)
+    public function desativarResponsavel()
     {
+        $data = input()->all();
+
         try {
-            $this->responsavelStorage->desativarResponsavel($idResponsavel);
+            $this->responsavelStorage->desativarResponsavel($data['id']);
         } catch (\Exception $ex) {
             ResponseHandler::throwError($ex);
         }

@@ -23,9 +23,9 @@ SimpleRouter::delete('/admin/responsavel/{idResponsavel}/delete', function($idRe
     $adminAjax->removerResponsavel($idResponsavel);
 });
 
-SimpleRouter::put('/admin/responsavel/{idResponsavel}/desativar', function($idResponsavel) {
+SimpleRouter::put('/admin/responsavel/desativar', function() {
     $adminAjax = new AdminResponsavelController();
-    $adminAjax->desativarResponsavel($idResponsavel);
+    $adminAjax->desativarResponsavel();
 });
 
 SimpleRouter::put('/admin/responsavel', function() {

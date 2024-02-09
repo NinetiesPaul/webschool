@@ -18,9 +18,9 @@ SimpleRouter::get('/admin/professor/{idProfessor}', function($idProfessor) {
     $admin->verProfessor($idProfessor);
 });
 
-SimpleRouter::put('/admin/professor/{idProfessor}/desativar', function($idProfessor) {
+SimpleRouter::put('/admin/professor/desativar', function() {
     $adminAjax = new AdminProfessorController();
-    $adminAjax->desativarProfessor($idProfessor);
+    $adminAjax->desativarProfessor();
 });
 
 SimpleRouter::delete('/admin/professor/{idProfessor}/delete', function($idProfessor) {

@@ -9,27 +9,10 @@
         <link href="../includes/css/status.css" rel="stylesheet">
         <link href="../includes/css/datatables.css" rel="stylesheet">
         {JS}
+        <script src="../includes/js/email_check.js"></script>
         <script>
-            function verificarLogin(val) {
-                $.ajax({
-                    type: "POST",
-                    url: "/verificarLogin",
-                    data: { login : val, tipo : "professor" },
-                    success: function(data){
-                        data = jQuery.parseJSON(data)
-                        if (data.loginTaken === true){
-                            $("#btn").attr("disabled", true)
-                            $("#disponibilidade").slideDown("slow", function(){});
-                        } else {
-                            $("#btn").attr("disabled", false)
-                            $("#disponibilidade").slideUp("slow", function(){});
-                        }
-                    }
-                });
-            }
-
             $(document).on('focusout', '#email', function(){
-                verificarLogin(this.value);
+                verificarLogin(this.value, "professor");
             });
 
             $(document).ready(function(){

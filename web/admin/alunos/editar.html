@@ -6,25 +6,8 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         {CSS}
         {JS}
+        <script src="../includes/js/email_check.js"></script>
         <script>
-            function verificarLogin(val) {
-                $.ajax({
-                    type: "POST",
-                    url: "/verificarLogin",
-                    data: { login : val, tipo : "aluno", id : $("#id").val()},
-                    success: function(data ){
-                        data = jQuery.parseJSON(data)
-                        if (data.loginTaken === true){
-                            $("#btn").attr("disabled", true)
-                            $("#disponibilidade").slideDown("slow", function(){});
-                        } else {
-                            $("#btn").attr("disabled", false)
-                            $("#disponibilidade").slideUp("slow", function(){});
-                        }
-                    }
-                });
-            }
-            
             function formatjson() {
                 data = jQuery.parseJSON($("#footprint").text());
                 $("#footprint").text(JSON.stringify(data, undefined, 2))
@@ -54,7 +37,7 @@
             });
 
             $(document).on('focusout', '#email', function(){
-                verificarLogin($("#email").val());
+                verificarLogin($("#email").val(), "aluno", $("#id").val());
             });
 
             $(document).ready(function(){

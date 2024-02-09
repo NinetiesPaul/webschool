@@ -9,36 +9,11 @@
         <link href="../includes/css/status.css" rel="stylesheet">
         <link href="../includes/css/datatables.css" rel="stylesheet">
         {JS}
+        <script src="../includes/js/disable_user.js"></script>
         <script>
-            function desativarProfessor(val) {
-                $.ajax({
-                    url: "professor/" + val + '/desativar',
-                    type: "PUT",
-                    success: function(data){
-                        data = jQuery.parseJSON(data)
-                        if (data.error === true) {
-                            $('.alert').css('display', 'block');
-                            $('.alert').text(data.msg);
-                            $('.alert').delay(5000).fadeOut(1000, function(){
-                                $('.alert').css('display', 'none');
-                            });
-                        } else {
-                            if ($('.label-status_' + val).hasClass('label-success') == true) {
-                                $('.label-status_' + val).removeClass('label-success');
-                                $('.label-status_' + val).addClass('label-danger');
-                                $('.label-status_' + val).text('Inativo');
-                            } else {
-                                $('.label-status_' + val).removeClass('label-danger');
-                                $('.label-status_' + val).addClass('label-success');
-                                $('.label-status_' + val).text('Ativo');
-                            }
-                        }
-                    }
-                });
-            }
-
             $(document).on('click', '.desativar', function(){
-                desativarProfessor(this.id);
+                var id = this.id;
+                desativarUsuario(id, "professor");
             });
             
             $(document).ready( function () {

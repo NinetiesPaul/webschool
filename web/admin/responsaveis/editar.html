@@ -7,25 +7,8 @@
         {CSS}
         <link href="../../includes/css/datatables.css" rel="stylesheet">
         {JS}
+        <script src="../../includes/js/email_check.js"></script>
         <script>
-            function verificarLogin(val) {
-                $.ajax({
-                    type: "POST",
-                    url: "/verificarLogin",
-                    data: { login : val, tipo : "responsavel", id : $("#id").val()},
-                    success: function(data){
-                        data = jQuery.parseJSON(data)
-                        if (data.loginTaken === true){
-                            $("#btn").attr("disabled", true)
-                            $("#disponibilidade").slideDown("slow", function(){});
-                        } else {
-                            $("#btn").attr("disabled", false)
-                            $("#disponibilidade").slideUp("slow", function(){});
-                        }
-                    }
-                });
-            }
-            
             function deletarResponsavelPorAluno(val) {
                 $.ajax({
                     url: "/admin/alunoPorResponsavel/" + val,
@@ -93,7 +76,7 @@
             });
 
             $(document).on('focusout', '#email', function(){
-                verificarLogin($("#email").val());
+                verificarLogin($("#email").val(), "responsavel", $("#id").val());
             });
 
             $(document).ready(function(){

@@ -23,9 +23,9 @@ SimpleRouter::delete('/admin/aluno/{idAluno}/delete', function($idAluno) {
     $adminAjax->removerAluno($idAluno);
 });
 
-SimpleRouter::put('/admin/aluno/{idAluno}/desativar', function($idAluno) {
+SimpleRouter::put('/admin/aluno/desativar', function() {
     $ajaxAdmin = new AdminAlunoController();
-    $ajaxAdmin->desativarAluno($idAluno);
+    $ajaxAdmin->desativarAluno();
 });
 
 SimpleRouter::put('/admin/aluno', function() {
