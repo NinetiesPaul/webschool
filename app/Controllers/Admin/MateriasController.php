@@ -4,6 +4,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\DB\Storage\MateriaStorage;
 use App\ResponseHandler;
 use App\Templates;
 
@@ -16,7 +17,8 @@ class MateriasController extends AdminController
 
     public function verMaterias()
     {
-        $disciplinaQuery = $this->materiaStorage->verMaterias();
+        $materiaStorage = new MateriaStorage();
+        $disciplinaQuery = $materiaStorage->verMaterias();
 
         $disciplinas = '';
 
@@ -42,7 +44,8 @@ class MateriasController extends AdminController
 
     public function verMateria($materia)
     {
-        $disciplina = $this->materiaStorage->verMateria($materia);
+        $materiaStorage = new MateriaStorage();
+        $disciplina = $materiaStorage->verMateria($materia);
 
         $args = [
             'ID' => $disciplina->id,
@@ -58,7 +61,8 @@ class MateriasController extends AdminController
 
         $nome = $data['nome'];
 
-        $this->materiaStorage->adicionarMateria($nome);
+        $materiaStorage = new MateriaStorage();
+        $materiaStorage->adicionarMateria($nome);
         header('Location: /admin/disciplinas');
     }
 
@@ -69,14 +73,16 @@ class MateriasController extends AdminController
         $nome = $data['nome'];
         $id = $data['id'];
 
-        $this->materiaStorage->alterarMateria($nome, $id);
+        $materiaStorage = new MateriaStorage();
+        $materiaStorage->alterarMateria($nome, $id);
         header('Location: /admin/disciplinas');
     }
 
     public function removerMateria($disciplina)
     {
         try {
-            $this->materiaStorage->removerMateria($disciplina);
+            $materiaStorage = new MateriaStorage();
+            $materiaStorage->removerMateria($disciplina);
         } catch (\Exception $ex) {
             ResponseHandler::throwError($ex, "materia");
         }

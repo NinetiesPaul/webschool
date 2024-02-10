@@ -4,6 +4,11 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\DB\Storage\AlunoStorage;
+use App\DB\Storage\AvatarStorage;
+use App\DB\Storage\EnderecoStorage;
+use App\DB\Storage\ResponsavelStorage;
+use App\DB\Storage\UsuarioStorage;
 use App\Enum;
 use App\ResponseHandler;
 use App\Templates;
@@ -17,7 +22,8 @@ class ResponsavelController extends AdminController
 
     public function verResponsaveis()
     {
-        $responsavelQuery = $this->responsavelStorage->verResponsaveis();
+        $responsavelStorage = new ResponsavelStorage();
+        $responsavelQuery = $responsavelStorage->verResponsaveis();
 
         $responsaveis = '';
 
@@ -48,16 +54,19 @@ class ResponsavelController extends AdminController
 
     public function verResponsavel($idResponsavel)
     {
-        $responsavel = $this->responsavelStorage->verResponsavel($idResponsavel);
+        $responsavelStorage = new ResponsavelStorage();
+        $responsavel = $responsavelStorage->verResponsavel($idResponsavel);
 
-        $alunosQuery = $this->alunoStorage->verAlunos();
+        $alunoStorage = new AlunoStorage();
+        $alunosQuery = $alunoStorage->verAlunos();
 
         $alunos = '';
         foreach ($alunosQuery as $aluno) {
             $alunos .= "<option value='$aluno->aluno'> $aluno->nome ($aluno->nome_turma) </option>";
         }
 
-        $alunosDoResponsavel = $this->alunoStorage->verAlunosDoResponsavel($responsavel->responsavel);
+        $alunoStorage = new AlunoStorage();
+        $alunosDoResponsavel = $alunoStorage->verAlunosDoResponsavel($responsavel->responsavel);
 
         $filhos = '';
         foreach ($alunosDoResponsavel as $user) {
@@ -88,7 +97,8 @@ class ResponsavelController extends AdminController
         $salt = time() + rand(100, 1000);
         $password = md5($password . $salt);
 
-        $this->responsavelStorage->adicionarResponsavel($email, $nome, $password, $salt);
+        $responsavelStorage = new ResponsavelStorage();
+        $responsavelStorage->adicionarResponsavel($email, $nome, $password, $salt);
         header('Location: /admin/responsaveis');
     }
 
@@ -102,7 +112,8 @@ class ResponsavelController extends AdminController
         $password = $data['password'];
         $salt = $data['salt'];
 
-        $this->usuarioStorage->alterarUsuario($userId, $nome, $email, $password, $salt, Enum::TIPO_RESPONSAVEL);
+        $usuarioStorage = new UsuarioStorage();
+        $usuarioStorage->alterarUsuario($userId, $nome, $email, $password, $salt, Enum::TIPO_RESPONSAVEL);
         header('Location: /admin/responsaveis');
     }
 
@@ -114,7 +125,8 @@ class ResponsavelController extends AdminController
         $aluno = $data['aluno'];
         $id = $data['id'];
 
-        $responsavel = $this->responsavelStorage->adicionarAlunoPorResponsavel($responsavel, $aluno, $id);
+        $responsavelStorage = new ResponsavelStorage();
+        $responsavel = $responsavelStorage->adicionarAlunoPorResponsavel($responsavel, $aluno, $id);
         header("Location: /admin/responsavel/$id");
     }
 
@@ -123,7 +135,8 @@ class ResponsavelController extends AdminController
         $data = input()->all();
 
         try {
-            $this->responsavelStorage->desativarResponsavel($data['id']);
+            $responsavelStorage = new ResponsavelStorage();
+            $responsavelStorage->desativarResponsavel($data['id']);
         } catch (\Exception $ex) {
             ResponseHandler::throwError($ex);
         }
@@ -133,11 +146,17 @@ class ResponsavelController extends AdminController
 
     public function removerResponsavel($idResponsavel)
     {
-        $responsavel = $this->responsavelStorage->verResponsavel($idResponsavel);
+        $responsavelStorage = new ResponsavelStorage();
+        $responsavel = $responsavelStorage->verResponsavel($idResponsavel);
 
-        $endereco = $this->enderecoStorage->verEndereco($responsavel->endereco);
-        $avatar = $this->avatarStorage->verAvatar($responsavel->id);
-        $responsavel_por = $this->responsavelStorage->verAlunosDoResponsavel($responsavel->responsavel);
+        $enderecoStorage = new EnderecoStorage();
+        $endereco = $enderecoStorage->verEndereco($responsavel->endereco);
+
+        $avatarStorage = new AvatarStorage();
+        $avatar = $avatarStorage->verAvatar($responsavel->id);
+
+        $responsavelStorage = new ResponsavelStorage();
+        $responsavel_por = $responsavelStorage->verAlunosDoResponsavel($responsavel->responsavel);
 
         $footprint= [
             'usuario' => $responsavel,
@@ -147,7 +166,8 @@ class ResponsavelController extends AdminController
         ];
 
         try {
-            $this->responsavelStorage->removerResponsavel($responsavel->responsavel, $responsavel->id, $responsavel->endereco, $footprint);
+            $responsavelStorage = new ResponsavelStorage();
+            $responsavelStorage->removerResponsavel($responsavel->responsavel, $responsavel->id, $responsavel->endereco, $footprint);
         } catch (\Exception $ex) {
             ResponseHandler::throwError($ex);
         }
@@ -158,7 +178,8 @@ class ResponsavelController extends AdminController
     public function removerAlunoPorResponsavel($id)
     {
         try {
-            $this->responsavelStorage->removerAlunoPorResponsavel($id);
+            $responsavelStorage = new ResponsavelStorage();
+            $responsavelStorage->removerAlunoPorResponsavel($id);
         } catch (\Exception $ex) {
             ResponseHandler::throwError($ex);
         }
