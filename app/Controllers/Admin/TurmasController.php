@@ -22,12 +22,12 @@ class TurmasController extends AdminController
 
         foreach ($turmasQuery as $turma) {
             $turmas .="
-                <tr id='row-$turma->id'>
+                <tr data-id='$turma->id'>
                     <td>$turma->id</td>
                     <td>$turma->serie º Série $turma->nome</td>
                     <td>
                         <a href='turma/$turma->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span> </a>
-                        <a href='#' class='btn btn-sm' id='deletar' value='$turma->id'><span class='glyphicon glyphicon-trash'></span> </a>
+                        <a href='#' class='btn btn-sm' id='deletar'><span class='glyphicon glyphicon-trash'></span> </a>
                     </td>
                 </tr>
             ";
