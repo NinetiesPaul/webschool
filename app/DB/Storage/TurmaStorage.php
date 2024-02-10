@@ -61,7 +61,7 @@ class TurmaStorage
         ]);
 
         if ($user->rowCount() === 0) {
-            $this->throwError("Erro ao recuperar turma: id inválido");
+            $this->throwError("<b>Erro</b>: id inválido");
         }
     }
     

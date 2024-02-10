@@ -98,7 +98,7 @@ class ResponsavelStorage
         ]);
     }
     
-    public function adicionarAlunoPorResponsavel($responsavel, $aluno, $id)
+    public function adicionarAlunoPorResponsavel($responsavel, $aluno)
     {
         $user = $this->db->prepare("INSERT INTO responsavel_por_aluno (responsavel, aluno)
                 VALUES (:responsavel, :aluno)");
@@ -107,8 +107,6 @@ class ResponsavelStorage
             'responsavel' => $responsavel,
             'aluno' => $aluno,
         ]);
-        
-        return $id;
     }
     
     public function removerAlunoPorResponsavel($id)
@@ -120,7 +118,7 @@ class ResponsavelStorage
         ]);
 
         if ($user->rowCount() === 0) {
-            $this->throwError("Erro ao remover aluno por responsavel: id inválido");
+            $this->throwError("<b>Erro</b>: id inválido");
         }
     }
     
@@ -141,7 +139,7 @@ class ResponsavelStorage
         $responsavelQuery = $this->db->query("select usuario.is_deleted from usuario, responsavel where usuario.id=responsavel.usuario and responsavel.usuario = $responsavel");
 
         if ($responsavelQuery->rowCount() === 0) {
-            $this->throwError("Erro ao recuperar responsavel: id inválido");
+            $this->throwError("<b>Erro</b>: id inválido");
         }
 
         $is_deleted = $responsavelQuery->fetch(PDO::FETCH_OBJ)->is_deleted;

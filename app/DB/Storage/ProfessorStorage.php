@@ -115,7 +115,7 @@ class ProfessorStorage
         $alunoQuery = $this->db->query("select usuario.is_deleted from usuario, professor where usuario.id=professor.usuario and professor.usuario = $idProfessor");
 
         if ($alunoQuery->rowCount() === 0) {
-            $this->throwError("Erro ao recuperar professor: id inválido");
+            $this->throwError("<b>Erro</b>: id inválido");
         }
 
         $is_deleted = $alunoQuery->fetch(PDO::FETCH_OBJ)->is_deleted;
