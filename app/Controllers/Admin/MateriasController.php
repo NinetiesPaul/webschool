@@ -22,12 +22,12 @@ class MateriasController extends AdminController
 
         foreach ($disciplinaQuery as $disciplina) {
             $disciplinas .= "
-                <tr id='row-$disciplina->id'>
+                <tr data-id='$disciplina->id'>
                     <td>$disciplina->id</td>
                     <td>$disciplina->nome</td>
                     <td>
                         <a href='disciplina/$disciplina->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span> </a>
-                        <a href='#' class='btn btn-sm' id='deletar' value='$disciplina->id'> <span class='glyphicon glyphicon-trash'></span> </a>
+                        <a href='#' class='btn btn-sm' id='deletar'> <span class='glyphicon glyphicon-trash'></span> </a>
                     </td>
                 </tr>
             ";

@@ -11,7 +11,7 @@ class ResponseHandler
 
         switch ($ex->getCode()) {
             case 23000:
-                $errorMsg = "Erro ao deletar: $entidade em uso";
+                $errorMsg = "<b>Erro</b>: $entidade em uso";
                 break;
         }
 

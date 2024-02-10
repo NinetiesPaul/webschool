@@ -40,7 +40,7 @@ class AlunoController extends AdminController
             $is_deleted = ($aluno->is_deleted) ? "<span class='label-status_$aluno->id label-success'>Ativo</span>" : "<span class='label-status_$aluno->id label-danger'>Inativo</span>";
             
             $alunos .= "
-                <tr id='row-$aluno->id'>
+                <tr data-id='$aluno->id'>
                     <td>$aluno->id</td>
                     <td>
                         $aluno->nome<br/>
@@ -49,7 +49,7 @@ class AlunoController extends AdminController
                     <td>$aluno->nome_turma</td>
                     <td>
                         <a href='aluno/$aluno->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span></a>
-                        <a href='#' class='btn btn-sm desativar' id='$aluno->id'><span class='glyphicon glyphicon-ban-circle'></span> </a>
+                        <a href='#' class='btn btn-sm desativar' ><span class='glyphicon glyphicon-ban-circle'></span> </a>
                     </td>
                 </tr>
             ";
@@ -69,30 +69,10 @@ class AlunoController extends AdminController
         $turmaQuery = $this->turmaStorage->verTurmas();
 
         $turmas = '';
-
         foreach ($turmaQuery as $turma) {
             $selected = ($aluno->turma == $turma->id)? 'selected' : '';
             $turmas .= "<option value='$turma->id' $selected>$turma->serie º Série $turma->nome</option>";
         }
-
-        $endereco = $this->enderecoStorage->verEndereco($aluno->endereco);
-        $avatar = $this->avatarStorage->verAvatar($aluno->id);
-        $diario_de_classe = $this->diarioStorage->verDiarioDeClassePorAluno($aluno->aluno);
-        $nota_por_aluno = $this->notaStorage->verNotasPorAluno($aluno->aluno);
-        $arquivos_do_diario = $this->arquivoStorage->verArquivoPorAluno($aluno->aluno);
-        $filho_de = $this->responsavelStorage->verResponsaveisPeloAluno($aluno->aluno);
-
-        $footprint = [
-            'usuario' => $aluno,
-            'endereco' => $endereco,
-            'avatar' => $avatar,
-            'diario_de_classe' => $diario_de_classe,
-            'nota_por_aluno' => $nota_por_aluno,
-            'arquivos' => $arquivos_do_diario,
-            'filho_de' => $filho_de
-        ];
-
-        $deletar = "<button class='btn btn-danger btn-sm' id='deletar' value='$aluno->id'><span class='glyphicon glyphicon-trash'></span> Deletar aluno</button>";
 
         $args = [
             'ID' => $aluno->id,
@@ -101,8 +81,6 @@ class AlunoController extends AdminController
             'SALT' => $aluno->salt,
             'EMAIL' => $aluno->email,
             'TURMAS' => $turmas,
-            'FOOTPRINT' => json_encode($footprint),
-            'BOTAO_DELETAR' => $deletar,
         ];
 
         new Templates('admin/alunos/editar.html', $args, '../');

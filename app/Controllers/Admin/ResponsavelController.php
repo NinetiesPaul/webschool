@@ -25,7 +25,7 @@ class ResponsavelController extends AdminController
             $is_deleted = ($responsavel->is_deleted) ? "<span class='label-status_$responsavel->id label-success'>Ativo</span>" : "<span class='label-status_$responsavel->id label-danger'>Inativo</span>";
            
             $responsaveis .= "
-                <tr id='row-$responsavel->id'>
+                <tr data-id='$responsavel->id'>
                     <td>$responsavel->id </td>
                     <td>
                         $responsavel->nome<br/>
@@ -33,7 +33,7 @@ class ResponsavelController extends AdminController
                     </td>
                     <td>
                         <a href='responsavel/$responsavel->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span></a>
-                        <a href='#' class='btn btn-sm desativar' id='$responsavel->id' ><span class='glyphicon glyphicon-ban-circle'></span></a>
+                        <a href='#' class='btn btn-sm desativar' ><span class='glyphicon glyphicon-ban-circle'></span></a>
                     </td>
                 </tr>
             ";
@@ -54,30 +54,16 @@ class ResponsavelController extends AdminController
 
         $alunos = '';
         foreach ($alunosQuery as $aluno) {
-            $nome = $aluno->nome . " (" . $aluno->nome_turma . ")";
-            $alunos .= "<tr><td>$nome</td><td><button class='btn badge badge-primary escolher_aluno' style='padding: 2px 8px; color: white;' value='$aluno->aluno' id='$nome' data-dismiss='modal' >Escolher</button></td></tr>";
+            $alunos .= "<option value='$aluno->aluno'> $aluno->nome ($aluno->nome_turma) </option>";
         }
 
         $alunosDoResponsavel = $this->alunoStorage->verAlunosDoResponsavel($responsavel->responsavel);
 
         $filhos = '';
         foreach ($alunosDoResponsavel as $user) {
-            $filhos .= "<tr id='row-$user->rpa'><td>$user->nome</td><td>$user->nome_turma</td>
-            <td><a class='btn btn-sm' id='deletar' href='#' value='$user->rpa'><span class='glyphicon glyphicon-trash'></span> </a></td></tr>";
+            $filhos .= "<tr data-id='$user->rpa'><td>$user->nome</td><td>$user->nome_turma</td>
+            <td><a class='btn btn-sm' id='deletar-aluno' href='#' ><span class='glyphicon glyphicon-trash'></span> </a></td></tr>";
         }
-
-        $endereco = $this->enderecoStorage->verEndereco($responsavel->endereco);
-        $avatar = $this->avatarStorage->verAvatar($responsavel->id);
-        $responsavel_por = $alunosDoResponsavel;
-
-        $footprint = [
-            'usuario' => $responsavel,
-            'endereco' => $endereco,
-            'avatar' => $avatar,
-            'responsavel_por' => $responsavel_por
-        ];
-
-        $deletar = "<button class='btn btn-danger btn-sm' id='deletar-responsavel' value='$responsavel->id'><span class='glyphicon glyphicon-trash'></span> Deletar responsável</button>";
 
         $args = [
             'ID' => $responsavel->id,
@@ -87,8 +73,6 @@ class ResponsavelController extends AdminController
             'EMAIL' => $responsavel->email,
             'ALUNOS' => $alunos,
             'FILHOS' => $filhos,
-            'FOOTPRINT' => json_encode($footprint),
-            'BOTAO_DELETAR' => $deletar,
         ];
 
         new Templates('admin/responsaveis/editar.html', $args, '../');
@@ -131,7 +115,7 @@ class ResponsavelController extends AdminController
         $id = $data['id'];
 
         $responsavel = $this->responsavelStorage->adicionarAlunoPorResponsavel($responsavel, $aluno, $id);
-        header("Location: /admin/responsavel/$responsavel");
+        header("Location: /admin/responsavel/$id");
     }
 
     public function desativarResponsavel()
