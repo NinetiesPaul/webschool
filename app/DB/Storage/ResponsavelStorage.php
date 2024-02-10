@@ -39,28 +39,30 @@ class ResponsavelStorage
     
     public function adicionarResponsavel($email, $nome, $password, $salt)
     {
-        if ($this->db->usuario()->loginTaken($email, Enum::TIPO_RESPONSAVEL)) {
+        $usuarioStorage = new UsuarioStorage();
+        if ($usuarioStorage->loginTaken($email, Enum::TIPO_RESPONSAVEL)) {
             return false;
         }
 
-        $idEndereco = $this->db->endereco()->inserirEndereco();
+        $enderecoStorage = new EnderecoStorage();
+        $idEndereco = $enderecoStorage->inserirEndereco();
 
-        $usuario = [
+        $usuarioStorage = new UsuarioStorage();
+        $userId = $usuarioStorage->inserirUsuario([
             'name' => $nome,
             'email' => $email,
             'password' => $password,
             'salt' => $salt,
             'endereco' => $idEndereco,
-        ];
-
-        $userId = $this->db->usuario()->inserirUsuario($usuario);
+        ]);
 
         $responsavel = $this->db->prepare("INSERT INTO responsavel (usuario) VALUES (:idUusuario)");
         $responsavel->execute([
             'idUusuario' => $userId,
         ]);
 
-        $this->db->avatar()->inserirUsuarioNaAvatar($userId);
+        $avatarStorage = new AvatarStorage();
+        $avatarStorage->inserirUsuarioNaAvatar($userId);
     }
 
     public function removerResponsavel($responsavel, $usuario, $endereco, $footprint)

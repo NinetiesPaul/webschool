@@ -41,23 +41,25 @@ class AlunoStorage
 
     public function adicionarAluno($email, $nome, $password, $salt, $turma)
     {
-        if ($this->db->usuario()->loginTaken($email, Enum::TIPO_ALUNO)) {
+        $usuarioStorage = new UsuarioStorage();
+        if ($usuarioStorage->loginTaken($email, Enum::TIPO_ALUNO)) {
             return false;
         }
         
-        $idEndereco = $this->db->endereco()->inserirEndereco();
+        $enderecoStorage = new EnderecoStorage();
+        $idEndereco = $enderecoStorage->inserirEndereco();
         
-        $usuario = [
+        $usuarioStorage = new UsuarioStorage();
+        $userId = $usuarioStorage->inserirUsuario([
             'name' => $nome,
             'email' => $email,
             'password' => $password,
             'endereco' => $idEndereco,
             'salt' => $salt,
-        ];
+        ]);
 
-        $userId = $this->db->usuario()->inserirUsuario($usuario);
-
-        $this->db->avatar()->inserirUsuarioNaAvatar($userId);
+        $avatarStorage = new AvatarStorage();
+        $avatarStorage->inserirUsuarioNaAvatar($userId);
 
         $aluno = $this->db->prepare("INSERT INTO aluno (usuario, turma) VALUES (:idUusuario, :idTurma)");
         $aluno->execute([
@@ -67,24 +69,23 @@ class AlunoStorage
 
         $lastid = (int) $this->db->lastInsertId();
         
-        $disciplinas = $this->db->materia()->verMateriaPorProfessorPorTurma($turma);
+        $materiaStorage = new MateriaStorage();
+        $disciplinas = $materiaStorage->verMateriaPorProfessorPorTurma($turma);
 
-        foreach ($disciplinas as $disciplina) {
-            $nota = [
+        foreach ($disciplinas as $disciplina) {           
+            $notaStorage = new NotaStorage();
+            $notaStorage->inserirNota([
                 'idAluno' => $lastid,
                 'idDisciplina' => $disciplina->disciplina,
                 'idTurma' => $turma,
-            ];
-            
-            $this->db->nota()->inserirNota($nota);
-            
-            $diario = [
+            ]);
+                        
+            $diarioStorage = new DiarioDeClasseStorage();
+            $diarioStorage->inserirDiarioDeClasse([
                 'idAluno' => $lastid,
                 'idDisciplina' => $disciplina->disciplina,
                 'idTurma' => $turma,
-            ];
-            
-            $this->db->diario()->inserirDiarioDeClasse($diario);
+            ]);
         }
     }
 
@@ -96,7 +97,8 @@ class AlunoStorage
             'idUusuario' => $userId,
         ]);
         
-        $disciplinas = $this->db->materia()->verMateriaPorProfessorPorTurma($turma);
+        $materiaStorage = new MateriaStorage();
+        $disciplinas = $materiaStorage->verMateriaPorProfessorPorTurma($turma);
 
         foreach ($disciplinas as $disciplina) {
             $checkDisciplinaQuery = $this->db->query("
@@ -107,13 +109,12 @@ class AlunoStorage
             $checkDisciplina = $checkDisciplinaQuery->fetchAll(PDO::FETCH_OBJ);
             
             if (empty($checkDisciplina)) {
-                $nota = [
+                $notaStorage = new NotaStorage();
+                $notaStorage->inserirNota([
                     'idAluno' => $idAluno,
                     'idDisciplina' => $disciplina->disciplina,
                     'idTurma' => $turma,
-                ];
-                
-                $this->db->nota()->inserirNota($nota);
+                ]);
             }
             
             $checkDiarioQuery = $this->db->query("
@@ -124,13 +125,12 @@ class AlunoStorage
             $checkDiario = $checkDiarioQuery->fetchAll(PDO::FETCH_OBJ);
 
             if (empty($checkDiario)) {
-                $diario = [
+                $diarioStorage = new DiarioDeClasseStorage();
+                $diarioStorage->inserirDiarioDeClasse([
                     'idAluno' => $idAluno,
                     'idDisciplina' => $disciplina->disciplina,
                     'idTurma' => $turma,
-                ];
-
-                $this->db->diario()->inserirDiarioDeClasse($diario);
+                ]);
             }
         }
     }

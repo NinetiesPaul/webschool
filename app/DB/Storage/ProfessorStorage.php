@@ -39,23 +39,25 @@ class ProfessorStorage
 
     public function adicionarProfessor($email, $nome, $password, $salt)
     {
-        if ($this->db->usuario()->loginTaken($email, Enum::TIPO_PROFESSOR)) {
+        $usuarioStorage = new UsuarioStorage();
+        if ($usuarioStorage->loginTaken($email, Enum::TIPO_PROFESSOR)) {
             return false;
         }
         
-        $idEndereco = $this->db->endereco()->inserirEndereco();
+        $enderecoStorage = new EnderecoStorage();
+        $idEndereco = $enderecoStorage->inserirEndereco();
 
-        $usuario = [
+        $usuarioStorage = new UsuarioStorage();
+        $userId = $usuarioStorage->inserirUsuario([
             'name' => $nome,
             'email' => $email,
             'password' => $password,
             'salt' => $salt,
             'endereco' => $idEndereco,
-        ];
+        ]);
 
-        $userId = $this->db->usuario()->inserirUsuario($usuario);
-
-        $this->db->avatar()->inserirUsuarioNaAvatar($userId);
+        $avatarStorage = new AvatarStorage();
+        $avatarStorage->inserirUsuarioNaAvatar($userId);
 
         $professor = $this->db->prepare("INSERT INTO professor (usuario) VALUES (:idUusuario)");
         $professor->execute([
@@ -150,24 +152,23 @@ class ProfessorStorage
             'idTurma' => $turma,
         ]);
         
-        $alunos = $this->db->turma()->verAlunosDaTurma($turma);
+        $turmaStorage = new TurmaStorage();
+        $alunos = $turmaStorage->verAlunosDaTurma($turma);
 
-        foreach ($alunos as $aluno) {
-            $nota = [
+        foreach ($alunos as $aluno) {           
+            $notaStorage = new NotaStorage();
+            $notaStorage->inserirNota([
                 'idAluno' => $aluno->id,
                 'idDisciplina' => $disciplina,
                 'idTurma' => $turma,
-            ];
-            
-            $this->db->nota()->inserirNota($nota);
-            
-            $diario = [
+            ]);
+                        
+            $diarioStorage = new DiarioDeClasseStorage();
+            $diarioStorage->inserirDiarioDeClasse([
                 'idAluno' => $aluno->id,
                 'idDisciplina' => $disciplina,
                 'idTurma' => $turma,
-            ];
-            
-            $this->db->diario()->inserirDiarioDeClasse($diario);
+            ]);
         }
     }
 
