@@ -17,9 +17,7 @@ class UsuarioStorage
 
     public function inserirUsuario($usuario)
     {
-        $user = $this->db->prepare("
-            INSERT INTO usuario (nome, email, pass, endereco, salt)
-            VALUES (:name, :email, :password, :endereco, :salt)
+        $user = $this->db->prepare("INSERT INTO usuario (nome, email, pass, endereco, salt) VALUES (:name, :email, :password, :endereco, :salt)
         ");
 
         $user->execute($usuario);
@@ -33,10 +31,7 @@ class UsuarioStorage
             return false;
         }
 
-        $sql = "
-            UPDATE usuario
-            SET nome=:nome, email=:email
-            ";
+        $sql = "UPDATE usuario SET nome=:nome, email=:email";
 
         $fields = [
             'nome' => $nome,
@@ -60,7 +55,7 @@ class UsuarioStorage
             $fields['pass'] = $password;
         }
 
-        $sql .= ' where id=:userId';
+        $sql .= ' WHERE id=:userId';
         $fields['userId'] = $userId;
 
         $user = $this->db->prepare($sql);
@@ -74,11 +69,11 @@ class UsuarioStorage
         $query = "
             SELECT usuario.id FROM usuario,$tipo
             WHERE usuario.id = $tipo.usuario
-            and usuario.email = '$login'
+            AND usuario.email = '$login'
         ";
 
         if ($id) {
-            $query .= " and usuario.id != $id";
+            $query .= " AND usuario.id != $id";
         }
 
         $userQuery = $this->db->query($query);
@@ -94,15 +89,13 @@ class UsuarioStorage
 
     public function verificarUsuario($alias, $turma, $tipo, $email)
     {
-        $query = "
+        $usersQuery = $this->db->query("
             SELECT u.*, $alias.id AS $tipo $turma
-                FROM usuario u
-                JOIN $tipo $alias ON $alias.usuario = u.id
-                WHERE u.id = $alias.usuario
-                AND u.email = '$email'
-        ";
-
-        $usersQuery = $this->db->query($query);
+            FROM usuario u
+            JOIN $tipo $alias ON $alias.usuario = u.id
+            WHERE u.id = $alias.usuario
+            AND u.email = '$email'
+        ");
 
         return $usersQuery->fetchObject();
     }

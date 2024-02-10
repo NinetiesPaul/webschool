@@ -23,35 +23,34 @@ class DiarioDeClasseStorage
     public function verFaltasDoAlunoDaTurma($turma, $disc)
     {
         $alunosQuery = $this->db->query("
-            select diario_de_classe.aluno, diario_de_classe.disciplina, diario_de_classe.turma, usuario.nome
-            from usuario
-            inner join aluno on aluno.usuario = usuario.id
-            inner join diario_de_classe on diario_de_classe.aluno = aluno.id
-            and diario_de_classe.disciplina = $disc and diario_de_classe.turma = $turma
-            group by diario_de_classe.aluno
-            order by diario_de_classe.aluno 
+            SELECT diario_de_classe.aluno, diario_de_classe.disciplina, diario_de_classe.turma, usuario.nome
+            FROM usuario
+            INNER JOIN aluno ON aluno.usuario = usuario.id
+            INNER JOIN diario_de_classe ON diario_de_classe.aluno = aluno.id
+            AND diario_de_classe.disciplina = $disc AND diario_de_classe.turma = $turma
+            GROUP BY diario_de_classe.aluno
+            ORDER BY diario_de_classe.aluno 
         ");
+
         return $alunosQuery->fetchAll(PDO::FETCH_OBJ);
     }
     
     public function verFaltasDoAlunoDaturmaPorData($aluno, $turma, $disc, $data)
     {
         $diarioQuery = $this->db->query("
-            select *
-            from diario_de_classe
-            where aluno = $aluno
-            and diario_de_classe.disciplina = $disc and diario_de_classe.turma = $turma
-            and data = '".$data."'
+            SELECT *
+            FROM diario_de_classe
+            WHERE aluno = $aluno
+            AND diario_de_classe.disciplina = $disc AND diario_de_classe.turma = $turma
+            AND data = '".$data."'
         ");
+
         return $diarioQuery->fetch(PDO::FETCH_OBJ);
     }
     
     public function adicionarFalta($aluno, $turma, $disciplina, $data)
     {
-        $user = $this->db->prepare("
-            INSERT INTO diario_de_classe (aluno, disciplina, turma, data, presenca, contexto) 
-            values (:aluno, :disciplina, :turma, :data, 1, 'presenca')
-        ");
+        $user = $this->db->prepare("INSERT INTO diario_de_classe (aluno, disciplina, turma, data, presenca, contexto) values (:aluno, :disciplina, :turma, :data, 1, 'presenca')");
 
         $user->execute([
             'aluno' => $aluno,
@@ -74,15 +73,16 @@ class DiarioDeClasseStorage
     public function verComentariosDoAlunoDaTurma($aluno, $disciplina, $turma, $data, $professor)
     {
         $comentarioQuery = $this->db->query("
-            select *
-            from diario_de_classe
-            where aluno = $aluno
-            and disciplina = $disciplina
-            and turma = $turma
-            and data = '$data'
-            and professor = $professor
-            and contexto = 'observacao'
+            SELECT *
+            FROM diario_de_classe
+            WHERE aluno = $aluno
+            AND disciplina = $disciplina
+            AND turma = $turma
+            AND data = '$data'
+            AND professor = $professor
+            AND contexto = 'observacao'
         ");
+
         return $comentarioQuery->fetchAll(PDO::FETCH_OBJ);
     }
     
@@ -108,7 +108,7 @@ class DiarioDeClasseStorage
     
     public function removerComentario($idComentario)
     {
-        $comentario = $this->db->prepare("DELETE FROM diario_de_classe where contexto = 'observacao' and id=:id");
+        $comentario = $this->db->prepare("DELETE FROM diario_de_classe WHERE contexto = 'observacao' AND id=:id");
         $comentario->execute([
             'id' => $idComentario,
         ]);
@@ -117,32 +117,47 @@ class DiarioDeClasseStorage
     public function verDiarioDeClassePorProfessor($professor)
     {
         $diarioQuery = $this->db->query("
-            select * from diario_de_classe where professor = $professor
+            SELECT *
+            FROM diario_de_classe
+            WHERE professor = $professor
         ");
+
         return $diarioQuery->fetchAll(PDO::FETCH_OBJ);
     }
     
     public function verDiarioDeClassePorAluno($aluno)
     {
         $diarioQuery = $this->db->query("
-            select * from diario_de_classe where aluno = $aluno
+            SELECT *
+            FROM diario_de_classe
+            WHERE aluno = $aluno
         ");
+
         return $diarioQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verFaltasPorAlunoDaMateriaETurma($turma, $aluno, $disciplina)
     {
         $faltasQuery = $this->db->query("
-            select * from diario_de_classe where turma=$turma and aluno=$aluno and disciplina=$disciplina and presenca = 1 order by data
+            SELECT *
+            FROM diario_de_classe
+            WHERE turma=$turma
+            AND aluno=$aluno AND disciplina=$disciplina AND presenca = 1
+            ORDER BY data
         ");
+
         return $faltasQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verComentariosPorAlunoDaMateriaETurma($turma, $aluno, $disciplina)
     {
         $comentariosQuery = $this->db->query("
-            select * from diario_de_classe where turma=$turma and aluno=$aluno and disciplina=$disciplina and contexto='observacao' order by data
+            SELECT *
+            FROM diario_de_classe
+            WHERE turma=$turma AND aluno=$aluno AND disciplina=$disciplina AND contexto='observacao'
+            ORDER BY data
         ");
+
         return $comentariosQuery->fetchAll(PDO::FETCH_OBJ);
     }
 }
