@@ -15,13 +15,10 @@
                         data = jQuery.parseJSON(data)
                         if (data.error === true) {
                             $('.alert').css('display', 'block');
-                            $('.alert').text(data.msg);
-                            $('.alert').delay(5000).fadeOut(1000, function(){
-                                $('.alert').css('display', 'none');
-                            });
+                            $('.msg').html(data.msg);
                         } else {
-                            $('#row-'+val).fadeOut(400, function(){
-                                remove();
+                            $("tr[data-id='" + val + "'").fadeOut(400, function(){
+                                this.remove();
                             });
                         }
                     }
@@ -29,7 +26,11 @@
             }
 
             $(document).on('click', '#deletar', function(){
-                deletarTurma(this.value);
+                deletarTurma($(this).closest("tr")[0].dataset['id']);
+            });
+
+            $(document).on('click', '.close', function(){
+                $('.alert').css('display', 'none');
             });
         </script>
         <title>webSchool :: Cadastro de Turma</title>
@@ -75,8 +76,12 @@
                     {TURMAS}
                 </tbody>
             </table>
-        </div>
 
+            <div class="alert alert-danger " role="alert" style="display: none;">
+                <button class="close"><span>&times;</span></button>
+                <span class="msg"></span>
+            </div>
+        </div>
     </body>
 </html>
 	

@@ -4,36 +4,34 @@
         <meta charset="UTF8">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
         {CSS}
         {JS}
-        <script src="../includes/js/email_check.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+        <script src="../../includes/js/email_check.js"></script>
         <script>
-            function formatjson() {
-                data = jQuery.parseJSON($("#footprint").text());
-                $("#footprint").text(JSON.stringify(data, undefined, 2))
-            }
-                
-            function deletarAluno(val) {
-                $.ajax({
-                    url: val + '/delete',
-                    type: "DELETE",
-                    success: function(data){
-                        data = jQuery.parseJSON(data)
-                        if (data.error === true) {
-                            $('.alert').css('display', 'block');
-                            $('.alert').text(data.msg);
-                            $('.alert').delay(5000).fadeOut(1000, function(){
-                                $('.alert').css('display', 'none');
-                            });
-                        } else {
-                            window.location.href = '../alunos'
-                        }
-                    }
-                });
-            }
-
             $(document).on('click', '#deletar', function(){
-                deletarAluno(this.value);
+                if (confirm("Confirmar exclusão?") == true)
+                {
+                    var val = $(this)[0].dataset['id'];
+
+                    $.ajax({
+                        url: val + '/delete',
+                        type: "DELETE",
+                        success: function(data){
+                            data = jQuery.parseJSON(data)
+                            if (data.error === true) {
+                                $('.alert').css('display', 'block');
+                                $('.alert').text(data.msg);
+                                $('.alert').delay(5000).fadeOut(1000, function(){
+                                    $('.alert').css('display', 'none');
+                                });
+                            } else {
+                                window.location.href = '../alunos'
+                            }
+                        }
+                    });
+                }
             });
 
             $(document).on('focusout', '#email', function(){
@@ -42,7 +40,9 @@
 
             $(document).ready(function(){
                 $("#disponibilidade").hide();
-                formatjson();
+
+                var turmaSelect = $('#turma');
+                turmaSelect.select2();
             });
         </script>
         <title>webSchool :: Alteração de Aluno</title>
@@ -71,7 +71,10 @@
         </div>
 
         <div class="" style="width: 80%; float: right; padding: 2em;">
-            <strong>Alteração de Aluno</strong> <p/>
+            <p>
+                <strong>Alteração de Aluno</strong>
+                <button class="btn btn-sm btn-danger" style="float: right;" id="deletar" data-id="{ID}">Deletar </button>
+            </p>
             <form action="/admin/aluno" method="post" role="form" class="form-horizontal " >
                 <input type="hidden" name="_method" value="PUT" />
                 <input type="hidden" name="id" id="id" value="{ID}" />
@@ -101,23 +104,14 @@
                 <div class="form-group row justify-content-center ">
                     <label for="turma" class="col-form-label col-md-2 col-form-label-sm ">Turma:</label>
                     <div class="col-md-3">
-                        <select name="turma" class="form-control form-control-sm selectpicker" title="Selecione uma turma">
+                        <select id="turma" name="turma" class="form-control form-control-sm" title="Selecione uma turma">
                             {TURMAS}
                         </select>
                     </div>
                 </div>
                 <button type="submit" id="btn" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>
             </form>
-            <hr>
-
-            <div class="alert alert-danger" role="alert" style="display: none;">
-            </div>
-
-            <strong>Footprint</strong> <p/>
-            {BOTAO_DELETAR}
-            <pre id="footprint" class="text-left">
-                {FOOTPRINT}
-            </pre>
+            <hr/>
         </div>
     </body>
 </html>

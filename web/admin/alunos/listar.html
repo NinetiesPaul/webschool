@@ -12,7 +12,7 @@
         <script src="../includes/js/disable_user.js"></script>
         <script>
             $(document).on('click', '.desativar', function(){
-                var id = this.id;
+                var id = $(this).closest("tr")[0].dataset['id'];
                 desativarUsuario(id, "aluno");
             });
             
