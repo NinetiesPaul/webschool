@@ -16,20 +16,29 @@ class TurmaStorage
 
     public function verTurmas()
     {
-        $turmas = $this->db->query("select * from turma order by serie");
+        $turmas = $this->db->query("
+            SELECT *
+            FROM turma
+            ORDER BY serie
+        ");
+
         return $turmas->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verTurma($turma)
     {
-        $turma = $this->db->query("select * from turma where id = $turma");
+        $turma = $this->db->query("
+            SELECT *
+            FROM turma
+            WHERE id = $turma
+        ");
+
         return $turma->fetch(PDO::FETCH_OBJ);
     }
 
     public function adicionarTurma($nome, $serie)
     {
-        $user = $this->db->prepare("INSERT INTO turma (nome, serie)
-                VALUES (:nome, :serie)");
+        $user = $this->db->prepare("INSERT INTO turma (nome, serie) VALUES (:nome, :serie)");
 
         $user->execute([
             'nome' => $nome,
@@ -39,11 +48,7 @@ class TurmaStorage
 
     public function alterarTurma($nome, $serie, $turma)
     {
-        $user = $this->db->prepare("
-            UPDATE turma
-            SET serie=:serie, nome=:nome
-            where id=:turma
-            ");
+        $user = $this->db->prepare("UPDATE turma SET serie=:serie, nome=:nome WHERE id=:turma");
 
         $user->execute([
             'nome' => $nome,
@@ -67,7 +72,12 @@ class TurmaStorage
     
     public function verAlunosDaTurma($turma)
     {
-        $alunosQuery = $this->db->query("SELECT * FROM aluno where turma = $turma");
+        $alunosQuery = $this->db->query("
+            SELECT *
+            FROM aluno
+            WHERE turma = $turma
+        ");
+
         return $alunosQuery->fetchAll(PDO::FETCH_OBJ);
     }
 

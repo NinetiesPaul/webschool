@@ -12,8 +12,6 @@ use App\Enum;
 
 class AlunoController
 {
-    protected $template;
-    protected $util;
     protected $alunoStorage;
     protected $turmaStorage;
     protected $notaStorage;
@@ -21,8 +19,7 @@ class AlunoController
 
     public function __construct()
     {
-        $this->util = new Util();
-        $this->util->userPermission(Enum::TIPO_ALUNO);
+        Util::userPermission(Enum::TIPO_ALUNO);
 
         $this->alunoStorage = new AlunoStorage();
         $this->turmaStorage = new TurmaStorage();

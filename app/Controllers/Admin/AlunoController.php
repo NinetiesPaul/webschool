@@ -4,6 +4,15 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\DB\Storage\AlunoStorage;
+use App\DB\Storage\ArquivoStorage;
+use App\DB\Storage\AvatarStorage;
+use App\DB\Storage\DiarioDeClasseStorage;
+use App\DB\Storage\EnderecoStorage;
+use App\DB\Storage\NotaStorage;
+use App\DB\Storage\ResponsavelStorage;
+use App\DB\Storage\TurmaStorage;
+use App\DB\Storage\UsuarioStorage;
 use App\Enum;
 use App\ResponseHandler;
 use App\Templates;
@@ -12,7 +21,8 @@ class AlunoController extends AdminController
 {
     public function criarAluno()
     {
-        $turmaQuery = $this->turmaStorage->verTurmas();
+        $turmaStorage = new TurmaStorage();
+        $turmaQuery = $turmaStorage->verTurmas();
 
         $turmas = '';
         foreach ($turmaQuery as $turma) {
@@ -26,14 +36,16 @@ class AlunoController extends AdminController
 
     public function verAlunos()
     {
-        $turmaQuery = $this->turmaStorage->verTurmas();
+        $turmaStorage = new TurmaStorage();
+        $turmaQuery = $turmaStorage->verTurmas();
 
         $turmas = '';
         foreach ($turmaQuery as $turma) {
             $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
         }
 
-        $alunoQuery = $this->alunoStorage->verAlunos();
+        $alunoStorage = new AlunoStorage();
+        $alunoQuery = $alunoStorage->verAlunos();
 
         $alunos = '';
         foreach ($alunoQuery as $aluno) {
@@ -65,8 +77,11 @@ class AlunoController extends AdminController
 
     public function verAluno($idAluno)
     {
-        $aluno = $this->alunoStorage->verAluno($idAluno);
-        $turmaQuery = $this->turmaStorage->verTurmas();
+        $alunoStorage = new AlunoStorage();
+        $aluno = $alunoStorage->verAluno($idAluno);
+
+        $turmaStorage = new TurmaStorage();
+        $turmaQuery = $turmaStorage->verTurmas();
 
         $turmas = '';
         foreach ($turmaQuery as $turma) {
@@ -97,7 +112,8 @@ class AlunoController extends AdminController
         $password = md5($password . $salt);
         $turma = $data['turma'];
 
-        $this->alunoStorage->adicionarAluno($email, $nome, $password, $salt, $turma);
+        $alunoStorage = new AlunoStorage();
+        $alunoStorage->adicionarAluno($email, $nome, $password, $salt, $turma);
         header('Location: /admin/alunos');
     }
 
@@ -113,21 +129,36 @@ class AlunoController extends AdminController
         $salt = $data['salt'];
         $turma = $data['turma'];
 
-        $this->usuarioStorage->alterarUsuario($userId, $nome, $email, $password, $salt, Enum::TIPO_ALUNO);
-        $this->alunoStorage->alterarAluno($userId, $idAluno, $turma);
+        $usuarioStorage = new UsuarioStorage();
+        $usuarioStorage->alterarUsuario($userId, $nome, $email, $password, $salt, Enum::TIPO_ALUNO);
+
+        $alunoStorage = new AlunoStorage();
+        $alunoStorage->alterarAluno($userId, $idAluno, $turma);
         header('Location: /admin/alunos');
     }
 
     public function removerAluno($idAluno)
     {
-        $aluno = $this->alunoStorage->verAluno($idAluno);
+        $alunoStorage = new AlunoStorage();
+        $aluno = $alunoStorage->verAluno($idAluno);
 
-        $endereco = $this->enderecoStorage->verEndereco($aluno->endereco);
-        $avatar = $this->avatarStorage->verAvatar($aluno->id);
-        $diario_de_classe = $this->diarioStorage->verDiarioDeClassePorAluno($aluno->aluno);
-        $nota_por_aluno = $this->notaStorage->verNotasPorAluno($aluno->aluno);
-        $arquivos_do_diario = $this->arquivoStorage->verArquivoPorAluno($aluno->aluno);
-        $filho_de = $this->responsavelStorage->verResponsaveisPeloAluno($aluno->aluno);
+        $enderecoStorage = new EnderecoStorage();
+        $endereco = $enderecoStorage->verEndereco($aluno->endereco);
+
+        $avatarStorage = new AvatarStorage();
+        $avatar = $avatarStorage->verAvatar($aluno->id);
+
+        $diarioStorage = new DiarioDeClasseStorage();
+        $diario_de_classe = $diarioStorage->verDiarioDeClassePorAluno($aluno->aluno);
+
+        $notaStorage = new NotaStorage();
+        $nota_por_aluno = $notaStorage->verNotasPorAluno($aluno->aluno);
+
+        $arquivoStorage = new ArquivoStorage();
+        $arquivos_do_diario = $arquivoStorage->verArquivoPorAluno($aluno->aluno);
+
+        $responsavelStorage = new ResponsavelStorage();
+        $filho_de = $responsavelStorage->verResponsaveisPeloAluno($aluno->aluno);
 
         $footprint= [
             'usuario' => $aluno,
@@ -140,7 +171,8 @@ class AlunoController extends AdminController
         ];
 
         try {
-            $this->alunoStorage->removerAluno($aluno->aluno, $aluno->id, $aluno->endereco, $footprint);
+            $alunoStorage = new AlunoStorage();
+            $alunoStorage->removerAluno($aluno->aluno, $aluno->id, $aluno->endereco, $footprint);
         } catch (\Exception $ex) {
             ResponseHandler::throwError($ex);
         }
@@ -153,7 +185,8 @@ class AlunoController extends AdminController
         $data = input()->all();
 
         try {
-            $this->alunoStorage->desativarAluno($data['id']);
+            $alunoStorage = new AlunoStorage();
+            $alunoStorage->desativarAluno($data['id']);
         } catch (\Exception $ex) {
             ResponseHandler::throwError($ex);
         }

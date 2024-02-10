@@ -18,40 +18,48 @@ class AlunoStorage
     public function verAlunos()
     {
         $alunoQuery = $this->db->query("
-        SELECT u.*,a.id AS aluno, CONCAT(t.serie, 'º Série ', t.nome) AS nome_turma
-        FROM usuario u
-        JOIN aluno a ON a.usuario = u.id
-        JOIN turma t ON t.id = a.turma
-        ORDER BY nome ASC
+            SELECT u.*,a.id AS aluno, CONCAT(t.serie, 'º Série ', t.nome) AS nome_turma
+            FROM usuario u
+            JOIN aluno a ON a.usuario = u.id
+            JOIN turma t ON t.id = a.turma
+            ORDER BY nome ASC
         ");
+
         return $alunoQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verAluno($aluno)
     {
-        $alunoQuery = $this->db->query("select usuario.*,aluno.id as aluno, aluno.turma from usuario, aluno where usuario.id=aluno.usuario and aluno.usuario = $aluno");
+        $alunoQuery = $this->db->query("
+            SELECT usuario.*,aluno.id as aluno, aluno.turma
+            FROM usuario, aluno
+            WHERE usuario.id=aluno.usuario AND aluno.usuario = $aluno
+        ");
+        
         return $alunoQuery->fetch(PDO::FETCH_OBJ);
     }
 
     public function adicionarAluno($email, $nome, $password, $salt, $turma)
     {
-        if ($this->db->usuario()->loginTaken($email, Enum::TIPO_ALUNO)) {
+        $usuarioStorage = new UsuarioStorage();
+        if ($usuarioStorage->loginTaken($email, Enum::TIPO_ALUNO)) {
             return false;
         }
         
-        $idEndereco = $this->db->endereco()->inserirEndereco();
+        $enderecoStorage = new EnderecoStorage();
+        $idEndereco = $enderecoStorage->inserirEndereco();
         
-        $usuario = [
+        $usuarioStorage = new UsuarioStorage();
+        $userId = $usuarioStorage->inserirUsuario([
             'name' => $nome,
             'email' => $email,
             'password' => $password,
             'endereco' => $idEndereco,
             'salt' => $salt,
-        ];
+        ]);
 
-        $userId = $this->db->usuario()->inserirUsuario($usuario);
-
-        $this->db->avatar()->inserirUsuarioNaAvatar($userId);
+        $avatarStorage = new AvatarStorage();
+        $avatarStorage->inserirUsuarioNaAvatar($userId);
 
         $aluno = $this->db->prepare("INSERT INTO aluno (usuario, turma) VALUES (:idUusuario, :idTurma)");
         $aluno->execute([
@@ -61,24 +69,23 @@ class AlunoStorage
 
         $lastid = (int) $this->db->lastInsertId();
         
-        $disciplinas = $this->db->materia()->verMateriaPorProfessorPorTurma($turma);
+        $materiaStorage = new MateriaStorage();
+        $disciplinas = $materiaStorage->verMateriaPorProfessorPorTurma($turma);
 
-        foreach ($disciplinas as $disciplina) {
-            $nota = [
+        foreach ($disciplinas as $disciplina) {           
+            $notaStorage = new NotaStorage();
+            $notaStorage->inserirNota([
                 'idAluno' => $lastid,
                 'idDisciplina' => $disciplina->disciplina,
                 'idTurma' => $turma,
-            ];
-            
-            $this->db->nota()->inserirNota($nota);
-            
-            $diario = [
+            ]);
+                        
+            $diarioStorage = new DiarioDeClasseStorage();
+            $diarioStorage->inserirDiarioDeClasse([
                 'idAluno' => $lastid,
                 'idDisciplina' => $disciplina->disciplina,
                 'idTurma' => $turma,
-            ];
-            
-            $this->db->diario()->inserirDiarioDeClasse($diario);
+            ]);
         }
     }
 
@@ -90,33 +97,40 @@ class AlunoStorage
             'idUusuario' => $userId,
         ]);
         
-        $disciplinas = $this->db->materia()->verMateriaPorProfessorPorTurma($turma);
+        $materiaStorage = new MateriaStorage();
+        $disciplinas = $materiaStorage->verMateriaPorProfessorPorTurma($turma);
 
         foreach ($disciplinas as $disciplina) {
-            $checkDisciplinaQuery = $this->db->query("SELECT id FROM nota_por_aluno WHERE turma = $turma and aluno = $idAluno and disciplina = $disciplina->disciplina");
+            $checkDisciplinaQuery = $this->db->query("
+                SELECT id
+                FROM nota_por_aluno
+                WHERE turma = $turma AND aluno = $idAluno AND disciplina = $disciplina->disciplina
+            ");
             $checkDisciplina = $checkDisciplinaQuery->fetchAll(PDO::FETCH_OBJ);
             
             if (empty($checkDisciplina)) {
-                $nota = [
+                $notaStorage = new NotaStorage();
+                $notaStorage->inserirNota([
                     'idAluno' => $idAluno,
                     'idDisciplina' => $disciplina->disciplina,
                     'idTurma' => $turma,
-                ];
-                
-                $this->db->nota()->inserirNota($nota);
+                ]);
             }
             
-            $checkDiarioQuery = $this->db->query("SELECT id FROM diario_de_classe WHERE turma = $turma and aluno = $idAluno and disciplina = $disciplina->disciplina");
+            $checkDiarioQuery = $this->db->query("
+                SELECT id
+                FROM diario_de_classe
+                WHERE turma = $turma AND aluno = $idAluno AND disciplina = $disciplina->disciplina
+            ");
             $checkDiario = $checkDiarioQuery->fetchAll(PDO::FETCH_OBJ);
 
             if (empty($checkDiario)) {
-                $diario = [
+                $diarioStorage = new DiarioDeClasseStorage();
+                $diarioStorage->inserirDiarioDeClasse([
                     'idAluno' => $idAluno,
                     'idDisciplina' => $disciplina->disciplina,
                     'idTurma' => $turma,
-                ];
-
-                $this->db->diario()->inserirDiarioDeClasse($diario);
+                ]);
             }
         }
     }
@@ -186,7 +200,11 @@ class AlunoStorage
 
     public function desativarAluno($aluno)
     {
-        $alunoQuery = $this->db->query("select usuario.is_deleted from usuario, aluno where usuario.id=aluno.usuario and aluno.usuario = $aluno");
+        $alunoQuery = $this->db->query("
+            SELECT usuario.is_deleted
+            FROM usuario, aluno
+            WHERE usuario.id=aluno.usuario AND aluno.usuario = $aluno
+        ");
 
         if ($alunoQuery->rowCount() === 0) {
             $this->throwError("<b>Erro</b>: id inválido");
@@ -218,12 +236,17 @@ class AlunoStorage
             JOIN turma t ON t.id = a.turma
             WHERE responsavel = $responsavel
         ");
+
         return $usersQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function pegarNomeDoAlunoPorAlunoId($id)
     {
-        $userQuery = $this->db->query("select usuario.* from usuario,aluno where usuario.id=aluno.usuario and aluno.id=$id");
+        $userQuery = $this->db->query("
+            SELECT usuario.*
+            FROM usuario, aluno
+            WHERE usuario.id=aluno.usuario AND aluno.id=$id
+        ");
         $user = $userQuery->fetchObject();
 
         return $user->nome;
@@ -231,7 +254,11 @@ class AlunoStorage
 
     public function pegarIdDaTurmaDoAlunoPorAlunoId($id)
     {
-        $turmaQuery = $this->db->query("select turma from aluno where id=$id");
+        $turmaQuery = $this->db->query("
+            SELECT turma
+            FROM aluno
+            WHERE id=$id
+        ");
         $turma = $turmaQuery->fetchObject();
 
         return $turma->turma;

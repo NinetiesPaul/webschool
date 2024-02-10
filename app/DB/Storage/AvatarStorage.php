@@ -24,7 +24,12 @@ class AvatarStorage
 
     public function atualizarAvatar($urlFinal, $urlThumbFinal, $userId)
     {
-        $avatarQuery = $this->db->query("select * from fotos_de_avatar where usuario=$userId");
+        $avatarQuery = $this->db->query("
+            SELECT *
+            FROM fotos_de_avatar
+            WHERE usuario=$userId
+        ");
+
         $avatar = $avatarQuery->fetchObject();
 
         if ($avatar) {
@@ -51,7 +56,12 @@ class AvatarStorage
 
     public function verAvatar($id)
     {
-        $avatarQuery = $this->db->query("select * from fotos_de_avatar where usuario = $id");
+        $avatarQuery = $this->db->query("
+            SELECT *
+            FROM fotos_de_avatar
+            WHERE usuario = $id
+        ");
+
         return $avatarQuery->fetch(PDO::FETCH_OBJ);
     }
 }

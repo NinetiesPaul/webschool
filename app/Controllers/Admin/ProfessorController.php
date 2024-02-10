@@ -4,6 +4,14 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\DB\Storage\ArquivoStorage;
+use App\DB\Storage\AvatarStorage;
+use App\DB\Storage\DiarioDeClasseStorage;
+use App\DB\Storage\EnderecoStorage;
+use App\DB\Storage\MateriaStorage;
+use App\DB\Storage\ProfessorStorage;
+use App\DB\Storage\TurmaStorage;
+use App\DB\Storage\UsuarioStorage;
 use App\Enum;
 use App\ResponseHandler;
 use App\Templates;
@@ -17,7 +25,8 @@ class ProfessorController extends AdminController
 
     public function verProfessores()
     {
-        $professorQuery = $this->professorStorage->verProfessores();
+        $professorStorage = new ProfessorStorage();
+        $professorQuery = $professorStorage->verProfessores();
 
         $professores = '';
 
@@ -48,9 +57,11 @@ class ProfessorController extends AdminController
 
     public function verProfessor($idProfessor)
     {
-        $professor = $this->professorStorage->verProfessor($idProfessor);
+        $professorStorage = new ProfessorStorage();
+        $professor = $professorStorage->verProfessor($idProfessor);
 
-        $disciplinaPorProfessorQuery = $this->materiaStorage->verMateriasDoProfessorAdmin($professor->professor);
+        $materiaStorage = new MateriaStorage();
+        $disciplinaPorProfessorQuery = $materiaStorage->verMateriasDoProfessorAdmin($professor->professor);
 
         $disciplinasProProfessor = '';
         foreach ($disciplinaPorProfessorQuery as $disciplinaProProfessor) {
@@ -66,14 +77,16 @@ class ProfessorController extends AdminController
             ";
         }
 
-        $turmaQuery = $this->turmaStorage->verTurmas();
+        $turmaStorage = new TurmaStorage();
+        $turmaQuery = $turmaStorage->verTurmas();
 
         $turmas = '';
         foreach ($turmaQuery as $turma) {
             $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
         }
 
-        $disciplinaQuery = $this->materiaStorage->verMaterias();
+        $materiaStorage = new MateriaStorage();
+        $disciplinaQuery = $materiaStorage->verMaterias();
 
         $disciplinas = '';
         foreach ($disciplinaQuery as $disciplina) {
@@ -104,7 +117,8 @@ class ProfessorController extends AdminController
         $password = $data['password'];
         $password = md5($password . $salt);
 
-        $this->professorStorage->adicionarProfessor($email, $nome, $password, $salt);
+        $professorStorage = new ProfessorStorage();
+        $professorStorage->adicionarProfessor($email, $nome, $password, $salt);
         header('Location: /admin/professores');
     }
 
@@ -118,7 +132,8 @@ class ProfessorController extends AdminController
         $password = $data['password'];
         $salt = $data['salt'];
 
-        $this->usuarioStorage->alterarUsuario($userId, $nome, $email, $password, $salt, Enum::TIPO_PROFESSOR);
+        $usuarioStorage = new UsuarioStorage();
+        $usuarioStorage->alterarUsuario($userId, $nome, $email, $password, $salt, Enum::TIPO_PROFESSOR);
         header('Location: /admin/professores');
     }
 
@@ -130,10 +145,11 @@ class ProfessorController extends AdminController
         $turma = $data['turma'];
         $professor = $data['professor'];
 
-        $disponivel = $this->professorStorage->verificarMateriaPorProfessor($disciplina, $turma, $professor);
+        $professorStorage = new ProfessorStorage();
+        $disponivel = $professorStorage->verificarMateriaPorProfessor($disciplina, $turma, $professor);
 
         if (count($disponivel) === 0) {
-            $this->professorStorage->adicionarMateriaPorProfessor($disciplina, $turma, $professor);
+            $professorStorage->adicionarMateriaPorProfessor($disciplina, $turma, $professor);
         }
 
         header("Location: /admin/professor/$data[id]");
@@ -141,13 +157,23 @@ class ProfessorController extends AdminController
 
     public function removerProfessor($idProfessor)
     {
-        $professor = $this->professorStorage->verProfessor($idProfessor);
+        $professorStorage = new ProfessorStorage();
+        $professor = $professorStorage->verProfessor($idProfessor);
 
-        $endereco = $this->enderecoStorage->verEndereco($professor->endereco);
-        $avatar = $this->avatarStorage->verAvatar($professor->id);
-        $diario_de_classe = $this->diarioStorage->verDiarioDeClassePorProfessor($professor->professor);
-        $disciplina = $this->professorStorage->verProfessorPorMateria($professor->professor);
-        $arquivos_do_diario = $this->arquivoStorage->verArquivoPorProfessor($professor->professor);
+        $enderecoStorage = new EnderecoStorage();
+        $endereco = $enderecoStorage->verEndereco($professor->endereco);
+
+        $avatarStorage = new AvatarStorage();
+        $avatar = $avatarStorage->verAvatar($professor->id);
+
+        $diarioStorage = new DiarioDeClasseStorage();
+        $diario_de_classe = $diarioStorage->verDiarioDeClassePorProfessor($professor->professor);
+
+        $enderecoStorage = new EnderecoStorage();
+        $disciplina = $professorStorage->verProfessorPorMateria($professor->professor);
+
+        $arquivoStorage = new ArquivoStorage();
+        $arquivos_do_diario = $arquivoStorage->verArquivoPorProfessor($professor->professor);
 
         $footprint= [
             'usuario' => $professor,
@@ -159,7 +185,8 @@ class ProfessorController extends AdminController
         ];
 
         try {
-            $this->professorStorage->removerProfessor($professor->professor, $professor->id, $professor->endereco, $footprint);
+            $professorStorage = new ProfessorStorage();
+            $professorStorage->removerProfessor($professor->professor, $professor->id, $professor->endereco, $footprint);
         } catch (\Exception $ex) {
             ResponseHandler::throwError($ex);
         }
@@ -172,7 +199,8 @@ class ProfessorController extends AdminController
         $data = input()->all();
 
         try {
-            $this->professorStorage->desativarProfessor($data['id']);
+            $professorStorage = new ProfessorStorage();
+            $professorStorage->desativarProfessor($data['id']);
         } catch (\Exception $ex) {
             ResponseHandler::throwError($ex);
         }
@@ -183,7 +211,8 @@ class ProfessorController extends AdminController
     public function removerProfessorPorMateria($id)
     {
         try {
-            $this->professorStorage->removerProfessorPorMateria($id);
+            $professorStorage = new ProfessorStorage();
+            $professorStorage->removerProfessorPorMateria($id);
         } catch (\Exception $ex) {
             ResponseHandler::throwError($ex);
         }

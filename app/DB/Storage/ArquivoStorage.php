@@ -33,28 +33,30 @@ class ArquivoStorage
     public function verArquivosDoDiario($comentario)
     {
         $arquivoQuery = $this->db->query("
-            select *
-            from arquivos
-            where contexto = 'ddc'
-            and diario = $comentario
+            SELECT *
+            FROM arquivos
+            WHERE contexto = 'ddc'
+            AND diario = $comentario
         ");
+
         return $arquivoQuery->fetch(PDO::FETCH_OBJ);
     }
 
     public function verArquivoDoDiario($comentario)
     {
         $arquivoQuery = $this->db->query("
-            select *
-            from arquivos
-            where contexto = 'ddc'
-            and diario = $comentario
+            SELECT *
+            FROM arquivos
+            WHERE contexto = 'ddc'
+            AND diario = $comentario
         ");
+
         return $arquivoQuery->fetch(PDO::FETCH_OBJ);
     }
     
     public function removerArquivoDoComentario($arquivo)
     {
-        $statement = $this->db->prepare("DELETE FROM arquivos where id=:id");
+        $statement = $this->db->prepare("DELETE FROM arquivos WHERE id=:id");
         $statement->execute([
             'id' => $arquivo,
         ]);
@@ -63,30 +65,33 @@ class ArquivoStorage
     public function verArquivoPorId($idArquivo)
     {
         $arquivoQuery = $this->db->query("
-        select *
-        from arquivos
-        where id = $idArquivo
+            SELECT *
+            FROM arquivos
+            WHERE id = $idArquivo
         ");
+
         return $arquivoQuery->fetch(PDO::FETCH_OBJ);
     }
     
     public function verArquivoPorAluno($aluno)
     {
         $arquivosQuery = $this->db->query("
-        select *
-        from arquivos
-        where diario in (SELECT id FROM diario_de_classe WHERE aluno = $aluno AND contexto = 'observacao')
+            SELECT *
+            FROM arquivos
+            WHERE diario in (SELECT id FROM diario_de_classe WHERE aluno = $aluno AND contexto = 'observacao')
         ");
+
         return $arquivosQuery->fetchAll(PDO::FETCH_OBJ);
     }
     
     public function verArquivoPorProfessor($professor)
     {
         $arquivosQuery = $this->db->query("
-        select *
-        from arquivos
-        where diario in (SELECT id FROM diario_de_classe WHERE professor = $professor AND contexto = 'observacao')
+            SELECT *
+            FROM arquivos
+            WHERE diario in (SELECT id FROM diario_de_classe WHERE professor = $professor AND contexto = 'observacao')
         ");
+
         return $arquivosQuery->fetchAll(PDO::FETCH_OBJ);
     }
 }

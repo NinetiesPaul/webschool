@@ -4,6 +4,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\AdminController;
+use App\DB\Storage\TurmaStorage;
 use App\ResponseHandler;
 use App\Templates;
 
@@ -16,7 +17,8 @@ class TurmasController extends AdminController
 
     public function verTurmas()
     {
-        $turmasQuery = $this->turmaStorage->verTurmas();
+        $turmaStorage = new TurmaStorage();
+        $turmasQuery = $turmaStorage->verTurmas();
 
         $turmas = '';
 
@@ -42,7 +44,8 @@ class TurmasController extends AdminController
 
     public function verTurma($turma)
     {
-        $turma = $this->turmaStorage->verTurma($turma);
+        $turmaStorage = new TurmaStorage();
+        $turma = $turmaStorage->verTurma($turma);
 
         $args = [
             'ID' => $turma->id,
@@ -60,7 +63,8 @@ class TurmasController extends AdminController
         $nome = $data['nome'];
         $serie = $data['serie'];
 
-        $this->turmaStorage->adicionarTurma($nome, $serie);
+        $turmaStorage = new TurmaStorage();
+        $turmaStorage->adicionarTurma($nome, $serie);
         header('Location: /admin/turmas');
     }
 
@@ -72,15 +76,16 @@ class TurmasController extends AdminController
         $serie = $data['serie'];
         $turma = $data['id'];
 
-
-        $this->turmaStorage->alterarTurma($nome, $serie, $turma);
+        $turmaStorage = new TurmaStorage();
+        $turmaStorage->alterarTurma($nome, $serie, $turma);
         header('Location: /admin/turmas');
     }
 
     public function removerTurma($turma)
     {
         try {
-            $this->turmaStorage->removerTurma($turma);
+            $turmaStorage = new TurmaStorage();
+            $turmaStorage->removerTurma($turma);
         } catch (\Exception $ex) {
             ResponseHandler::throwError($ex, "turma");
         }

@@ -20,8 +20,6 @@ use TCPDF;
 class GeneralController
 {
     protected $connection;
-    protected $util;
-    protected $template;
     protected $enderecoStorage;
     protected $materiaStorage;
     protected $turmaStorage;
@@ -33,7 +31,6 @@ class GeneralController
     public function __construct()
     {
         $this->connection = new DB;
-        $this->util = new Util();
         session_start();
 
         $this->enderecoStorage = new EnderecoStorage();

@@ -16,13 +16,22 @@ class MateriaStorage
 
     public function verMaterias()
     {
-        $disciplinaQuery = $this->db->query("select * from disciplina");
+        $disciplinaQuery = $this->db->query("
+            SELECT *
+            FROM disciplina
+        ");
+
         return $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verMateria($materia)
     {
-        $disciplinaQuery = $this->db->query("select * from disciplina where id = $materia");
+        $disciplinaQuery = $this->db->query("
+            SELECT *
+            FROM disciplina
+            WHERE id = $materia
+        ");
+
         return $disciplinaQuery->fetch(PDO::FETCH_OBJ);
     }
 
@@ -38,11 +47,7 @@ class MateriaStorage
 
     public function alterarMateria($nome, $id)
     {
-        $user = $this->db->prepare("
-            UPDATE disciplina
-            SET nome=:nome
-            where id=:disciplina
-            ");
+        $user = $this->db->prepare("UPDATE disciplina SET nome=:nome WHERE id=:disciplina");
 
         $user->execute([
             'nome' => $nome,
@@ -65,20 +70,30 @@ class MateriaStorage
     
     public function verMateriasPorProfessor()
     {
-        $disciplinasQuery = $this->db->query("select * from disciplina_por_professor order by turma");
+        $disciplinasQuery = $this->db->query("
+            SELECT *
+            FROM disciplina_por_professor
+            ORDER BY turma
+        ");
+
         return $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
     }
     
     public function verMateriaPorProfessorPorTurma($turma)
     {
-        $disciplinasQuery = $this->db->query("SELECT * FROM disciplina_por_professor where turma = $turma");
+        $disciplinasQuery = $this->db->query("
+            SELECT *
+            FROM disciplina_por_professor
+            WHERE turma = $turma
+        ");
+
         return $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
     }
 
     public function verMateriasDoProfessor($professor)
     {
         $disciplinaQuery = $this->db->query("
-            SELECT disciplina_por_professor.*, disciplina.nome as nomeDisciplina, turma.serie, turma.nome FROM disciplina_por_professor
+            SELECT disciplina_por_professor.*, disciplina.nome AS nomeDisciplina, turma.serie, turma.nome FROM disciplina_por_professor
             INNER JOIN disciplina ON disciplina.id = disciplina_por_professor.disciplina
             INNER JOIN turma ON turma.id = disciplina_por_professor.turma
             WHERE professor=$professor
@@ -89,11 +104,11 @@ class MateriaStorage
     public function verMateriasDoProfessorAdmin($professor)
     {
         $disciplinaQuery = $this->db->query("
-            select dpp.id, CONCAT(t.serie, 'º Série ', t.nome) as turma, d.nome from disciplina_por_professor dpp
-            join disciplina d on d.id = dpp.disciplina 
-            join turma t on t.id = dpp.turma 
-            where dpp.professor = $professor
-            order by turma;
+            SELECT dpp.id, CONCAT(t.serie, 'º Série ', t.nome) AS turma, d.nome FROM disciplina_por_professor dpp
+            JOIN disciplina d on d.id = dpp.disciplina 
+            JOIN turma t on t.id = dpp.turma 
+            WHERE dpp.professor = $professor
+            ORDER BY turma;
         ");
         return $disciplinaQuery->fetchAll(PDO::FETCH_OBJ);
     }
@@ -101,7 +116,7 @@ class MateriaStorage
     public function verMateriaDoProfessor($id)
     {
         $disciplinaQuery = $this->db->query("
-            SELECT disciplina_por_professor.*, disciplina.nome as nomeDisciplina, turma.serie, turma.nome FROM disciplina_por_professor
+            SELECT disciplina_por_professor.*, disciplina.nome AS nomeDisciplina, turma.serie, turma.nome FROM disciplina_por_professor
             INNER JOIN disciplina ON disciplina.id = disciplina_por_professor.disciplina
             INNER JOIN turma ON turma.id = disciplina_por_professor.turma
             WHERE disciplina_por_professor.id=$id
