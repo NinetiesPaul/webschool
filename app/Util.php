@@ -10,7 +10,7 @@ class Util
     {
     }
 
-    public function userPermission($tipo)
+    public static function userPermission($tipo)
     {
         session_start();
         $session_type = (isset($_SESSION['tipo'])) ? $_SESSION['tipo'] : false;

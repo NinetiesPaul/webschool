@@ -16,8 +16,6 @@ use DateTime;
 
 class ProfessorController
 {
-    protected $template;
-    protected $util;
     protected $materiaStorage;
     protected $professorStorage;
     protected $diarioDeClasseStorage;
@@ -26,8 +24,7 @@ class ProfessorController
 
     public function __construct()
     {
-        $this->util = new Util();
-        $this->util->userPermission(Enum::TIPO_PROFESSOR);
+        Util::userPermission(Enum::TIPO_PROFESSOR);
         new LogStorage();
 
         $this->materiaStorage = new MateriaStorage();

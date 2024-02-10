@@ -13,8 +13,6 @@ use App\DB\Storage\NotaStorage;
 
 class ResponsavelController
 {
-    protected $template;
-    protected $util;
     protected $responsavelStorage;
     protected $notaStorage;
     protected $alunoStorage;
@@ -23,8 +21,7 @@ class ResponsavelController
 
     public function __construct()
     {
-        $this->util = new Util();
-        $this->util->userPermission(Enum::TIPO_RESPONSAVEL);
+        Util::userPermission(Enum::TIPO_RESPONSAVEL);
 
         $this->responsavelStorage = new ResponsavelStorage();
         $this->notaStorage = new NotaStorage();
