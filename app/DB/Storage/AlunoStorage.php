@@ -254,7 +254,11 @@ class AlunoStorage
 
     public function pegarIdDaTurmaDoAlunoPorAlunoId($id)
     {
-        $turmaQuery = $this->db->query("SELECT turma FROM aluno WHERE id=$id");
+        $turmaQuery = $this->db->query("
+            SELECT turma
+            FROM aluno
+            WHERE id=$id
+        ");
         $turma = $turmaQuery->fetchObject();
 
         return $turma->turma;
