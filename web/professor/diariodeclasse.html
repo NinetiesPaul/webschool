@@ -38,7 +38,7 @@
                 $.ajax({
                     type: "POST",
                     url: "../../professor/visualizarComentarios",
-                    data: { dados : dados},
+                    data: { dados : this.id},
                     success: function(data){
                         data = jQuery.parseJSON(data)
                         if (data.error === true) {
@@ -164,7 +164,7 @@
 
                 $("#form-comentario").on('submit', (function(e){
                     e.preventDefault();
-                    
+
                     $.ajax({
                         type: 'POST',
                         url: '../comentario',
