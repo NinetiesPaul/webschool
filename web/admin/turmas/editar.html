@@ -37,26 +37,15 @@
                 <input type="hidden" name="_method" value="PUT" />
                 <input type="hidden" name="id" value="{ID}" />
                 <div class="form-group row justify-content-center ">
-                    <label for="serie" class="col-form-label col-md-2 col-form-label-sm">Série:</label>
+                    <label for="nome" class="col-form-label col-md-2 col-form-label-sm ">Nome:</label>
                     <div class="col-md-3">
-                        <select name="serie" class="form-control form-control-sm" aria-describedby="avisoSerie">
-                            <option value='1'>1º Série</option>
-                            <option value='2'>2º Série</option>
-                            <option value='3'>3º Série</option>
-                            <option value='4'>4º Série</option>
-                            <option value='5'>5º Série</option>
-                            <option value='6'>6º Série</option>
-                            <option value='7'>7º Série</option>
-                            <option value='8'>8º Série</option>
-                            <option value='9'>9º Série</option>
-                        </select> 
-                        <small id="avisoSerie" class="form-text text-muted">(Atualmente {TURMA} º Série)</small>
+                        <input type="text" name="nome" class="form-control form-control-sm" value="{NOME}" required>
                     </div>
                 </div>
                 <div class="form-group row justify-content-center ">
-                    <label for="nome" class="col-form-label col-md-2 col-form-label-sm">Letra da Turma:</label>
+                    <label for="ano" class="col-form-label col-md-2 col-form-label-sm">Ano:</label>
                     <div class="col-md-3">
-                        <input type="text" name="nome" class="form-control form-control-sm" value="{LETRA}">
+                        <input type="number" name="ano" class="form-control form-control-sm" value="{ANO}" required>
                     </div>
                 </div>
                 <button type="submit" class="btn btn-success btn-sm"><span class='glyphicon glyphicon-refresh'></span> Atualizar</button>

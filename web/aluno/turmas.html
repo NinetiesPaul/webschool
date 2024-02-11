@@ -9,55 +9,55 @@
         <script src="../includes/js/jquery.js"></script>
         <script src="../includes/js/height.js"></script>
         <script>
-        function pesquisarFaltas(aluno,turma,disciplina) {
-            $.ajax({
-                type: "POST",
-                url: "../pesquisarFaltas",
-                data: 'aluno='+aluno+'&turma='+turma+'&disciplina='+disciplina,
-                success: function(data){
-                    data = jQuery.parseJSON(data)
-                    if (data.error === true) {
-                        $('.alert').css('display', 'block');
-                        $('.alert').text(data.msg);
-                        $('.alert').delay(5000).fadeOut(1000, function(){
-                            $('.alert').css('display', 'none');
-                        });
-                    } else {
-                        $("#result").html(data.msg);
+            function pesquisarFaltas(aluno,turma,disciplina) {
+                $.ajax({
+                    type: "POST",
+                    url: "../pesquisarFaltas",
+                    data: 'aluno='+aluno+'&turma='+turma+'&disciplina='+disciplina,
+                    success: function(data){
+                        data = jQuery.parseJSON(data)
+                        if (data.error === true) {
+                            $('.alert').css('display', 'block');
+                            $('.alert').text(data.msg);
+                            $('.alert').delay(5000).fadeOut(1000, function(){
+                                $('.alert').css('display', 'none');
+                            });
+                        } else {
+                            $("#result").html(data.msg);
+                        }
                     }
-                }
-            });
-        }
+                });
+            }
 
-        $(document).ready(function(){
-            $(".faltas").click(function(){
-                dado = this.id;
-                dado = dado.split('.');
-                aluno = dado[0];
-                turma = dado[1];
-                disciplina = dado[2];
-                pesquisarFaltas(aluno,turma,disciplina);
-            });
+            $(document).ready(function(){
+                $(".faltas").click(function(){
+                    dado = this.id;
+                    dado = dado.split('.');
+                    aluno = dado[0];
+                    turma = dado[1];
+                    disciplina = dado[2];
+                    pesquisarFaltas(aluno,turma,disciplina);
+                });
 
-            $(".boletim").click(function(){
-                $("#gerarDocumento").attr('action', '../gerarBoletim');
-                dado = this.id;
-                dado = dado.split('.');
-                aluno = dado[0];
-                turma = dado[1];
-                $("#aluno-pdf").val(aluno);
-                $("#turma-pdf").val(turma);
-                $("#gerarDocumento").submit();
-            });
+                $(".boletim").click(function(){
+                    $("#gerarDocumento").attr('action', '../gerarBoletim');
+                    dado = this.id;
+                    dado = dado.split('.');
+                    aluno = dado[0];
+                    turma = dado[1];
+                    $("#aluno-pdf").val(aluno);
+                    $("#turma-pdf").val(turma);
+                    $("#gerarDocumento").submit();
+                });
 
-            $(".historico").click(function(){
-                aluno = this.id;
-                $("#aluno-pdf").val(aluno);
-                $("#turma-pdf").val('');
-                $("#gerarDocumento").attr('action', '../gerarHistorico');
-                $("#gerarDocumento").submit();
+                $(".historico").click(function(){
+                    aluno = this.id;
+                    $("#aluno-pdf").val(aluno);
+                    $("#turma-pdf").val('');
+                    $("#gerarDocumento").attr('action', '../gerarHistorico');
+                    $("#gerarDocumento").submit();
+                });
             });
-        });
         </script>
         <title>Aluno :: Minhas Turmas</title>
     </head>
@@ -98,7 +98,25 @@
                     <input type="hidden" name="document-type-pdf" id="document-type-pdf" value="" />
                 </form>
                 
-                {TURMAS}
+                <table style='margin-left: auto; margin-right: auto; font-size: 13px;' class='table'>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Nota 1</th>
+                            <th>Rec. 1</th>
+                            <th>Nota 2</th>
+                            <th>Rec. 2</th>
+                            <th>Nota 3</th>
+                            <th>Rec. 3</th>
+                            <th>Nota 4</th>
+                            <th>Rec. 4</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {TURMAS}
+                    </tbody>
+                </table>
             </div>
         </div>
 
