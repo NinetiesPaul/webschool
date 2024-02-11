@@ -302,7 +302,7 @@ class ProfessorController
                 $long = $data[0];
                 $file_name=$long.'-'.$file;
                 move_uploaded_file($_FILES['file_btn']['tmp_name'], $path . $file_name);
-                $urlFinal = 'webschool/uploads/files/'.$file_name;
+                $urlFinal = 'uploads/files/'.$file_name;
                 $urlThumbFinal = '';
             }
 
@@ -338,8 +338,8 @@ class ProfessorController
                 move_uploaded_file($_FILES['file_btn']['tmp_name'], $path . $file_name);
                 move_uploaded_file($_FILES['file_btn']['tmp_name'], $path . $file_name_thumb);
 
-                $urlFinal = 'webschool/uploads/images/'.$file_name;
-                $urlThumbFinal = 'webschool/uploads/images/thumbs/'.$file_name_thumb;
+                $urlFinal = 'uploads/images/'.$file_name;
+                $urlThumbFinal = 'uploads/images/thumbs/'.$file_name_thumb;
             }
         }
 
