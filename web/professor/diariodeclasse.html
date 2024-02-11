@@ -7,13 +7,16 @@
         {CSS}
         {JS}
         <script>
-            $(document).on('click', '.alterar-presenca', function(){
-                var id = this.id;
+            $(document).on('click', '.presenca', function(){
+                var date = $(this)[0].dataset['date'];
+                var aluno = $(this)[0].dataset['aluno'];
+                var turma = $("#turma").val();
+                var disciplina = $("#disc").val();
 
                 $.ajax({
                     type: "POST",
                     url: "../../professor/alterarFrequencia",
-                    data: { id : id },
+                    data: { data : date, aluno: aluno, turma: turma, disciplina: disciplina },
                     success: function(data){
                         data = jQuery.parseJSON(data)
                         if (data.error === true) {
@@ -23,22 +26,23 @@
                                 $('.alert').css('display', 'none');
                             });
                         } else {
-                            $("#" + id).html(data.msg);
+                            console.log(data.msg)
+                            $("a.presenca[data-date=" + date + "]").html(data.msg)
                         }
                     }
                 });
             });
 
             $(document).on('click', '.comentarios', function(){
-                dataVisualizada = this.id;
-                dataVisualizada = dataVisualizada.split('-');
-                dataVisualizada = dataVisualizada[1].split('_');
-                dataVisualizada = dataVisualizada[2] + '/' + dataVisualizada[1] + '/' + dataVisualizada[0];
+                var date = $(this)[0].dataset['date'];
+                var aluno = $(this)[0].dataset['aluno'];
+                var turma = $("#turma").val();
+                var disciplina = $("#disc").val();
 
                 $.ajax({
                     type: "POST",
                     url: "../../professor/visualizarComentarios",
-                    data: { dados : this.id},
+                    data: { data: date, turma: turma, aluno: aluno, disciplina: disciplina },
                     success: function(data){
                         data = jQuery.parseJSON(data)
                         if (data.error === true) {
@@ -49,12 +53,13 @@
                             });
                         } else {
                             $("#tabela-comentarios tbody").html(data.msg);
-                            $(".data").text(dataVisualizada);
+                            $(".data").text(date);
                         }
                     }
                 });
 
-                $("#dado").val(this.id);
+                $("#data").val(date);
+                $("#aluno").val(aluno);
             });
 
             $(document).on('click', '.deletar-comentario', function(){
@@ -274,7 +279,10 @@
                         <div class="alert alert-danger alert-modal" role="alert" style="display: none;">
                         </div>
                         <form action="" method="post" role="form" class="form-horizontal" id="form-comentario">
-                            <input type="hidden" name="dado" id="dado" value="" />
+                            <input type="hidden" name="data" id="data" value="" />
+                            <input type="hidden" name="aluno" id="aluno" value="" />
+                            <input type="hidden" name="turma" id="turma" value="{TURMA}" />
+                            <input type="hidden" name="disciplina" id="disciplina" value="{DISCIPLINA}" />
                             <div class="form-group row justify-content-center ">
                                 <textarea name="comentario" id="comentario" rows="5" cols="40"> </textarea>
                             </div>

@@ -177,20 +177,12 @@ class ProfessorController
                     ResponseHandler::throwError($ex);
                 }
 
-                $date = explode('-', $date->format('Y-m-d'));
-
-                $spanPresenca = "<span class='glyphicon glyphicon-remove'></span>";
-                $linkPresenca = "$date[0]".'_'."$date[1]".'_'."$date[2]".'_'."$aluno->aluno".'_'."$aluno->disciplina".'_'."$aluno->turma";
-
-                if ($diario && $diario->presenca == 1) {
-                    $spanPresenca = "<span class='glyphicon glyphicon-ok'></span>";
-                }
-
-                $linkComentario = "$date[0]".'_'."$date[1]".'_'."$date[2]".'_'."$aluno->aluno".'_'."$aluno->disciplina".'_'."$aluno->turma";
+                $spanPresenca = ($diario && $diario->presenca == 1) ? "<span class='glyphicon glyphicon-ok'></span>" : "<span class='glyphicon glyphicon-remove'></span>";
 
                 $output .= "
                     <td>
-                        <a href='#' id='presenca-$linkPresenca' class='alterar-presenca'>$spanPresenca</a> <a href='#' id='comentario-$linkComentario' class='comentarios' data-toggle='modal' data-target='#modalExemplo' ><span class='glyphicon glyphicon-comment'></span></a>
+                        <a href='#' data-date='" . $date->format('Y-m-d') . "' data-aluno='$aluno->aluno' class='presenca'>$spanPresenca</a>
+                        <a href='#' data-date='" . $date->format('Y-m-d') . "' data-aluno='$aluno->aluno' class='comentarios' data-toggle='modal' data-target='#modalExemplo' ><span class='glyphicon glyphicon-comment'></span></a>
                     </td>
                 ";
             }
@@ -203,21 +195,11 @@ class ProfessorController
     public function alterarFrequencia()
     {
         $data = json_decode(json_encode($_POST), true);
-        $data = explode('-', $data['id']);
-        $data = explode('_', $data[1]);
 
-        $ano = $data[0];
-        $mes = $data[1];
-        $dia = $data[2];
-
-        $aluno = $data[3];
-        $disciplina = $data[4];
-        $turma = $data[5];
-
-        $mes = (strlen($mes) == 1) ? "0".$mes : $mes;
-        $dia = (strlen($dia) == 1) ? "0".$dia : $dia;
-
-        $data = $ano.'-'.$mes.'-'.$dia;
+        $aluno = $data['aluno'];
+        $disciplina = $data['disciplina'];
+        $turma = $data['turma'];
+        $data = $data['data'];
 
         $diario = false;
         try {
@@ -245,7 +227,7 @@ class ProfessorController
                 $span = "<span class='glyphicon glyphicon-ok'></span>";
             } else {
                 $presenca = 0;
-                $span = "<span class='glyphicon glyphicon-trash'></span>";
+                $span = "<span class='glyphicon glyphicon-remove'></span>";
             }
 
             try {
@@ -265,22 +247,10 @@ class ProfessorController
         $data = json_decode(json_encode($_POST), true);
 
         $mensagem = $data['comentario'];
-
-        $dados = explode('-', $data['dado']);
-        $dados = explode('_', $dados[1]);
-
-        $ano = $dados[0];
-        $mes = $dados[1];
-        $dia = $dados[2];
-
-        $aluno = $dados[3];
-        $disciplina = $dados[4];
-        $turma = $dados[5];
-
-        $mes = (strlen($mes) == 1) ? "0".$mes : $mes;
-        $dia = (strlen($dia) == 1) ? "0".$dia : $dia;
-
-        $dataComentario = $ano.'-'.$mes.'-'.$dia;
+        $aluno = $data['aluno'];
+        $disciplina = $data['disciplina'];
+        $turma = $data['turma'];
+        $dataComentario = $data['data'];
 
         $arquivos = false;
         $file_name = '';
@@ -388,21 +358,11 @@ class ProfessorController
         $user = $_SESSION['user'];
 
         $data = json_decode(json_encode($_POST), true);
-        $data = explode('-', $data['dados']);
-        $data = explode('_', $data[1]);
 
-        $ano = $data[0];
-        $mes = $data[1];
-        $dia = $data[2];
-
-        $aluno = $data[3];
-        $disciplina = $data[4];
-        $turma = $data[5];
-
-        $mes = (strlen($mes) == 1) ? "0".$mes : $mes;
-        $dia = (strlen($dia) == 1) ? "0".$dia : $dia;
-
-        $data = $ano.'-'.$mes.'-'.$dia;
+        $aluno = $data['aluno'];
+        $disciplina = $data['disciplina'];
+        $turma = $data['turma'];
+        $data = $data['data'];
 
         try {
             $comentarios = $this->diarioDeClasseStorage->verComentariosDoAlunoDaTurma($aluno, $disciplina, $turma, $data, $user->professor);
