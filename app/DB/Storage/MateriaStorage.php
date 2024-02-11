@@ -93,7 +93,7 @@ class MateriaStorage
     public function verMateriasDoProfessor($professor)
     {
         $disciplinaQuery = $this->db->query("
-            SELECT disciplina_por_professor.*, disciplina.nome AS nomeDisciplina, turma.serie, turma.nome FROM disciplina_por_professor
+            SELECT disciplina_por_professor.*, disciplina.nome AS nomeDisciplina, turma.ano, turma.nome FROM disciplina_por_professor
             INNER JOIN disciplina ON disciplina.id = disciplina_por_professor.disciplina
             INNER JOIN turma ON turma.id = disciplina_por_professor.turma
             WHERE professor=$professor
@@ -104,7 +104,7 @@ class MateriaStorage
     public function verMateriasDoProfessorAdmin($professor)
     {
         $disciplinaQuery = $this->db->query("
-            SELECT dpp.id, CONCAT(t.serie, 'º Série ', t.nome) AS turma, d.nome FROM disciplina_por_professor dpp
+            SELECT dpp.id, CONCAT(t.nome, ' (', t.ano, ')') AS turma, d.nome FROM disciplina_por_professor dpp
             JOIN disciplina d on d.id = dpp.disciplina 
             JOIN turma t on t.id = dpp.turma 
             WHERE dpp.professor = $professor
@@ -116,7 +116,7 @@ class MateriaStorage
     public function verMateriaDoProfessor($id)
     {
         $disciplinaQuery = $this->db->query("
-            SELECT disciplina_por_professor.*, disciplina.nome AS nomeDisciplina, turma.serie, turma.nome FROM disciplina_por_professor
+            SELECT disciplina_por_professor.*, disciplina.nome AS nomeDisciplina, turma.ano, turma.nome FROM disciplina_por_professor
             INNER JOIN disciplina ON disciplina.id = disciplina_por_professor.disciplina
             INNER JOIN turma ON turma.id = disciplina_por_professor.turma
             WHERE disciplina_por_professor.id=$id
