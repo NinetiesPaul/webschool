@@ -7,28 +7,9 @@
         {CSS}
         {JS}
         <script>
-            function pesquisarFrequencia(mes, ano, turma, disc, context) {
-                $.ajax({
-                    type: "POST",
-                    url: "../../professor/pesquisarFrequencia",
-                    data:'mes='+mes+'&ano='+ano+'&turma='+turma+'&disc='+disc+'&context='+context,
-                    success: function(data){
-                        data = jQuery.parseJSON(data)
-                        if (data.error === true) {
-                            $('.alert').css('display', 'block');
-                            $('.alert').text(data.msg);
-                            $('.alert').delay(5000).fadeOut(1000, function(){
-                                $('.alert').css('display', 'none');
-                            });
-                        } else {
-                            $("#search").removeClass('disabled');
-                            $("#result").html(data.msg);
-                        }
-                    }
-                });
-            }
+            $(document).on('click', '.alterar-presenca', function(){
+                var id = this.id;
 
-            function alterarFrequencia(id) {
                 $.ajax({
                     type: "POST",
                     url: "../../professor/alterarFrequencia",
@@ -46,13 +27,14 @@
                         }
                     }
                 });
-            }
+            });
 
-            function visualizarComentarios(dados) {
-                dataVisualizada = dados
-                dataVisualizada = dataVisualizada.split('-')
-                dataVisualizada = dataVisualizada[1].split('_')
-                dataVisualizada = dataVisualizada[2] + '/' + dataVisualizada[1] + '/' + dataVisualizada[0]
+            $(document).on('click', '.comentarios', function(){
+                dataVisualizada = this.id;
+                dataVisualizada = dataVisualizada.split('-');
+                dataVisualizada = dataVisualizada[1].split('_');
+                dataVisualizada = dataVisualizada[2] + '/' + dataVisualizada[1] + '/' + dataVisualizada[0];
+
                 $.ajax({
                     type: "POST",
                     url: "../../professor/visualizarComentarios",
@@ -71,10 +53,14 @@
                         }
                     }
                 });
-            }
 
-            function deletarComentario(comentario) {
-                $.ajax({
+                $("#dado").val(this.id);
+            });
+
+            $(document).on('click', '.deletar-comentario', function(){
+               var comentario = this.id;
+
+               $.ajax({
                     type: "DELETE",
                     url: "../comentario/" + comentario,
                     success: function(data){
@@ -92,10 +78,12 @@
                         }
                     }
                 });
-            }
+            });
 
-            function deletarArquivo(arquivo) {
-                $.ajax({
+            $(document).on('click', '.deletar-arquivo', function(){
+               var arquivo = this.id;
+
+               $.ajax({
                     type: "DELETE",
                     url: "../arquivo/" + arquivo,
                     success: function(data){
@@ -112,23 +100,6 @@
                         }
                     }
                 });
-            }
-
-            $(document).on('click', '.alterar-presenca', function(){
-                alterarFrequencia(this.id);
-            });
-
-            $(document).on('click', '.comentarios', function(){
-                visualizarComentarios(this.id);
-                $("#dado").val(this.id);
-            });
-
-            $(document).on('click', '.deletar-comentario', function(){
-               deletarComentario(this.id); 
-            });
-
-            $(document).on('click', '.deletar-arquivo', function(){
-               deletarArquivo(this.id); 
             });
 
             $(document).on('click', '#erase-fields', function(){    
@@ -154,15 +125,34 @@
                     }
                 });
 
-                $("#search").click(function(){
-                    if ($("#search").hasClass('disabled') === false) {
-                        pesquisarFrequencia(
-                            $("#mes").val(),
-                            $("#ano").val(),
-                            $("#turma").val(),
-                            $("#disc").val(),
-                            $("#context").val()
-                        );
+                $("#search").click(function()
+                {
+                    if ($("#search").hasClass('disabled') === false)
+                    {
+                        var mes = $("#mes").val();
+                        var ano = $("#ano").val();
+                        var turma = $("#turma").val();
+                        var disc = $("#disc").val();
+                        var context = $("#context").val();
+
+                        $.ajax({
+                            type: "POST",
+                            url: "../../professor/pesquisarFrequencia",
+                            data:'mes='+mes+'&ano='+ano+'&turma='+turma+'&disc='+disc+'&context='+context,
+                            success: function(data){
+                                data = jQuery.parseJSON(data)
+                                if (data.error === true) {
+                                    $('.alert').css('display', 'block');
+                                    $('.alert').text(data.msg);
+                                    $('.alert').delay(5000).fadeOut(1000, function(){
+                                        $('.alert').css('display', 'none');
+                                    });
+                                } else {
+                                    $("#search").removeClass('disabled');
+                                    $("#result").html(data.msg);
+                                }
+                            }
+                        });
                         $("#search").addClass('disabled');
                         $("#result").html('Pesquisando');
                     }
@@ -174,6 +164,7 @@
 
                 $("#form-comentario").on('submit', (function(e){
                     e.preventDefault();
+                    
                     $.ajax({
                         type: 'POST',
                         url: '../comentario',
