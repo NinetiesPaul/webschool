@@ -54,7 +54,7 @@ class ProfessorController
         $turmas = '';
         
         foreach ($disciplinas as $disciplina) {
-            $turmas .= "<p><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '>".$disciplina->nomeDisciplina.', '.$disciplina->serie.'º Série '.$disciplina->nome."</a><p/>";
+            $turmas .= "<p><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '>" . $disciplina->nomeDisciplina . ", $disciplina->nome ($disciplina->ano)</a><p/>";
         }
                     
         $args = [
@@ -72,34 +72,42 @@ class ProfessorController
 
         $disciplina = $result->disciplina;
         $turma = $result->turma;
+        $diario = "
+            <p>
+                $result->nomeDisciplina<br/>
+                $result->nome ($result->ano)<br/>
+                <a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a>
+            </p>
+        ";
 
-        $detalhes = '';
-        
-        $detalhes .= $result->nomeDisciplina . ' (' . $result->serie . 'º Série ' . $result->nome . ')';
-        $detalhes .= "<p><a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a></p>";
+        $alunosQuery = $this->notaStorage->verNotasPorAlunosDaDisciplinaETurma($disciplina, $result->turma);
 
-        $alunosQuery = $this->notaStorage->verNotasPorAlunosDaDisciplinaETurma($disciplina, $turma);
-
-        $detalhes .= "<table style='margin-left: auto; margin-right: auto; font-size: 13px;' class='table'>
-        <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2:</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th></tr></thead><tbody>";
+        $detalhes = "";
         foreach ($alunosQuery as $aluno) {
-            $detalhes .= "<tr><td>$aluno->nome</td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."nota1'>$aluno->nota1</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."rec1'>$aluno->rec1</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."nota2'>$aluno->nota2</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."rec2'>$aluno->rec2</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."nota3'>$aluno->nota3</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."rec3'>$aluno->rec3</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."nota4'>$aluno->nota4</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."rec4'>$aluno->rec4</a> </td>
-            </tr>";
+            $detalhes .= "
+                <tr data-aluno='$aluno->aluno'>
+                    <td>$aluno->nome</td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='nota1'>$aluno->nota1</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='rec1'>$aluno->rec1</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='nota2'>$aluno->nota2</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='rec2'>$aluno->rec2</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='nota3'>$aluno->nota3</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='rec3'>$aluno->rec3</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='nota4'>$aluno->nota4</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='rec4'>$aluno->rec4</a> </td>
+                </tr>
+            ";
         }
         
         $detalhes .= '</tbody></table>';
         
         $args = [
+            'DIARIO_BUTTON' => $diario,
             'LOGADO' => $user->nome,
             'DETALHES' => $detalhes,
+            'ALUNO' => $aluno->aluno,
+            'DISCIPLINA' => $disciplina,
+            'TURMA' => $turma,
         ];
 
         new Templates('professor/turma.html', $args, '../');

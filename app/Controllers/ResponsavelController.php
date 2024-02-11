@@ -66,41 +66,40 @@ class ResponsavelController
         
         $turmas = $this->notaStorage->verTurmasComNotaDoAluno($idAluno);
 
-        $notas = '';
-
         $aluno = '';
         foreach ($turmas as $turma) {
             $aluno = $turma->nome;
-            $notas .= $turma->nome_turma;
+            $notas = $turma->nome_turma;
             
             $notas .=
-                "<p><button class='btn btn-sm btn-info boletim' id='$idAluno.$turma->turma'>
-                    <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
-                </button></p>";
+                "<p>
+                    <button class='btn btn-sm btn-info boletim' id='$idAluno.$turma->turma'>
+                        <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
+                    </button>
+                </p>";
             
             $notasQuery = $this->notaStorage->verNotasPorTruma($idAluno, $turma->turma);
-
-            $notas .= "<table style='margin-left: auto; margin-right: auto; font-size: 13px;' class='table'>
-            <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th><th></th></tr></thead><tbody>";
-            
+          
             foreach ($notasQuery as $nota) {
-                $notas .= "<tr><td>$nota->materia<br><small>$nota->nome_professor</small></td>
-                <td>$nota->nota1</td>
-                <td>$nota->rec1</td>
-                <td>$nota->nota2</td>
-                <td>$nota->rec2</td>
-                <td>$nota->nota3</td>
-                <td>$nota->rec3</td>
-                <td>$nota->nota4</td>
-                <td>$nota->rec4</td>
-                <td>
-                    <button class='btn btn-sm btn-info faltas' data-toggle='modal' data-target='#modalExemplo' id='$idAluno.$turma->turma.$nota->disciplina'>
-                        <span class='glyphicon glyphicon-eye-open'></span> Diario de Classe
-                    </button>
-                </td></tr>";
+                $notas .= "
+                    <tr>
+                        <td>$nota->materia<br><small>$nota->nome_professor</small></td>
+                        <td>$nota->nota1</td>
+                        <td>$nota->rec1</td>
+                        <td>$nota->nota2</td>
+                        <td>$nota->rec2</td>
+                        <td>$nota->nota3</td>
+                        <td>$nota->rec3</td>
+                        <td>$nota->nota4</td>
+                        <td>$nota->rec4</td>
+                        <td>
+                            <button class='btn btn-sm btn-info faltas' data-toggle='modal' data-target='#modalExemplo' id='$idAluno.$turma->turma.$nota->disciplina'>
+                                <span class='glyphicon glyphicon-eye-open'></span> Diario de Classe
+                            </button>
+                        </td>
+                    </tr>
+                ";
             }
-            
-            $notas .= '</tbody></table>';
         }
         
         $args = [

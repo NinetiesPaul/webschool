@@ -26,7 +26,7 @@ class AlunoController extends AdminController
 
         $turmas = '';
         foreach ($turmaQuery as $turma) {
-            $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
+            $turmas .= "<option value='$turma->id'>$turma->nome ($turma->ano)</option>";
         }
 
         new Templates('admin/alunos/criar.html', [
@@ -41,7 +41,7 @@ class AlunoController extends AdminController
 
         $turmas = '';
         foreach ($turmaQuery as $turma) {
-            $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
+            $turmas .= "<option value='$turma->id'>$turma->nome ($turma->ano)</option>";
         }
 
         $alunoStorage = new AlunoStorage();
@@ -86,7 +86,7 @@ class AlunoController extends AdminController
         $turmas = '';
         foreach ($turmaQuery as $turma) {
             $selected = ($aluno->turma == $turma->id)? 'selected' : '';
-            $turmas .= "<option value='$turma->id' $selected>$turma->serie º Série $turma->nome</option>";
+            $turmas .= "<option value='$turma->id' $selected>$turma->nome ($turma->ano)</option>";
         }
 
         $args = [

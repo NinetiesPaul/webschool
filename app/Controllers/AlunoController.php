@@ -30,12 +30,10 @@ class AlunoController
     public function index()
     {
         $nome = $_SESSION['user']->nome;
-        
-        $args = [
+                
+        new Templates('aluno/index.html', [
             'LOGADO' => $nome
-        ];
-        
-        new Templates('aluno/index.html', $args);
+        ]);
     }
     
     public function verTurmas()
@@ -54,28 +52,27 @@ class AlunoController
                 </button></p>";
 
             $notas = $this->notaStorage->verNotasPorTruma($user->aluno, $turma->turma);
-
-            $minhasTurmas .= "<table style='margin-left: auto; margin-right: auto; font-size: 13px;' class='table'>
-            <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th><th></th></tr></thead><tbody>";
             
             foreach ($notas as $nota) {
-                $minhasTurmas .= "<tr><td>$nota->materia<br><small>$nota->nome_professor</small></td>
-                <td>$nota->nota1</td>
-                <td>$nota->rec1</td>
-                <td>$nota->nota2</td>
-                <td>$nota->rec2</td>
-                <td>$nota->nota3</td>
-                <td>$nota->rec3</td>
-                <td>$nota->nota4</td>
-                <td>$nota->rec4</td>
-                <td>
-                    <button class='btn btn-sm btn-info faltas' data-toggle='modal' data-target='#modalExemplo' id='$user->aluno.$turma->turma.$nota->disciplina'>
-                        <span class='glyphicon glyphicon-eye-open'></span> Diario de Classe
-                    </button>
-                </td>
-                </tr>";
+                $minhasTurmas .= "
+                    <tr>
+                        <td>$nota->materia<br><small>$nota->nome_professor</small></td>
+                        <td>$nota->nota1</td>
+                        <td>$nota->rec1</td>
+                        <td>$nota->nota2</td>
+                        <td>$nota->rec2</td>
+                        <td>$nota->nota3</td>
+                        <td>$nota->rec3</td>
+                        <td>$nota->nota4</td>
+                        <td>$nota->rec4</td>
+                        <td>
+                            <button class='btn btn-sm btn-info faltas' data-toggle='modal' data-target='#modalExemplo' id='$user->aluno.$turma->turma.$nota->disciplina'>
+                                <span class='glyphicon glyphicon-eye-open'></span> Diario de Classe
+                            </button>
+                        </td>
+                    </tr>
+                ";
             }
-            $minhasTurmas .= '</tbody></table>';
         }
         
         $args = [
