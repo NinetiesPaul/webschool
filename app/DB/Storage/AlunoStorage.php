@@ -18,7 +18,7 @@ class AlunoStorage
     public function verAlunos()
     {
         $alunoQuery = $this->db->query("
-            SELECT u.*,a.id AS aluno, CONCAT(t.serie, 'º Série ', t.nome) AS nome_turma
+            SELECT u.*,a.id AS aluno, CONCAT(t.nome, ' (', t.ano, ')') AS nome_turma
             FROM usuario u
             JOIN aluno a ON a.usuario = u.id
             JOIN turma t ON t.id = a.turma
@@ -229,7 +229,7 @@ class AlunoStorage
     public function verAlunosDoResponsavel($responsavel)
     {
         $usersQuery = $this->db->query("
-            SELECT u.nome, CONCAT(t.serie, 'º Série ', t.nome) AS nome_turma, rpa.id AS rpa
+            SELECT u.nome, CONCAT(t.ano, ' ', t.nome) AS nome_turma, rpa.id AS rpa
             FROM responsavel_por_aluno rpa
             JOIN aluno a ON a.id = rpa.aluno
             JOIN usuario u ON u.id = a.usuario

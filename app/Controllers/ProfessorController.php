@@ -54,7 +54,7 @@ class ProfessorController
         $turmas = '';
         
         foreach ($disciplinas as $disciplina) {
-            $turmas .= "<p><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '>".$disciplina->nomeDisciplina.', '.$disciplina->serie.'º Série '.$disciplina->nome."</a><p/>";
+            $turmas .= "<p><a href='turma/$disciplina->id' class='btn btn-sm btn-primary' id='btn_disciplina' '>" . $disciplina->nomeDisciplina . ", $disciplina->nome ($disciplina->ano)</a><p/>";
         }
                     
         $args = [
@@ -72,34 +72,42 @@ class ProfessorController
 
         $disciplina = $result->disciplina;
         $turma = $result->turma;
+        $diario = "
+            <p>
+                $result->nomeDisciplina<br/>
+                $result->nome ($result->ano)<br/>
+                <a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a>
+            </p>
+        ";
 
-        $detalhes = '';
-        
-        $detalhes .= $result->nomeDisciplina . ' (' . $result->serie . 'º Série ' . $result->nome . ')';
-        $detalhes .= "<p><a href='../diariodeclasse/$turma"."_"."$disciplina' class='btn btn-sm btn-primary' id='btn_diario'><span class='glyphicon glyphicon-pencil'></span> Diário de classe</a></p>";
+        $alunosQuery = $this->notaStorage->verNotasPorAlunosDaDisciplinaETurma($disciplina, $result->turma);
 
-        $alunosQuery = $this->notaStorage->verNotasPorAlunosDaDisciplinaETurma($disciplina, $turma);
-
-        $detalhes .= "<table style='margin-left: auto; margin-right: auto; font-size: 13px;' class='table'>
-        <thead><tr><th></th><th>Nota 1</th><th>Rec. 1</th><th>Nota 2:</th><th>Rec. 2</th><th>Nota 3</th><th>Rec. 3</th><th>Nota 4</th><th>Rec. 4</th></tr></thead><tbody>";
+        $detalhes = "";
         foreach ($alunosQuery as $aluno) {
-            $detalhes .= "<tr><td>$aluno->nome</td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."nota1'>$aluno->nota1</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."rec1'>$aluno->rec1</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."nota2'>$aluno->nota2</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."rec2'>$aluno->rec2</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."nota3'>$aluno->nota3</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."rec3'>$aluno->rec3</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."nota4'>$aluno->nota4</a> </td>
-            <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' id='id-$aluno->aluno".'_'."$disciplina".'_'."$turma".'_'."rec4'>$aluno->rec4</a> </td>
-            </tr>";
+            $detalhes .= "
+                <tr data-aluno='$aluno->aluno'>
+                    <td>$aluno->nome</td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='nota1'>$aluno->nota1</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='rec1'>$aluno->rec1</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='nota2'>$aluno->nota2</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='rec2'>$aluno->rec2</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='nota3'>$aluno->nota3</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='rec3'>$aluno->rec3</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='nota4'>$aluno->nota4</a> </td>
+                    <td> <a href='#' class='nota' data-toggle='modal' data-target='#modalExemplo' data-tipo='rec4'>$aluno->rec4</a> </td>
+                </tr>
+            ";
         }
         
         $detalhes .= '</tbody></table>';
         
         $args = [
+            'DIARIO_BUTTON' => $diario,
             'LOGADO' => $user->nome,
             'DETALHES' => $detalhes,
+            'ALUNO' => $aluno->aluno,
+            'DISCIPLINA' => $disciplina,
+            'TURMA' => $turma,
         ];
 
         new Templates('professor/turma.html', $args, '../');
@@ -169,20 +177,12 @@ class ProfessorController
                     ResponseHandler::throwError($ex);
                 }
 
-                $date = explode('-', $date->format('Y-m-d'));
-
-                $spanPresenca = "<span class='glyphicon glyphicon-remove'></span>";
-                $linkPresenca = "$date[0]".'_'."$date[1]".'_'."$date[2]".'_'."$aluno->aluno".'_'."$aluno->disciplina".'_'."$aluno->turma";
-
-                if ($diario && $diario->presenca == 1) {
-                    $spanPresenca = "<span class='glyphicon glyphicon-ok'></span>";
-                }
-
-                $linkComentario = "$date[0]".'_'."$date[1]".'_'."$date[2]".'_'."$aluno->aluno".'_'."$aluno->disciplina".'_'."$aluno->turma";
+                $spanPresenca = ($diario && $diario->presenca == 1) ? "<span class='glyphicon glyphicon-ok'></span>" : "<span class='glyphicon glyphicon-remove'></span>";
 
                 $output .= "
                     <td>
-                        <a href='#' id='presenca-$linkPresenca' class='alterar-presenca'>$spanPresenca</a> <a href='#' id='comentario-$linkComentario' class='comentarios' data-toggle='modal' data-target='#modalExemplo' ><span class='glyphicon glyphicon-comment'></span></a>
+                        <a href='#' data-date='" . $date->format('Y-m-d') . "' data-aluno='$aluno->aluno' class='presenca'>$spanPresenca</a>
+                        <a href='#' data-date='" . $date->format('Y-m-d') . "' data-aluno='$aluno->aluno' class='comentarios' data-toggle='modal' data-target='#modalExemplo' ><span class='glyphicon glyphicon-comment'></span></a>
                     </td>
                 ";
             }
@@ -195,21 +195,11 @@ class ProfessorController
     public function alterarFrequencia()
     {
         $data = json_decode(json_encode($_POST), true);
-        $data = explode('-', $data['id']);
-        $data = explode('_', $data[1]);
 
-        $ano = $data[0];
-        $mes = $data[1];
-        $dia = $data[2];
-
-        $aluno = $data[3];
-        $disciplina = $data[4];
-        $turma = $data[5];
-
-        $mes = (strlen($mes) == 1) ? "0".$mes : $mes;
-        $dia = (strlen($dia) == 1) ? "0".$dia : $dia;
-
-        $data = $ano.'-'.$mes.'-'.$dia;
+        $aluno = $data['aluno'];
+        $disciplina = $data['disciplina'];
+        $turma = $data['turma'];
+        $data = $data['data'];
 
         $diario = false;
         try {
@@ -237,7 +227,7 @@ class ProfessorController
                 $span = "<span class='glyphicon glyphicon-ok'></span>";
             } else {
                 $presenca = 0;
-                $span = "<span class='glyphicon glyphicon-trash'></span>";
+                $span = "<span class='glyphicon glyphicon-remove'></span>";
             }
 
             try {
@@ -257,22 +247,10 @@ class ProfessorController
         $data = json_decode(json_encode($_POST), true);
 
         $mensagem = $data['comentario'];
-
-        $dados = explode('-', $data['dado']);
-        $dados = explode('_', $dados[1]);
-
-        $ano = $dados[0];
-        $mes = $dados[1];
-        $dia = $dados[2];
-
-        $aluno = $dados[3];
-        $disciplina = $dados[4];
-        $turma = $dados[5];
-
-        $mes = (strlen($mes) == 1) ? "0".$mes : $mes;
-        $dia = (strlen($dia) == 1) ? "0".$dia : $dia;
-
-        $dataComentario = $ano.'-'.$mes.'-'.$dia;
+        $aluno = $data['aluno'];
+        $disciplina = $data['disciplina'];
+        $turma = $data['turma'];
+        $dataComentario = $data['data'];
 
         $arquivos = false;
         $file_name = '';
@@ -294,7 +272,7 @@ class ProfessorController
                 $long = $data[0];
                 $file_name=$long.'-'.$file;
                 move_uploaded_file($_FILES['file_btn']['tmp_name'], $path . $file_name);
-                $urlFinal = 'webschool/uploads/files/'.$file_name;
+                $urlFinal = 'uploads/files/'.$file_name;
                 $urlThumbFinal = '';
             }
 
@@ -330,8 +308,8 @@ class ProfessorController
                 move_uploaded_file($_FILES['file_btn']['tmp_name'], $path . $file_name);
                 move_uploaded_file($_FILES['file_btn']['tmp_name'], $path . $file_name_thumb);
 
-                $urlFinal = 'webschool/uploads/images/'.$file_name;
-                $urlThumbFinal = 'webschool/uploads/images/thumbs/'.$file_name_thumb;
+                $urlFinal = 'uploads/images/'.$file_name;
+                $urlThumbFinal = 'uploads/images/thumbs/'.$file_name_thumb;
             }
         }
 
@@ -344,7 +322,6 @@ class ProfessorController
         }
 
         $id_arquivo = '';
-
         if ($arquivos) {
             try {
                 $id_arquivo = $this->arquivoStorage->adicionarArquivo($file_name, $urlThumbFinal, $urlFinal, $dataComentario, $id_comentario);
@@ -353,26 +330,25 @@ class ProfessorController
             }
         }
 
-        $span = 'colspan=2';
-        $line = 'Essa observação não contem arquivos anexados';
-        $cellid = '';
+        $line = '';
         if (empty($_FILES['file_btn']['error'])) {
-            $nome = (strlen($file_name) > 30) ? substr($file_name, 0, 25) . '...' : $file_name;
+            $nome = (strlen($file_name) > 15) ? substr($file_name, 0, 15) . '...' : $file_name;
 
-            $span = '';
             $line = '';
-            $cellid = "id='cell-file-head-$id_arquivo'";
             $line .= "
                 <a href='../../../../../$urlFinal'>$nome</a></td>
-                <td id='cell-file-remove-$id_arquivo'><a href='#' class='deletar-arquivo' id='$id_arquivo'><span class='glyphicon glyphicon-trash'></span></a></td>
+                <a href='#' class='deletar-arquivo' id='$id_arquivo'><span class='glyphicon glyphicon-trash'></span></a></td>
             ";
         }
 
-        $line = "<tr id='row-comentario-$id_comentario'><td>$mensagem</td>
-        <td $span $cellid>$line</td>
-        <td><a href='#' id='$id_comentario' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td></tr>";
+        $output = "
+            <tr data-comentario='$id_comentario'>
+                <td>$mensagem<br/>$line</td>
+                <td><a href='#' data-id='$id_comentario' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td>
+            </tr>
+        ";
 
-        ResponseHandler::response($line);
+        ResponseHandler::response($output);
     }
 
     public function verComentarios()
@@ -380,21 +356,11 @@ class ProfessorController
         $user = $_SESSION['user'];
 
         $data = json_decode(json_encode($_POST), true);
-        $data = explode('-', $data['dados']);
-        $data = explode('_', $data[1]);
 
-        $ano = $data[0];
-        $mes = $data[1];
-        $dia = $data[2];
-
-        $aluno = $data[3];
-        $disciplina = $data[4];
-        $turma = $data[5];
-
-        $mes = (strlen($mes) == 1) ? "0".$mes : $mes;
-        $dia = (strlen($dia) == 1) ? "0".$dia : $dia;
-
-        $data = $ano.'-'.$mes.'-'.$dia;
+        $aluno = $data['aluno'];
+        $disciplina = $data['disciplina'];
+        $turma = $data['turma'];
+        $data = $data['data'];
 
         try {
             $comentarios = $this->diarioDeClasseStorage->verComentariosDoAlunoDaTurma($aluno, $disciplina, $turma, $data, $user->professor);
@@ -404,30 +370,26 @@ class ProfessorController
 
         $output = '';
         foreach ($comentarios as $comentario) {
-            $output .= "<tr id='row-comentario-$comentario->id'><td>$comentario->observacao</td>";
+            $arquivo = $this->arquivoStorage->verArquivosDoDiario($comentario->id);
 
-            try {
-                $arquivo = $this->arquivoStorage->verArquivosDoDiario($comentario->id);
-            } catch (\Exception $ex) {
-                ResponseHandler::throwError($ex);
-            }
-
-            $span = 'colspan=2';
-            $line = 'Essa observação não contem arquivos anexados';
-            $cellid = '';
+            $line = '';
             if ($arquivo) {
-                $span = '';
-                $line = '';
-                $nome = (strlen($arquivo->nome) > 30) ? substr($arquivo->nome, 0, 25) . '...' : $arquivo->nome;
 
-                $cellid = "id='cell-file-head-$arquivo->id'";
-                $line .= "
-                    <a href='../../../../../$arquivo->endereco'>$nome</a></td>
-                    <td id='cell-file-remove-$arquivo->id'><a href='#' class='deletar-arquivo' id='$arquivo->id'><span class='glyphicon glyphicon-trash'></span></a></td>
+                $nome = (strlen($arquivo->nome) > 15) ? substr($arquivo->nome, 0, 15) . '...' : $arquivo->nome;
+                $line = "
+                    <span class='comentario-arquivo' data-arquivo='$arquivo->id'>
+                        <a href='../../../../../$arquivo->endereco'>$nome</a>
+                        <a href='#' class='deletar-arquivo' data-id='$arquivo->id'><span class='glyphicon glyphicon-trash'></span></a>
+                    </span>
                 ";
             }
-            $output .= "<td $span $cellid>$line</td>";
-            $output .= "<td><a href='#' id='$comentario->id' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td></tr>";
+
+            $output .= "
+                <tr data-comentario='$comentario->id'>
+                    <td>$comentario->observacao<br/>$line</td>
+                    <td><a href='#' data-id='$comentario->id' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td>
+                </tr>
+            ";
         }
 
         ResponseHandler::response($output);
@@ -445,9 +407,9 @@ class ProfessorController
 
         if ($arquivo) {
             if ($arquivo->endereco_thumb) {
-                unlink('../' . $arquivo->endereco_thumb);
+                unlink($arquivo->endereco_thumb);
             }
-            unlink('../' . $arquivo->endereco);
+            unlink($arquivo->endereco);
 
             try {
                 $this->arquivoStorage->removerArquivoDoComentario($arquivo->id);
@@ -474,9 +436,9 @@ class ProfessorController
         }
 
         if ($arquivo->endereco_thumb) {
-            unlink('../' . $arquivo->endereco_thumb);
+            unlink($arquivo->endereco_thumb);
         }
-        unlink('../' . $arquivo->endereco);
+        unlink($arquivo->endereco);
 
         try {
             $this->arquivoStorage->removerArquivoDoComentario($idArquivo);

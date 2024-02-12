@@ -26,7 +26,7 @@ class TurmasController extends AdminController
             $turmas .="
                 <tr data-id='$turma->id'>
                     <td>$turma->id</td>
-                    <td>$turma->serie º Série $turma->nome</td>
+                    <td>$turma->nome ($turma->ano)</td>
                     <td>
                         <a href='turma/$turma->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span> </a>
                         <a href='#' class='btn btn-sm' id='deletar'><span class='glyphicon glyphicon-trash'></span> </a>
@@ -49,8 +49,8 @@ class TurmasController extends AdminController
 
         $args = [
             'ID' => $turma->id,
-            'TURMA' => $turma->serie,
-            'LETRA' => $turma->nome,
+            'ANO' => $turma->ano,
+            'NOME' => $turma->nome,
         ];
 
         new Templates('admin/turmas/editar.html', $args);
@@ -61,10 +61,10 @@ class TurmasController extends AdminController
         $data = json_decode(json_encode($_POST), true);
 
         $nome = $data['nome'];
-        $serie = $data['serie'];
+        $ano = $data['ano'];
 
         $turmaStorage = new TurmaStorage();
-        $turmaStorage->adicionarTurma($nome, $serie);
+        $turmaStorage->adicionarTurma($nome, $ano);
         header('Location: /admin/turmas');
     }
 
@@ -73,11 +73,11 @@ class TurmasController extends AdminController
         $data = json_decode(json_encode($_POST), true);
 
         $nome = $data['nome'];
-        $serie = $data['serie'];
+        $ano = $data['ano'];
         $turma = $data['id'];
 
         $turmaStorage = new TurmaStorage();
-        $turmaStorage->alterarTurma($nome, $serie, $turma);
+        $turmaStorage->alterarTurma($nome, $ano, $turma);
         header('Location: /admin/turmas');
     }
 

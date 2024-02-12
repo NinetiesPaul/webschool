@@ -19,7 +19,7 @@ class TurmaStorage
         $turmas = $this->db->query("
             SELECT *
             FROM turma
-            ORDER BY serie
+            ORDER BY ano
         ");
 
         return $turmas->fetchAll(PDO::FETCH_OBJ);
@@ -36,23 +36,23 @@ class TurmaStorage
         return $turma->fetch(PDO::FETCH_OBJ);
     }
 
-    public function adicionarTurma($nome, $serie)
+    public function adicionarTurma($nome, $ano)
     {
-        $user = $this->db->prepare("INSERT INTO turma (nome, serie) VALUES (:nome, :serie)");
+        $user = $this->db->prepare("INSERT INTO turma (nome, ano) VALUES (:nome, :ano)");
 
         $user->execute([
             'nome' => $nome,
-            'serie' => $serie,
+            'ano' => $ano,
         ]);
     }
 
-    public function alterarTurma($nome, $serie, $turma)
+    public function alterarTurma($nome, $ano, $turma)
     {
-        $user = $this->db->prepare("UPDATE turma SET serie=:serie, nome=:nome WHERE id=:turma");
+        $user = $this->db->prepare("UPDATE turma SET ano=:ano, nome=:nome WHERE id=:turma");
 
         $user->execute([
             'nome' => $nome,
-            'serie' => $serie,
+            'ano' => $ano,
             'turma' => $turma,
         ]);
     }

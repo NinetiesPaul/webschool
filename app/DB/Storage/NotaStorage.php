@@ -42,7 +42,7 @@ class NotaStorage
     public function verTurmasComNotaDoAluno($aluno)
     {
         $exec = $this->db->query("
-            SELECT npa.turma, CONCAT(t.serie, 'º Série ', t.nome) AS nome_turma, u.nome
+            SELECT npa.turma, CONCAT(t.nome, ' (', t.ano, ')') AS nome_turma, u.nome
             FROM nota_por_aluno npa
             JOIN turma t ON npa.turma = t.id
             JOIN aluno a ON a.id = npa.aluno 
@@ -57,7 +57,7 @@ class NotaStorage
     public function verNotasPorTruma($aluno, $turma)
     {
         $exec = $this->db->query("
-            SELECT npa.*, CONCAT('Prof. ',IFNULL(u.nome, 'INDEFINIDO')) AS nome_professor, IFNULL(p.id, 'ID indefinido') AS professor, d.nome AS materia, CONCAT(t.serie, 'º Série ', t.nome) as turma
+            SELECT npa.*, CONCAT('Prof. ',IFNULL(u.nome, 'INDEFINIDO')) AS nome_professor, IFNULL(p.id, 'ID indefinido') AS professor, d.nome AS materia, CONCAT(t.ano, ' ', t.nome) as turma
             FROM nota_por_aluno npa
             JOIN disciplina d ON d.id = npa.disciplina
             JOIN turma t ON t.id = npa.turma
@@ -75,7 +75,7 @@ class NotaStorage
     public function verTurmasEMateriasComNotasDoAluno($aluno)
     {
         $alunosQuery = $this->db->query("
-            SELECT npa.turma, CONCAT(t.serie, 'º Série ', t.nome) AS nome_da_turma
+            SELECT npa.turma, CONCAT(t.ano, ' ', t.nome) AS nome_da_turma
             FROM nota_por_aluno npa
             JOIN turma t ON npa.turma = t.id
             WHERE aluno=$aluno

@@ -82,7 +82,7 @@ class ProfessorController extends AdminController
 
         $turmas = '';
         foreach ($turmaQuery as $turma) {
-            $turmas .= "<option value='$turma->id'>$turma->serie º Série $turma->nome</option>";
+            $turmas .= "<option value='$turma->id'>$turma->nome ($turma->ano)</option>";
         }
 
         $materiaStorage = new MateriaStorage();
