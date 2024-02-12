@@ -63,7 +63,7 @@
             });
 
             $(document).on('click', '.deletar-comentario', function(){
-               var comentario = this.id;
+               var comentario = $(this)[0].dataset['id'];
 
                $.ajax({
                     type: "DELETE",
@@ -77,8 +77,8 @@
                                 $('.alert-modal').css('display', 'none');
                             });
                         } else {
-                            $('#row-comentario-' + comentario).fadeOut(400, function () {
-                                remove();
+                            $('tr[data-comentario=' + comentario + ']').fadeOut(400, function () {
+                                $(this).remove();
                             });
                         }
                     }
@@ -86,7 +86,7 @@
             });
 
             $(document).on('click', '.deletar-arquivo', function(){
-               var arquivo = this.id;
+               var arquivo = $(this)[0].dataset['id'];
 
                $.ajax({
                     type: "DELETE",
@@ -100,8 +100,7 @@
                                 $('.alert-modal').css('display', 'none');
                             });
                         } else {
-                            $('#cell-file-head-' + arquivo).text('Essa observação não contem arquivos anexados');
-                            $('#cell-file-remove-' + arquivo).text('');
+                            $('.comentario-arquivo[data-arquivo=' + arquivo + ']').remove();
                         }
                     }
                 });
@@ -302,7 +301,8 @@
                             <table style="margin-left: auto; margin-right: auto; font-size: 13;" class="table" id="tabela-comentarios">
                                 <thead>
                                     <tr>
-                                        <th>Comentário</th><th colspan='2'>Arquivos anexados</th><th>Deletar</th>
+                                        <th>Comentário</th>
+                                        <th style="width: 5%;"></th>
                                     </tr>
                                 </thead>
                                 <tbody>

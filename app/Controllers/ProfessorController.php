@@ -322,7 +322,6 @@ class ProfessorController
         }
 
         $id_arquivo = '';
-
         if ($arquivos) {
             try {
                 $id_arquivo = $this->arquivoStorage->adicionarArquivo($file_name, $urlThumbFinal, $urlFinal, $dataComentario, $id_comentario);
@@ -331,26 +330,25 @@ class ProfessorController
             }
         }
 
-        $span = 'colspan=2';
-        $line = 'Essa observação não contem arquivos anexados';
-        $cellid = '';
+        $line = '';
         if (empty($_FILES['file_btn']['error'])) {
-            $nome = (strlen($file_name) > 30) ? substr($file_name, 0, 25) . '...' : $file_name;
+            $nome = (strlen($file_name) > 15) ? substr($file_name, 0, 15) . '...' : $file_name;
 
-            $span = '';
             $line = '';
-            $cellid = "id='cell-file-head-$id_arquivo'";
             $line .= "
                 <a href='../../../../../$urlFinal'>$nome</a></td>
-                <td id='cell-file-remove-$id_arquivo'><a href='#' class='deletar-arquivo' id='$id_arquivo'><span class='glyphicon glyphicon-trash'></span></a></td>
+                <a href='#' class='deletar-arquivo' id='$id_arquivo'><span class='glyphicon glyphicon-trash'></span></a></td>
             ";
         }
 
-        $line = "<tr id='row-comentario-$id_comentario'><td>$mensagem</td>
-        <td $span $cellid>$line</td>
-        <td><a href='#' id='$id_comentario' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td></tr>";
+        $output = "
+            <tr data-comentario='$id_comentario'>
+                <td>$mensagem<br/>$line</td>
+                <td><a href='#' data-id='$id_comentario' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td>
+            </tr>
+        ";
 
-        ResponseHandler::response($line);
+        ResponseHandler::response($output);
     }
 
     public function verComentarios()
@@ -372,30 +370,26 @@ class ProfessorController
 
         $output = '';
         foreach ($comentarios as $comentario) {
-            $output .= "<tr id='row-comentario-$comentario->id'><td>$comentario->observacao</td>";
+            $arquivo = $this->arquivoStorage->verArquivosDoDiario($comentario->id);
 
-            try {
-                $arquivo = $this->arquivoStorage->verArquivosDoDiario($comentario->id);
-            } catch (\Exception $ex) {
-                ResponseHandler::throwError($ex);
-            }
-
-            $span = 'colspan=2';
-            $line = 'Essa observação não contem arquivos anexados';
-            $cellid = '';
+            $line = '';
             if ($arquivo) {
-                $span = '';
-                $line = '';
-                $nome = (strlen($arquivo->nome) > 30) ? substr($arquivo->nome, 0, 25) . '...' : $arquivo->nome;
 
-                $cellid = "id='cell-file-head-$arquivo->id'";
-                $line .= "
-                    <a href='../../../../../$arquivo->endereco'>$nome</a></td>
-                    <td id='cell-file-remove-$arquivo->id'><a href='#' class='deletar-arquivo' id='$arquivo->id'><span class='glyphicon glyphicon-trash'></span></a></td>
+                $nome = (strlen($arquivo->nome) > 15) ? substr($arquivo->nome, 0, 15) . '...' : $arquivo->nome;
+                $line = "
+                    <span class='comentario-arquivo' data-arquivo='$arquivo->id'>
+                        <a href='../../../../../$arquivo->endereco'>$nome</a>
+                        <a href='#' class='deletar-arquivo' data-id='$arquivo->id'><span class='glyphicon glyphicon-trash'></span></a>
+                    </span>
                 ";
             }
-            $output .= "<td $span $cellid>$line</td>";
-            $output .= "<td><a href='#' id='$comentario->id' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td></tr>";
+
+            $output .= "
+                <tr data-comentario='$comentario->id'>
+                    <td>$comentario->observacao<br/>$line</td>
+                    <td><a href='#' data-id='$comentario->id' class='deletar-comentario'><span class='glyphicon glyphicon-trash'></span></a></td>
+                </tr>
+            ";
         }
 
         ResponseHandler::response($output);
@@ -413,9 +407,9 @@ class ProfessorController
 
         if ($arquivo) {
             if ($arquivo->endereco_thumb) {
-                unlink('../' . $arquivo->endereco_thumb);
+                unlink($arquivo->endereco_thumb);
             }
-            unlink('../' . $arquivo->endereco);
+            unlink($arquivo->endereco);
 
             try {
                 $this->arquivoStorage->removerArquivoDoComentario($arquivo->id);
@@ -442,9 +436,9 @@ class ProfessorController
         }
 
         if ($arquivo->endereco_thumb) {
-            unlink('../' . $arquivo->endereco_thumb);
+            unlink($arquivo->endereco_thumb);
         }
-        unlink('../' . $arquivo->endereco);
+        unlink($arquivo->endereco);
 
         try {
             $this->arquivoStorage->removerArquivoDoComentario($idArquivo);
