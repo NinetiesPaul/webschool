@@ -66,8 +66,8 @@ class GeneralController
     
     public function gerarBoletim()
     {
-        $aluno = $_POST["aluno-pdf"];
-        $turma = $_POST["turma-pdf"];
+        $aluno = $_POST["aluno"];
+        $turma = $_POST["turma"];
 
         $notas = $this->notaStorage->verNotasPorTruma($aluno, $turma);
 
@@ -130,16 +130,14 @@ class GeneralController
     
     public function gerarHistorico()
     {
-        $aluno = $_POST["aluno-pdf"];
-        
-        $aluno = explode('.', $aluno);
+        $aluno = $_POST["aluno"];
 
-        $turmas = $this->notaStorage->verTurmasEMateriasComNotasDoAluno($aluno[0]);
+        $turmas = $this->notaStorage->verTurmasEMateriasComNotasDoAluno($aluno);
 
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
         foreach ($turmas as $turma) {
-            $notas = $this->notaStorage->verNotasPorTruma($aluno[0], $turma->turma);
+            $notas = $this->notaStorage->verNotasPorTruma($aluno, $turma->turma);
 
             $pdf->AddPage();
 

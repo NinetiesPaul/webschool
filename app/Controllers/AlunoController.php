@@ -44,43 +44,57 @@ class AlunoController
 
         $minhasTurmas = '';
         foreach ($turmas as $turma) {
-            $minhasTurmas .= $turma->nome_turma;
-            
-            $minhasTurmas .=
-                "<p><button class='btn btn-sm btn-info boletim' id='$user->aluno.$turma->turma'>
-                    <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
-                </button></p>";
-
-            $notas = $this->notaStorage->verNotasPorTruma($user->aluno, $turma->turma);
-            
-            foreach ($notas as $nota) {
-                $minhasTurmas .= "
-                    <tr>
-                        <td>$nota->materia<br><small>$nota->nome_professor</small></td>
-                        <td>$nota->nota1</td>
-                        <td>$nota->rec1</td>
-                        <td>$nota->nota2</td>
-                        <td>$nota->rec2</td>
-                        <td>$nota->nota3</td>
-                        <td>$nota->rec3</td>
-                        <td>$nota->nota4</td>
-                        <td>$nota->rec4</td>
-                        <td>
-                            <button class='btn btn-sm btn-info faltas' data-toggle='modal' data-target='#modalExemplo' id='$user->aluno.$turma->turma.$nota->disciplina'>
-                                <span class='glyphicon glyphicon-eye-open'></span> Diario de Classe
-                            </button>
-                        </td>
-                    </tr>
-                ";
-            }
+            $minhasTurmas .= "<p><a href='turma/$turma->turma' class='btn btn-sm btn-primary'>$turma->nome_turma</a></p>";
         }
         
         $args = [
-            'ALUNOID_USERID' => $user->aluno.'.'.$user->id,
+            'ALUNO' => $user->aluno,
             'LOGADO' => $user->nome,
             'TURMAS' => $minhasTurmas,
         ];
 
         new Templates('aluno/turmas.html', $args);
+    }
+
+    public function verTurma($id)
+    {
+        $user = $_SESSION['user'];
+
+        $turma = $this->turmaStorage->verTurma($id);
+
+        $notas = $this->notaStorage->verNotasPorTruma($user->aluno, $id);
+        
+        $minhasTurmas = '';
+        foreach ($notas as $nota) {
+            $minhasTurmas .= "
+                <tr>
+                    <td>$nota->materia<br><small>$nota->nome_professor</small></td>
+                    <td>$nota->nota1</td>
+                    <td>$nota->rec1</td>
+                    <td>$nota->nota2</td>
+                    <td>$nota->rec2</td>
+                    <td>$nota->nota3</td>
+                    <td>$nota->rec3</td>
+                    <td>$nota->nota4</td>
+                    <td>$nota->rec4</td>
+                    <td>
+                        <button class='btn btn-sm btn-info faltas' data-toggle='modal' data-target='#modalExemplo' data-aluno='$user->aluno' data-turma='$id' data-disciplina='$nota->disciplina'>
+                            <span class='glyphicon glyphicon-eye-open'></span> Diario de Classe
+                        </button>
+                    </td>
+                </tr>
+            ";
+        }
+        
+        $args = [
+            'LOGADO' => $user->nome,
+            'ALUNO' => $user->nome,
+            'TURMAS' => $minhasTurmas,
+            'TURMA' => "$turma->nome ($turma->ano)",
+            'ALUNO_PDF' => $user->aluno,
+            'TURMA_PDF' => $id
+        ];
+
+        new Templates('aluno/turma.html', $args, "../");
     }
 }
