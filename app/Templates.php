@@ -62,7 +62,7 @@ class Templates
                 break;
             case Enum::TIPO_RESPONSAVEL:
                 return "
-                    <a class='btn btn-light btn btn-block' href='".$path."alunos'>Alunos</a>
+                    <a class='btn btn-light btn btn-block' href='" . $this->createUrl('responsavel_alunos') . "'>Alunos</a>
                 ";
                 break;
             case Enum::TIPO_PROFESSOR:
@@ -72,7 +72,7 @@ class Templates
                 break;
             case Enum::TIPO_ALUNO:
                 return "
-                    <a class='btn btn-light btn btn-block' href='".$path."turmas'>Turmas</a>
+                    <a class='btn btn-light btn btn-block' href='" . $this->createUrl('aluno_turmas') . "'>Turmas</a>
                 ";
                 break;
                 
