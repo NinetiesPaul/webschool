@@ -1,0 +1,124 @@
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta charset="UTF8">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        {CSS}
+        {JS}
+        <script>
+            $(document).ready(function(){
+                $(".faltas").click(function(){
+                    aluno = $(this)[0].dataset['aluno'];
+                    turma = $(this)[0].dataset['turma'];
+                    disciplina = $(this)[0].dataset['disciplina'];
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: "../../pesquisarFaltas",
+                        data: { aluno: aluno, turma: turma, disciplina: disciplina },
+                        success: function(data){
+                            data = jQuery.parseJSON(data)
+                            if (data.error === true) {
+                                $('.alert').css('display', 'block');
+                                $('.alert').text(data.msg);
+                                $('.alert').delay(5000).fadeOut(1000, function(){
+                                    $('.alert').css('display', 'none');
+                                });
+                            } else {
+                                $("#result").html(data.msg);
+                            }
+                        }
+                    });
+                });
+            });
+        </script>
+        <title>Aluno :: Minhas Turmas</title>
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+            <a class="navbar-brand" href="home">webSchool</a>
+            <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Logado como {LOGADO}
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="../../perfil">Meu perfil</a>
+                        <a class="dropdown-item" href="../../logout">Sair</a>
+                    </div>
+                  </li>
+                </ul>
+            </div>
+        </nav>
+        
+        <div class="text-center menu" style="width: 20%; float: left;  background-color: slategray;">
+            <div style="padding: 2em;">
+                {LINKS}
+            </div>
+        </div>
+
+        <div class="" style="width: 80%; float: right; padding: 2em;">
+            <p>
+                <b>Aluno: </b> {ALUNO}<br/>
+                <b>Matricula: </b> 000<br/>
+                <b>Matriculado em:</b> 01/01/2020<br/>
+                <b>Turma:</b> {TURMA}<br/>
+            </p>
+
+            <div class="text-center border rounded" style="padding: 1em;">
+                <form action="../../../../gerarBoletim" method="post" role="form" class="" id="gerarDocumento">
+                    <input type="hidden" name="aluno" id="aluno" value="{ALUNO_PDF}" />
+                    <input type="hidden" name="turma" id="turma" value="{TURMA_PDF}" />
+                    <button class='btn btn-sm btn-info boletim'>
+                        <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
+                    </button>
+                </form>
+                
+                <table style='margin-left: auto; margin-right: auto; font-size: 13px;' class='table'>
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Nota 1</th>
+                            <th>Rec. 1</th>
+                            <th>Nota 2</th>
+                            <th>Rec. 2</th>
+                            <th>Nota 3</th>
+                            <th>Rec. 3</th>
+                            <th>Nota 4</th>
+                            <th>Rec. 4</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {TURMAS}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="modalExemplo" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel"><strong>Diario de Classe</strong></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div id="result">
+                    Resultado aqui.
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    </body>
+</html>
