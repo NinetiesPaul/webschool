@@ -89,6 +89,17 @@ class MateriaStorage
 
         return $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
     }
+    
+    public function verMateriaPorProfessorPorId($id)
+    {
+        $disciplinasQuery = $this->db->query("
+            SELECT *
+            FROM disciplina_por_professor
+            WHERE id = $id
+        ");
+
+        return $disciplinasQuery->fetchObject();
+    }
 
     public function verMateriasDoProfessor($professor)
     {
