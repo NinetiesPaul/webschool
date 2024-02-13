@@ -63,52 +63,64 @@ class ResponsavelController
     public function verAluno($idAluno)
     {
         $user = $_SESSION['user'];
-        
+
         $turmas = $this->notaStorage->verTurmasComNotaDoAluno($idAluno);
 
-        $aluno = '';
+        $minhasTurmas = '';
         foreach ($turmas as $turma) {
-            $aluno = $turma->nome;
-            $notas = $turma->nome_turma;
-            
-            $notas .=
-                "<p>
-                    <button class='btn btn-sm btn-info boletim' id='$idAluno.$turma->turma'>
-                        <span class='glyphicon glyphicon-save-file'></span> Baixar boletim</a>
-                    </button>
-                </p>";
-            
-            $notasQuery = $this->notaStorage->verNotasPorTruma($idAluno, $turma->turma);
-          
-            foreach ($notasQuery as $nota) {
-                $notas .= "
-                    <tr>
-                        <td>$nota->materia<br><small>$nota->nome_professor</small></td>
-                        <td>$nota->nota1</td>
-                        <td>$nota->rec1</td>
-                        <td>$nota->nota2</td>
-                        <td>$nota->rec2</td>
-                        <td>$nota->nota3</td>
-                        <td>$nota->rec3</td>
-                        <td>$nota->nota4</td>
-                        <td>$nota->rec4</td>
-                        <td>
-                            <button class='btn btn-sm btn-info faltas' data-toggle='modal' data-target='#modalExemplo' id='$idAluno.$turma->turma.$nota->disciplina'>
-                                <span class='glyphicon glyphicon-eye-open'></span> Diario de Classe
-                            </button>
-                        </td>
-                    </tr>
-                ";
-            }
+            $minhasTurmas .= "<p><a href='$idAluno/turma/$turma->turma' class='btn btn-sm btn-primary'>$turma->nome_turma</a></p>";
         }
         
         $args = [
             'LOGADO' => $user->nome,
-            'ALUNOID_USERID' => $idAluno.'.'.$user->id,
-            'ALUNO' => $aluno,
-            'NOTAS' => $notas,
+            'ALUNO' => $idAluno,
+            'TURMAS' => $minhasTurmas
         ];
 
         new Templates('responsavel/aluno.html', $args, '../');
+    }
+    
+    public function verTurmaDoAluno($idAluno, $idTurma)
+    {
+        $user = $_SESSION['user'];
+
+        $aluno = $this->alunoStorage->pegarNomeDoAlunoPorAlunoId($idAluno);
+
+        $turma = $this->turmaStorage->verTurma($idTurma);
+        
+        $notasQuery = $this->notaStorage->verNotasPorTruma($idAluno, $idTurma);
+        
+        $notas = '';
+        foreach ($notasQuery as $nota) {
+            $notas .= "
+                <tr>
+                    <td>$nota->materia<br><small>$nota->nome_professor</small></td>
+                    <td>$nota->nota1</td>
+                    <td>$nota->rec1</td>
+                    <td>$nota->nota2</td>
+                    <td>$nota->rec2</td>
+                    <td>$nota->nota3</td>
+                    <td>$nota->rec3</td>
+                    <td>$nota->nota4</td>
+                    <td>$nota->rec4</td>
+                    <td>
+                        <button class='btn btn-sm btn-info faltas' data-toggle='modal' data-target='#modalExemplo' data-aluno='$idAluno' data-turma='$idTurma' data-disciplina='$nota->disciplina'>
+                            <span class='glyphicon glyphicon-eye-open'></span> Diario de Classe
+                        </button>
+                    </td>
+                </tr>
+            ";
+        }
+        
+        $args = [
+            'LOGADO' => $user->nome,
+            'ALUNO' => $aluno,
+            'TURMA' => "$turma->nome ($turma->ano)",
+            'NOTAS' => $notas,
+            'ALUNO_PDF' => $idAluno,
+            'TURMA_PDF' => $idTurma
+        ];
+
+        new Templates('responsavel/turma_aluno.html', $args,);
     }
 }
