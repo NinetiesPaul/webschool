@@ -69,7 +69,7 @@ class AlunoController extends AdminController
 
         $args = [
             'TURMAS' => $turmas,
-            'ALUNOS' => $alunos,
+            'ALUNOS:TABLE' => [ 'content' => $alunoQuery, 'id' => 'tableAlunos', 'class' => '', 'actionUrls' => 'aluno', 'actionContexts' => 'edit:disable' ],
         ];
 
         new Templates('admin/alunos/listar.html', $args);
