@@ -12,7 +12,7 @@
         <script src="../includes/js/disable_user.js"></script>
         <script>
             $(document).on('click', '.desativar', function(){
-                var id = $(this).closest("tr")[0].dataset['id'];
+                var id = $(this)[0].dataset['id'];
                 desativarUsuario(id, "aluno");
             });
             
@@ -59,19 +59,7 @@
                 <a href="/admin/aluno" class="btn btn-sm btn-primary" style="float: right;">Criar Aluno</a>
             </p>
 
-            <table class="table" id="tableAlunos">
-                <thead>
-                    <tr>
-                        <th style="width: 5%;">Id</th>
-                        <th>Nome</th>
-                        <th>Turma</th>
-                        <th style="width: 10%;"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {ALUNOS}
-                </tbody>
-            </table>
+            {ALUNOS}
         </div>
 
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
