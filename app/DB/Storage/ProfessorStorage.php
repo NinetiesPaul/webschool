@@ -18,7 +18,7 @@ class ProfessorStorage
     public function verProfessores()
     {
         $professorQuery = $this->db->query("
-            SELECT usuario.*,professor.id AS professor
+            SELECT usuario.id, usuario.nome,professor.id AS professor
             FROM usuario, professor
             WHERE usuario.id = professor.usuario
         ");
