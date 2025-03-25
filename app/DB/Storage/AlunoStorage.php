@@ -8,8 +8,6 @@ use PDO;
 
 class AlunoStorage extends DB
 {
-    public $db;
-    
     public function verAlunos()
     {
         $alunoQuery = $this->db->query("
