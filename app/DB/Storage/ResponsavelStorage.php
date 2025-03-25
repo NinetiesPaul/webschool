@@ -6,15 +6,8 @@ use App\DB\DB;
 use App\Enum;
 use PDO;
 
-class ResponsavelStorage
+class ResponsavelStorage extends DB
 {
-    public $db;
-    
-    public function __construct()
-    {
-        $this->db = new DB();
-    }
-
     public function verResponsaveis()
     {
         $responsavelQuery = $this->db->query("

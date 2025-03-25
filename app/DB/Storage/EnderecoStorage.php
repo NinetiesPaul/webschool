@@ -5,15 +5,8 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class EnderecoStorage
+class EnderecoStorage extends DB
 {
-    public $db;
-    
-    public function __construct()
-    {
-        $this->db = new DB();
-    }
-    
     public function inserirEndereco()
     {
         $endereco = $this->db->prepare("INSERT INTO endereco (estado) VALUES (:estado)");

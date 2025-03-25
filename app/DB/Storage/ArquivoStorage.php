@@ -5,15 +5,8 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class ArquivoStorage
+class ArquivoStorage extends DB
 {
-    public $db;
-    
-    public function __construct()
-    {
-        $this->db = new DB();
-    }
-    
     public function adicionarArquivo($file_name, $urlThumbFinal, $urlFinal, $dataComentario, $id)
     {
         $fileQuery = $this->db->prepare("

@@ -5,15 +5,8 @@ namespace App\DB\Storage;
 use APP\DB\DB;
 use PDO;
 
-class AvatarStorage
+class AvatarStorage extends DB
 {
-    protected $db;
-
-    public function __construct()
-    {
-        $this->db = new DB();
-    }
-
     public function inserirUsuarioNaAvatar($usuario)
     {
         $avatar = $this->db->prepare("INSERT INTO fotos_de_avatar (usuario) VALUES (:idUusuario)");

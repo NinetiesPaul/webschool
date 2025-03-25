@@ -5,15 +5,8 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class DiarioDeClasseStorage
+class DiarioDeClasseStorage extends DB
 {
-    public $db;
-    
-    public function __construct()
-    {
-        $this->db = new DB();
-    }
-    
     public function inserirDiarioDeClasse($diario)
     {
         $save = $this->db->prepare("INSERT INTO diario_de_classe (aluno, disciplina, turma, data, contexto, presenca) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), 'presenca', 0)");

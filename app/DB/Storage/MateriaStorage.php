@@ -5,15 +5,8 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class MateriaStorage
+class MateriaStorage extends DB
 {
-    protected $db;
-    
-    public function __construct()
-    {
-        $this->db = new DB();
-    }
-
     public function verMaterias()
     {
         $disciplinaQuery = $this->db->query("

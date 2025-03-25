@@ -6,15 +6,8 @@ use App\DB\DB;
 use App\Enum;
 use PDO;
 
-class ProfessorStorage
+class ProfessorStorage extends DB
 {
-    public $db;
-    
-    public function __construct()
-    {
-        $this->db = new DB();
-    }
-    
     public function verProfessores()
     {
         $professorQuery = $this->db->query("

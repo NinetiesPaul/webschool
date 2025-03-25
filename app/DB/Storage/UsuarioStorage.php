@@ -6,15 +6,8 @@ use App\DB\DB;
 use App\Enum;
 use PDO;
 
-class UsuarioStorage
+class UsuarioStorage extends DB
 {
-    protected $db;
-
-    public function __construct()
-    {
-        $this->db = new DB();
-    }
-
     public function inserirUsuario($usuario)
     {
         $user = $this->db->prepare("INSERT INTO usuario (nome, email, pass, endereco, salt) VALUES (:name, :email, :password, :endereco, :salt)
