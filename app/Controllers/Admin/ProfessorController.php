@@ -28,28 +28,8 @@ class ProfessorController extends AdminController
         $professorStorage = new ProfessorStorage();
         $professorQuery = $professorStorage->verProfessores();
 
-        $professores = '';
-
-        foreach ($professorQuery as $professor) {
-            $is_deleted = ($professor->is_deleted) ? "<span class='label-status_$professor->id label-success'>Ativo</span>" : "<span class='label-status_$professor->id label-danger'>Inativo</span>";
-            
-            $professores .="
-                <tr data-id='$professor->id'>
-                    <td>$professor->id</td>
-                    <td>
-                        $professor->nome<br/>
-                        $is_deleted
-                    </td>
-                    <td>
-                        <a href='professor/$professor->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span></a>
-                        <a href='#' class='btn btn-sm desativar'><span class='glyphicon glyphicon-ban-circle'></span></a>
-                    </td>
-                </tr>
-            ";
-        }
-
         $args = [
-            'PROFESSORES' => $professores,
+            'PROFESSORES:TABLE' => [ 'content' => $professorQuery, 'id' => 'tableProfessores', 'class' => '', 'actionUrls' => 'professor', 'actionContexts' => 'edit:disable' ],
         ];
 
         new Templates('admin/professores/listar.html', $args);

@@ -20,23 +20,8 @@ class TurmasController extends AdminController
         $turmaStorage = new TurmaStorage();
         $turmasQuery = $turmaStorage->verTurmas();
 
-        $turmas = '';
-
-        foreach ($turmasQuery as $turma) {
-            $turmas .="
-                <tr data-id='$turma->id'>
-                    <td>$turma->id</td>
-                    <td>$turma->nome ($turma->ano)</td>
-                    <td>
-                        <a href='turma/$turma->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span> </a>
-                        <a href='#' class='btn btn-sm' id='deletar'><span class='glyphicon glyphicon-trash'></span> </a>
-                    </td>
-                </tr>
-            ";
-        }
-
         $args = [
-            'TURMAS' => $turmas,
+            'TURMAS:TABLE' => [ 'content' => $turmasQuery, 'id' => '', 'class' => '', 'actionUrls' => 'turma', 'actionContexts' => 'edit:delete' ],
         ];
 
         new Templates('admin/turmas/listar.html', $args);

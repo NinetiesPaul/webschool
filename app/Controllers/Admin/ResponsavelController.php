@@ -25,28 +25,9 @@ class ResponsavelController extends AdminController
         $responsavelStorage = new ResponsavelStorage();
         $responsavelQuery = $responsavelStorage->verResponsaveis();
 
-        $responsaveis = '';
-
-        foreach ($responsavelQuery as $responsavel) {
-            $is_deleted = ($responsavel->is_deleted) ? "<span class='label-status_$responsavel->id label-success'>Ativo</span>" : "<span class='label-status_$responsavel->id label-danger'>Inativo</span>";
-           
-            $responsaveis .= "
-                <tr data-id='$responsavel->id'>
-                    <td>$responsavel->id </td>
-                    <td>
-                        $responsavel->nome<br/>
-                        $is_deleted
-                    </td>
-                    <td>
-                        <a href='responsavel/$responsavel->id' class='btn btn-sm'><span class='glyphicon glyphicon-edit'></span></a>
-                        <a href='#' class='btn btn-sm desativar' ><span class='glyphicon glyphicon-ban-circle'></span></a>
-                    </td>
-                </tr>
-            ";
-        }
-
         $args = [
-            'RESPONSAVEIS' => $responsaveis,
+            'RESPONSAVEIS:TABLE' => [ 'content' => $responsavelQuery, 'id' => 'tableResponsaveis', 'class' => '', 'actionUrls' => 'responsavel', 'actionContexts' => 'edit:disable' ],
+
         ];
 
         new Templates('admin/responsaveis/listar.html', $args);

@@ -18,7 +18,7 @@ class ResponsavelStorage
     public function verResponsaveis()
     {
         $responsavelQuery = $this->db->query("
-            SELECT usuario.*
+            SELECT usuario.id, usuario.nome
             FROM usuario, responsavel
             WHERE usuario.id=responsavel.usuario
         ");

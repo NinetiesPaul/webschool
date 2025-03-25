@@ -32,7 +32,13 @@ class Templates
             if (strpos($a, 'list')) {
                 $template = str_replace('{'.$a.'}', json_encode($b), $template);
             } else {
-                $template = str_replace('{'.$a.'}', $b, $template);
+                $explode = explode(":", $a);
+                if ($explode[1] == 'TABLE') {
+                    //$this->buildElement($b);
+                    $template = str_replace('{'.$explode[0].'}', $this->buildElement($b), $template);
+                } else {
+                    $template = str_replace('{'.$a.'}', $b, $template);
+                }
             }
         }
 
@@ -116,5 +122,54 @@ class Templates
     protected function createUrl($url)
     {
         return substr(url($url), 0, strlen($url) + 1);
+    }
+
+    protected function buildElement($tableContent)
+    {
+        return "
+            <table class='table " . $tableContent['class'] . "' id=" . $tableContent['id'] . ">
+                <thead>
+                    <tr>" .
+                        implode("", array_map(function($header) {
+                            return "<th" . (($header =='id') ? " style='width: 5%' " : '') . ">" . ucfirst($header) . "</th>";
+                        }, array_merge(array_keys((array) $tableContent['content'][0]), [''] )))
+                    . " </tr>
+                </thead>
+                <tbody>
+                    " .
+                    implode("",
+                        array_map(function($row) use($tableContent) {
+                            return "<tr>" . implode("", array_map(function($value) { 
+                                return "<td>" . $value . "</td>";
+                            }, (array) $row)) . $this->buildActionContexts($row->id, $tableContent['actionUrls'], $tableContent['actionContexts']) . "</tr>";
+                        }, (array) $tableContent['content'])
+                    )
+                    . "
+                </tbody>
+            </table>
+        ";
+    }
+
+    protected function buildActionContexts($id, $url, $contexts)
+    {
+        $actionContexts = '';
+
+        $contexts = explode(":", $contexts);
+
+        foreach ($contexts as $context) {
+            switch ($context) {
+                case 'edit':
+                    $actionContexts .= "<a class='btn btn-sm' href='$url/$id' ><span class='glyphicon glyphicon-edit'></span> </a>";
+                    break;
+                case 'delete':
+                    $actionContexts .= "<a class='btn btn-sm' href='#' id='deletar' data-id='$id'><span class='glyphicon glyphicon-trash'></span> </a>";
+                    break;
+                case 'disable':
+                    $actionContexts .= "<a class='btn btn-sm desativar' href='#' id='' data-id='$id'><span class='glyphicon glyphicon-ban-circle'></span> </a>";
+                    break;
+            }
+        }
+
+        return "<td style='width: 10%'>" . $actionContexts . "</td>";
     }
 }

@@ -18,7 +18,7 @@ class AlunoStorage
     public function verAlunos()
     {
         $alunoQuery = $this->db->query("
-            SELECT u.*,a.id AS aluno, CONCAT(t.nome, ' (', t.ano, ')') AS nome_turma
+            SELECT u.id, u.nome, a.id AS aluno, CONCAT(t.nome, ' (', t.ano, ')') AS `Turma`
             FROM usuario u
             JOIN aluno a ON a.usuario = u.id
             JOIN turma t ON t.id = a.turma
