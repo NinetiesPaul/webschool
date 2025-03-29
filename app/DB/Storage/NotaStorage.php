@@ -13,6 +13,7 @@ class NotaStorage extends DB
         $save->execute($nota);
     }
 
+    // todo: renomear pra alterar nota
     public function adicionarNota($data)
     {
         $aluno = $data['aluno'];

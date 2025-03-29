@@ -128,6 +128,7 @@ class AlunoStorage extends DB
         }
     }
 
+    // todo: refatorar metodo e quebrar cada chamada de deleção para o storage pertinente
     public function removerAluno($aluno, $usuario, $endereco, $footprint)
     {
         $user = $this->db->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");
@@ -240,7 +241,7 @@ class AlunoStorage extends DB
             FROM usuario, aluno
             WHERE usuario.id=aluno.usuario AND aluno.id=$id
         ");
-        $user = $userQuery->fetchObject();
+        $user = $userQuery->fetch(PDO::FETCH_OBJ);
 
         return $user->nome;
     }
@@ -252,7 +253,7 @@ class AlunoStorage extends DB
             FROM aluno
             WHERE id=$id
         ");
-        $turma = $turmaQuery->fetchObject();
+        $turma = $turmaQuery->fetch(PDO::FETCH_OBJ);
 
         return $turma->turma;
     }

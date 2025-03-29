@@ -58,6 +58,7 @@ class ResponsavelStorage extends DB
         $avatarStorage->inserirUsuarioNaAvatar($userId);
     }
 
+    // todo: refatorar metodo e quebrar cada chamada de deleção para o storage pertinente
     public function removerResponsavel($responsavel, $usuario, $endereco, $footprint)
     {
         $user = $this->db->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");

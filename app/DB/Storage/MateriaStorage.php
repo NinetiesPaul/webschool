@@ -61,7 +61,8 @@ class MateriaStorage extends DB
         }
     }
     
-    public function verMateriasPorProfessor()
+    // todo: remover; parece ser lixo
+    /*public function verMateriasPorProfessor()
     {
         $disciplinasQuery = $this->db->query("
             SELECT *
@@ -70,7 +71,7 @@ class MateriaStorage extends DB
         ");
 
         return $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
-    }
+    }*/
     
     public function verMateriaPorProfessorPorTurma($turma)
     {
@@ -83,7 +84,8 @@ class MateriaStorage extends DB
         return $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
     }
     
-    public function verMateriaPorProfessorPorId($id)
+    // todo: remover; parece ser lixo
+    /*public function verMateriaPorProfessorPorId($id)
     {
         $disciplinasQuery = $this->db->query("
             SELECT *
@@ -92,7 +94,7 @@ class MateriaStorage extends DB
         ");
 
         return $disciplinasQuery->fetchObject();
-    }
+    }*/
 
     public function verMateriasDoProfessor($professor)
     {
@@ -125,7 +127,7 @@ class MateriaStorage extends DB
             INNER JOIN turma ON turma.id = disciplina_por_professor.turma
             WHERE disciplina_por_professor.id=$id
         ");
-        return $disciplinaQuery->fetchObject();
+        return $disciplinaQuery->fetch(PDO::FETCH_OBJ);;
     }
 
     private function throwError($msg)

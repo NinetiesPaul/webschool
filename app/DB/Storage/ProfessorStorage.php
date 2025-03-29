@@ -58,6 +58,7 @@ class ProfessorStorage extends DB
         ]);
     }
     
+    // todo: refatorar metodo e quebrar cada chamada de deleção para o storage pertinente
     public function removerProfessor($professor, $usuario, $endereco, $footprint)
     {
         $user = $this->db->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");

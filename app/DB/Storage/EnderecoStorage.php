@@ -56,7 +56,7 @@ class EnderecoStorage extends DB
             FROM estado
             WHERE id=$id
         ");
-        $estado = $estadoQuery->fetchObject();
+        $estado = $estadoQuery->fetch(PDO::FETCH_OBJ);;
 
         return $estado->nome.', '.$estado->sigla;
     }
