@@ -80,4 +80,161 @@ class TurmaStorageTest extends TestCase
         $this->assertEquals('Turma A', $turmas->nome);
         $this->assertEquals(2021, $turmas->ano);
     }
+
+    public function testAdicionarTurmaRetornoValido(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock->expects($this->once())
+            ->method('prepare')
+            ->willReturn($stmtMock);
+
+        $stmtMock->expects($this->once())
+            ->method('execute')
+            ->willReturn(true);
+
+        $turmaMock = $this->getMockBuilder(TurmaStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(TurmaStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+
+        $dbProperty->setValue($turmaMock, $pdoMock);
+
+        $result = $turmaMock->adicionarTurma('string', 2000);
+
+        $this->assertEquals(null, $result);
+    }
+
+    public function testAlterarTurmaRetornoValido(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock->expects($this->once())
+            ->method('prepare')
+            ->willReturn($stmtMock);
+
+        $stmtMock->expects($this->once())
+            ->method('execute')
+            ->willReturn(true);
+
+        $turmaMock = $this->getMockBuilder(TurmaStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(TurmaStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+
+        $dbProperty->setValue($turmaMock, $pdoMock);
+
+        $result = $turmaMock->alterarTurma('string', 2000, 1);
+
+        $this->assertEquals(null, $result);
+    }
+
+    public function testRemoverTurmaRetornoValido(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock->expects($this->once())
+            ->method('prepare')
+            ->willReturn($stmtMock);
+
+        $stmtMock->expects($this->once())
+            ->method('execute')
+            ->willReturn(true);
+
+        $turmaMock = $this->getMockBuilder(TurmaStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(TurmaStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+
+        $dbProperty->setValue($turmaMock, $pdoMock);
+
+        $result = $turmaMock->removerTurma(1);
+
+        $this->assertEquals(null, $result);
+    }
+
+    public function testRemoverTurmaRetornoExcecao(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock->expects($this->once())
+            ->method('prepare')
+            ->willReturn($stmtMock);
+
+        $stmtMock->expects($this->once())
+            ->method('execute')
+            ->willReturn(true);
+
+        $stmtMock->expects($this->once())
+            ->method('rowCount')
+            ->willReturn(0);
+
+        $turmaMock = $this->getMockBuilder(TurmaStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(TurmaStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+
+        $dbProperty->setValue($turmaMock, $pdoMock);
+
+        $this->expectException(Exception::class);
+
+        $turmaMock->removerTurma(1);
+    }
+
+    public function testVerAlunosDaTurmaRetornoValido(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock->expects($this->once())
+            ->method('query')
+            ->willReturn($stmtMock);
+
+        $stmtMock->expects($this->once())
+            ->method('fetchAll')
+            ->willReturn([
+                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+            ]);
+
+        $turmaMock = $this->getMockBuilder(TurmaStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(TurmaStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+
+        $dbProperty->setValue($turmaMock, $pdoMock);
+
+        $turmas = $turmaMock->verAlunosDaTurma(1);
+
+        $this->assertIsArray($turmas);
+    }
 }
