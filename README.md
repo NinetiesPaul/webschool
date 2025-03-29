@@ -61,3 +61,11 @@ docker-compose exec php vendor/bin/phinx migrate
 ```
 
 8) Tudo pronto! Se nenhum dos comandos acima apresentaram erros de nenhum tipo o projeto está pronto para ser executado. Acesse através do endereço `http://localhost:8015`. Em dev, o software já vem com uma conta admin padrão, usuario `admin` e senha `admin`
+
+## Testes Unitários
+
+Para rodar tests unitários da aplicação, utilize o seguinte comando:
+
+```
+docker-compose -f docker-compose.yml run --rm php-unit bash -c 'vendor/bin/phpunit --testdox --coverage-html tests/coverage'
+```
