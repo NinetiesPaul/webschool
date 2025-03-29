@@ -30,7 +30,6 @@ class TurmaStorageTest extends TestCase
         $reflection = new ReflectionClass(TurmaStorage::class);
         $dbProperty = $reflection->getParentClass()->getProperty('db');
         $dbProperty->setAccessible(true);
-
         $dbProperty->setValue($turmaMock, $pdoMock);
 
         $turmas = $turmaMock->verTurmas();
@@ -70,7 +69,6 @@ class TurmaStorageTest extends TestCase
         $reflection = new ReflectionClass(TurmaStorage::class);
         $dbProperty = $reflection->getParentClass()->getProperty('db');
         $dbProperty->setAccessible(true);
-
         $dbProperty->setValue($turmaMock, $pdoMock);
 
         $turmas = $turmaMock->verTurma(1);
@@ -103,7 +101,6 @@ class TurmaStorageTest extends TestCase
         $reflection = new ReflectionClass(TurmaStorage::class);
         $dbProperty = $reflection->getParentClass()->getProperty('db');
         $dbProperty->setAccessible(true);
-
         $dbProperty->setValue($turmaMock, $pdoMock);
 
         $result = $turmaMock->adicionarTurma('string', 2000);
@@ -133,7 +130,6 @@ class TurmaStorageTest extends TestCase
         $reflection = new ReflectionClass(TurmaStorage::class);
         $dbProperty = $reflection->getParentClass()->getProperty('db');
         $dbProperty->setAccessible(true);
-
         $dbProperty->setValue($turmaMock, $pdoMock);
 
         $result = $turmaMock->alterarTurma('string', 2000, 1);
@@ -163,7 +159,6 @@ class TurmaStorageTest extends TestCase
         $reflection = new ReflectionClass(TurmaStorage::class);
         $dbProperty = $reflection->getParentClass()->getProperty('db');
         $dbProperty->setAccessible(true);
-
         $dbProperty->setValue($turmaMock, $pdoMock);
 
         $result = $turmaMock->removerTurma(1);
@@ -197,7 +192,6 @@ class TurmaStorageTest extends TestCase
         $reflection = new ReflectionClass(TurmaStorage::class);
         $dbProperty = $reflection->getParentClass()->getProperty('db');
         $dbProperty->setAccessible(true);
-
         $dbProperty->setValue($turmaMock, $pdoMock);
 
         $this->expectException(Exception::class);
@@ -230,7 +224,6 @@ class TurmaStorageTest extends TestCase
         $reflection = new ReflectionClass(TurmaStorage::class);
         $dbProperty = $reflection->getParentClass()->getProperty('db');
         $dbProperty->setAccessible(true);
-
         $dbProperty->setValue($turmaMock, $pdoMock);
 
         $turmas = $turmaMock->verAlunosDaTurma(1);
