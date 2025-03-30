@@ -23,7 +23,8 @@ class ArquivoStorage extends DB
         return $this->db->lastInsertId();
     }
 
-    public function verArquivosDoDiario($comentario)
+    // todo: repetido com o método seguinte (era usado em ProfessorController.php linha 373 dentro de verComentarios. por que?)
+    /*public function verArquivosDoDiario($comentario)
     {
         $arquivoQuery = $this->db->query("
             SELECT *
@@ -33,7 +34,7 @@ class ArquivoStorage extends DB
         ");
 
         return $arquivoQuery->fetch(PDO::FETCH_OBJ);
-    }
+    }*/
 
     public function verArquivoDoDiario($comentario)
     {
