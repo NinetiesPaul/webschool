@@ -70,14 +70,9 @@ class UsuarioStorage extends DB
         }
 
         $userQuery = $this->db->query($query);
-        $userQuery = $userQuery->fetchObject();
+        $userQuery = $userQuery->fetch(PDO::FETCH_OBJ);
 
-        $res = false;
-        if ($userQuery) {
-            $res = true;
-        }
-
-        return $res;
+        return ($userQuery) ? true : false;
     }
 
     public function verificarUsuario($alias, $turma, $tipo, $email)
@@ -90,6 +85,6 @@ class UsuarioStorage extends DB
             AND u.email = '$email'
         ");
 
-        return $usersQuery->fetchObject();
+        return $usersQuery->fetch(PDO::FETCH_OBJ);
     }
 }
