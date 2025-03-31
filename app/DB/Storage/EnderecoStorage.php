@@ -7,6 +7,11 @@ use PDO;
 
 class EnderecoStorage extends DB
 {
+    public function __construct(?PDO $db = null)
+    {
+        parent::__construct($db);
+    }
+
     public function inserirEndereco()
     {
         $endereco = $this->db->prepare("INSERT INTO endereco (estado) VALUES (:estado)");
@@ -69,5 +74,18 @@ class EnderecoStorage extends DB
             ORDER BY nome
         ");
         return $estadoQuery->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public function deletarEndereco($usuario, $endereco)
+    {
+        $user = $this->db->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");
+        $user->execute([
+            'id' => $usuario,
+        ]);
+
+        $user = $this->db->prepare("DELETE FROM endereco WHERE id = :endereco;");
+        $user->execute([
+            'endereco' => $endereco,
+        ]);
     }
 }

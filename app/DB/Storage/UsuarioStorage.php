@@ -8,6 +8,11 @@ use PDO;
 
 class UsuarioStorage extends DB
 {
+    public function __construct(?PDO $db = null)
+    {
+        parent::__construct($db);
+    }
+
     public function inserirUsuario($usuario)
     {
         $user = $this->db->prepare("INSERT INTO usuario (nome, email, pass, endereco, salt) VALUES (:name, :email, :password, :endereco, :salt)
@@ -86,5 +91,13 @@ class UsuarioStorage extends DB
         ");
 
         return $usersQuery->fetch(PDO::FETCH_OBJ);
+    }
+
+    public function deletarUsuario($usuario)
+    {
+        $user = $this->db->prepare("DELETE FROM usuario WHERE id = :id;");
+        $user->execute([
+            'id' => $usuario,
+        ]);
     }
 }

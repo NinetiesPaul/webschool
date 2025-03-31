@@ -8,6 +8,11 @@ use PDO;
 
 class AvatarStorage extends DB
 {
+    public function __construct(?PDO $db = null)
+    {
+        parent::__construct($db);
+    }
+
     public function inserirUsuarioNaAvatar($usuario)
     {
         $avatar = $this->db->prepare("INSERT INTO fotos_de_avatar (usuario) VALUES (:idUusuario)");
@@ -59,5 +64,13 @@ class AvatarStorage extends DB
         ");
 
         return $avatarQuery->fetch(PDO::FETCH_OBJ);
+    }
+
+    public function deletarAvatarDoUsuario($usuario)
+    {
+        $user = $this->db->prepare("DELETE FROM fotos_de_avatar WHERE usuario = :id;");
+        $user->execute([
+            'id' => $usuario,
+        ]);
     }
 }
