@@ -66,6 +66,36 @@ class ResponsavelStorageTest extends TestCase
         $this->assertInstanceOf(stdClass::class, $resultado);
     }
 
+    public function testRemoverResponsavelRetornoValido(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock
+            ->method('prepare')
+            ->willReturn($stmtMock);
+
+        $stmtMock
+            ->method('execute')
+            ->willReturn(true);
+
+        $responsavelMock = $this->getMockBuilder(ResponsavelStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(ResponsavelStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+        $dbProperty->setValue($responsavelMock, $pdoMock);
+
+
+        $resultado = $responsavelMock->removerResponsavel(1, 1, 1, [ 'usuario' => (object) [ 'nome' => 'responsavel' ] ]);
+
+        $this->assertEquals(null, $resultado);
+    }
+
     public function testAdicionarAlunoPorResponsavelRetornoValido(): void
     {
         $pdoMock = $this->createMock(PDO::class);
