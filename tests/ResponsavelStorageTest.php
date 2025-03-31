@@ -66,6 +66,68 @@ class ResponsavelStorageTest extends TestCase
         $this->assertInstanceOf(stdClass::class, $resultado);
     }
 
+    public function testAdicionarResponsavelRetornoValido(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock->method('query')
+            ->willReturn($stmtMock);
+
+        $stmtMock->method('fetch')
+            ->willReturn(false);
+
+        $pdoMock
+            ->method('prepare')
+            ->willReturn($stmtMock);
+
+        $stmtMock
+            ->method('execute')
+            ->willReturn(true);
+
+        $responsavelMock = $this->getMockBuilder(ResponsavelStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(ResponsavelStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+        $dbProperty->setValue($responsavelMock, $pdoMock);
+
+        $resultado = $responsavelMock->adicionarResponsavel('email', 'nome', 'password', 'salt');
+
+        $this->assertEquals(null, $resultado);
+    }
+
+    public function testAdicionarResponsavelUsuarioJaExiste(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock->method('query')
+            ->willReturn($stmtMock);
+
+        $stmtMock->method('fetch')
+            ->willReturn(true);
+
+        $responsavelMock = $this->getMockBuilder(ResponsavelStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(ResponsavelStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+        $dbProperty->setValue($responsavelMock, $pdoMock);
+
+        $resultado = $responsavelMock->adicionarResponsavel('email', 'nome', 'password', 'salt');
+
+        $this->assertEquals(false, $resultado);
+    }
+
     public function testRemoverResponsavelRetornoValido(): void
     {
         $pdoMock = $this->createMock(PDO::class);
