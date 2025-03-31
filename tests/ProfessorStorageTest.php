@@ -65,6 +65,98 @@ class ProfessorStorageTest extends TestCase
         $this->assertInstanceOf(stdClass::class, $professor);
     }
 
+    public function testAdicionarProfessorRetornoValido(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock->method('query')
+            ->willReturn($stmtMock);
+
+        $stmtMock->method('fetch')
+            ->willReturn(false);
+
+        $pdoMock
+            ->method('prepare')
+            ->willReturn($stmtMock);
+
+        $stmtMock
+            ->method('execute')
+            ->willReturn(true);
+
+        $professorMock = $this->getMockBuilder(ProfessorStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(ProfessorStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+        $dbProperty->setValue($professorMock, $pdoMock);
+
+        $resultado = $professorMock->adicionarProfessor('email', 'nome', 'password', 'salt');
+
+        $this->assertEquals(null, $resultado);
+    }
+
+    public function testAdicionarProfessorUsuarioJaExiste(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock->method('query')
+            ->willReturn($stmtMock);
+
+        $stmtMock->method('fetch')
+            ->willReturn(true);
+
+        $professorMock = $this->getMockBuilder(ProfessorStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(ProfessorStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+        $dbProperty->setValue($professorMock, $pdoMock);
+
+        $resultado = $professorMock->adicionarProfessor('email', 'nome', 'password', 'salt');
+
+        $this->assertEquals(false, $resultado);
+    }
+
+    public function testRemoverProfessorRetornoValido(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock
+            ->method('prepare')
+            ->willReturn($stmtMock);
+
+        $stmtMock
+            ->method('execute')
+            ->willReturn(true);
+
+        $professorMock = $this->getMockBuilder(ProfessorStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(ProfessorStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+        $dbProperty->setValue($professorMock, $pdoMock);
+
+
+        $resultado = $professorMock->removerProfessor(1, 1, 1, [ 'usuario' => (object) [ 'nome' => 'responsavel' ] ]);
+
+        $this->assertEquals(null, $resultado);
+    }
+
     public function testDesativarProfessorRetornoValido(): void
     {
         $pdoMock = $this->createMock(PDO::class);
@@ -165,36 +257,6 @@ class ProfessorStorageTest extends TestCase
         $this->expectException(Exception::class);
         $professorMock->desativarProfessor(1);
     }
-
-    /*public function testVerProfessorDoResponsavelRetornoValido(): void
-    {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([]);
-
-        $professorMock = $this->getMockBuilder(ProfessorStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(ProfessorStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-
-        $dbProperty->setValue($professorMock, $pdoMock);
-
-        $turmas = $professorMock->verProfessorsDoResponsavel(1);
-
-        $this->assertIsArray($turmas);
-    }*/
 
     public function testVerificarMateriaPorProfessorRetornoValido(): void
     {
