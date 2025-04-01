@@ -134,6 +134,75 @@ class AlunoStorageTest extends TestCase
         $this->assertEquals(false, $resultado);
     }
 
+    public function testAlterarAlunoRetornoValido(): void
+    {
+        
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock->method('query')
+            ->willReturnOnConsecutiveCalls($stmtMock, $stmtMock, $stmtMock);
+
+        $stmtMock->method('fetch')
+            ->willReturn(false);
+
+        $pdoMock->method('prepare')
+            ->willReturn($stmtMock);
+
+        $stmtMock->method('execute')
+            ->willReturn(true);
+
+        $stmtMock
+            ->method('fetchAll')
+            ->willReturnOnConsecutiveCalls(
+                [ (object)[ 'disciplina' => 1 ] ],
+                false,
+                false
+            );
+
+        $alunoMock = $this->getMockBuilder(AlunoStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(AlunoStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+        $dbProperty->setValue($alunoMock, $pdoMock);
+
+        $resultado = $alunoMock->alterarAluno(1, 1, 1);
+
+        $this->assertEquals(null, $resultado);
+    }
+
+    public function testRemoverAlunoRetornoValido(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock->method('prepare')
+            ->willReturn($stmtMock);
+
+        $stmtMock->method('execute')
+            ->willReturn(true);
+
+        $alunoMock = $this->getMockBuilder(AlunoStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(AlunoStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+        $dbProperty->setValue($alunoMock, $pdoMock);
+
+        $resultado = $alunoMock->removerAluno(1, 1, 1, [ 'usuario' => (object) [ 'nome' => 'responsavel' ] ]);
+
+        $this->assertEquals(null, $resultado);
+    }
+
     public function testDesativarAlunoRetornoValido(): void
     {
         $pdoMock = $this->createMock(PDO::class);
