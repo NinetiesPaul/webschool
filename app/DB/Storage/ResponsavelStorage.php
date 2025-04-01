@@ -6,15 +6,8 @@ use App\DB\DB;
 use App\Enum;
 use PDO;
 
-class ResponsavelStorage
+class ResponsavelStorage extends DB
 {
-    public $db;
-    
-    public function __construct()
-    {
-        $this->db = new DB();
-    }
-
     public function verResponsaveis()
     {
         $responsavelQuery = $this->db->query("
@@ -39,15 +32,14 @@ class ResponsavelStorage
     
     public function adicionarResponsavel($email, $nome, $password, $salt)
     {
-        $usuarioStorage = new UsuarioStorage();
+        $usuarioStorage = new UsuarioStorage($this->db);
         if ($usuarioStorage->loginTaken($email, Enum::TIPO_RESPONSAVEL)) {
             return false;
         }
 
-        $enderecoStorage = new EnderecoStorage();
+        $enderecoStorage = new EnderecoStorage($this->db);
         $idEndereco = $enderecoStorage->inserirEndereco();
 
-        $usuarioStorage = new UsuarioStorage();
         $userId = $usuarioStorage->inserirUsuario([
             'name' => $nome,
             'email' => $email,
@@ -61,26 +53,18 @@ class ResponsavelStorage
             'idUusuario' => $userId,
         ]);
 
-        $avatarStorage = new AvatarStorage();
+        $avatarStorage = new AvatarStorage($this->db);
         $avatarStorage->inserirUsuarioNaAvatar($userId);
     }
 
+    // todo: refatorar metodo e quebrar cada chamada de deleção para o storage pertinente
     public function removerResponsavel($responsavel, $usuario, $endereco, $footprint)
     {
-        $user = $this->db->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");
-        $user->execute([
-            'id' => $usuario,
-        ]);
+        $enderecoStorage = new EnderecoStorage($this->db);
+        $enderecoStorage->deletarEndereco($usuario, $endereco);
 
-        $user = $this->db->prepare("DELETE FROM endereco WHERE id = :endereco;");
-        $user->execute([
-            'endereco' => $endereco,
-        ]);
-
-        $user = $this->db->prepare("DELETE FROM fotos_de_avatar WHERE usuario = :id;");
-        $user->execute([
-            'id' => $usuario,
-        ]);
+        $avatarStorage = new AvatarStorage($this->db);
+        $avatarStorage->deletarAvatarDoUsuario($usuario);
 
         $user = $this->db->prepare("DELETE FROM responsavel_por_aluno WHERE responsavel = :aluno;");
         $user->execute([
@@ -92,10 +76,8 @@ class ResponsavelStorage
             'responsavel' => $responsavel,
         ]);
 
-        $user = $this->db->prepare("DELETE FROM usuario WHERE id = :id;");
-        $user->execute([
-            'id' => $usuario,
-        ]);
+        $usuarioStorage = new UsuarioStorage($this->db);
+        $usuarioStorage->deletarUsuario($usuario);
         
         $footprintBackup = $this->db->prepare("INSERT INTO usuarios_deletados (tipo, nome, footprint, deletado_em) VALUES ('responsavel', :nome, :footprint, NOW())");
         $footprintBackup->execute([

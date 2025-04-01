@@ -6,13 +6,11 @@ use App\DB\DB;
 use App\Enum;
 use PDO;
 
-class UsuarioStorage
+class UsuarioStorage extends DB
 {
-    protected $db;
-
-    public function __construct()
+    public function __construct(?PDO $db = null)
     {
-        $this->db = new DB();
+        parent::__construct($db);
     }
 
     public function inserirUsuario($usuario)
@@ -77,14 +75,9 @@ class UsuarioStorage
         }
 
         $userQuery = $this->db->query($query);
-        $userQuery = $userQuery->fetchObject();
+        $userQuery = $userQuery->fetch(PDO::FETCH_OBJ);
 
-        $res = false;
-        if ($userQuery) {
-            $res = true;
-        }
-
-        return $res;
+        return ($userQuery) ? true : false;
     }
 
     public function verificarUsuario($alias, $turma, $tipo, $email)
@@ -97,6 +90,14 @@ class UsuarioStorage
             AND u.email = '$email'
         ");
 
-        return $usersQuery->fetchObject();
+        return $usersQuery->fetch(PDO::FETCH_OBJ);
+    }
+
+    public function deletarUsuario($usuario)
+    {
+        $user = $this->db->prepare("DELETE FROM usuario WHERE id = :id;");
+        $user->execute([
+            'id' => $usuario,
+        ]);
     }
 }

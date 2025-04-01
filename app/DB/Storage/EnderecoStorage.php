@@ -5,15 +5,13 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class EnderecoStorage
+class EnderecoStorage extends DB
 {
-    public $db;
-    
-    public function __construct()
+    public function __construct(?PDO $db = null)
     {
-        $this->db = new DB();
+        parent::__construct($db);
     }
-    
+
     public function inserirEndereco()
     {
         $endereco = $this->db->prepare("INSERT INTO endereco (estado) VALUES (:estado)");
@@ -63,7 +61,7 @@ class EnderecoStorage
             FROM estado
             WHERE id=$id
         ");
-        $estado = $estadoQuery->fetchObject();
+        $estado = $estadoQuery->fetch(PDO::FETCH_OBJ);;
 
         return $estado->nome.', '.$estado->sigla;
     }
@@ -76,5 +74,18 @@ class EnderecoStorage
             ORDER BY nome
         ");
         return $estadoQuery->fetchAll(PDO::FETCH_OBJ);
+    }
+
+    public function deletarEndereco($usuario, $endereco)
+    {
+        $user = $this->db->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");
+        $user->execute([
+            'id' => $usuario,
+        ]);
+
+        $user = $this->db->prepare("DELETE FROM endereco WHERE id = :endereco;");
+        $user->execute([
+            'endereco' => $endereco,
+        ]);
     }
 }

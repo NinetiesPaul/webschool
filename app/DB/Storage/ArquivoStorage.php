@@ -5,15 +5,8 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class ArquivoStorage
+class ArquivoStorage extends DB
 {
-    public $db;
-    
-    public function __construct()
-    {
-        $this->db = new DB();
-    }
-    
     public function adicionarArquivo($file_name, $urlThumbFinal, $urlFinal, $dataComentario, $id)
     {
         $fileQuery = $this->db->prepare("
@@ -30,7 +23,8 @@ class ArquivoStorage
         return $this->db->lastInsertId();
     }
 
-    public function verArquivosDoDiario($comentario)
+    // todo: repetido com o método seguinte (era usado em ProfessorController.php linha 373 dentro de verComentarios. por que?)
+    /*public function verArquivosDoDiario($comentario)
     {
         $arquivoQuery = $this->db->query("
             SELECT *
@@ -40,7 +34,7 @@ class ArquivoStorage
         ");
 
         return $arquivoQuery->fetch(PDO::FETCH_OBJ);
-    }
+    }*/
 
     public function verArquivoDoDiario($comentario)
     {

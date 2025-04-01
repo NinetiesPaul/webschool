@@ -2,16 +2,15 @@
 
 namespace App\DB\Storage;
 
-use APP\DB\DB;
+use App\DB\DB;
+use App\Util;
 use PDO;
 
-class AvatarStorage
+class AvatarStorage extends DB
 {
-    protected $db;
-
-    public function __construct()
+    public function __construct(?PDO $db = null)
     {
-        $this->db = new DB();
+        parent::__construct($db);
     }
 
     public function inserirUsuarioNaAvatar($usuario)
@@ -22,6 +21,7 @@ class AvatarStorage
         ]);
     }
 
+    // todo: precisa mesmo excluir e depois reinserir?
     public function atualizarAvatar($urlFinal, $urlThumbFinal, $userId)
     {
         $avatarQuery = $this->db->query("
@@ -30,11 +30,12 @@ class AvatarStorage
             WHERE usuario=$userId
         ");
 
-        $avatar = $avatarQuery->fetchObject();
+        $avatar = $avatarQuery->fetch(PDO::FETCH_OBJ);;
 
         if ($avatar) {
-            unlink($avatar->endereco_thumb);
-            unlink($avatar->endereco);
+            $util = new Util();
+            $util->removerArquivo($avatar->endereco_thumb);
+            $util->removerArquivo($avatar->endereco);
 
             $deleteAvatar = $this->db->prepare("DELETE FROM fotos_de_avatar WHERE usuario=:idUsuario");
 
@@ -63,5 +64,13 @@ class AvatarStorage
         ");
 
         return $avatarQuery->fetch(PDO::FETCH_OBJ);
+    }
+
+    public function deletarAvatarDoUsuario($usuario)
+    {
+        $user = $this->db->prepare("DELETE FROM fotos_de_avatar WHERE usuario = :id;");
+        $user->execute([
+            'id' => $usuario,
+        ]);
     }
 }

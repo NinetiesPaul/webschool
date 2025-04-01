@@ -5,13 +5,11 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class MateriaStorage
+class MateriaStorage extends DB
 {
-    protected $db;
-    
-    public function __construct()
+    public function __construct(?PDO $db = null)
     {
-        $this->db = new DB();
+        parent::__construct($db);
     }
 
     public function verMaterias()
@@ -68,7 +66,8 @@ class MateriaStorage
         }
     }
     
-    public function verMateriasPorProfessor()
+    // todo: remover; parece ser lixo
+    /*public function verMateriasPorProfessor()
     {
         $disciplinasQuery = $this->db->query("
             SELECT *
@@ -77,7 +76,7 @@ class MateriaStorage
         ");
 
         return $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
-    }
+    }*/
     
     public function verMateriaPorProfessorPorTurma($turma)
     {
@@ -90,7 +89,8 @@ class MateriaStorage
         return $disciplinasQuery->fetchAll(PDO::FETCH_OBJ);
     }
     
-    public function verMateriaPorProfessorPorId($id)
+    // todo: remover; parece ser lixo
+    /*public function verMateriaPorProfessorPorId($id)
     {
         $disciplinasQuery = $this->db->query("
             SELECT *
@@ -99,7 +99,7 @@ class MateriaStorage
         ");
 
         return $disciplinasQuery->fetchObject();
-    }
+    }*/
 
     public function verMateriasDoProfessor($professor)
     {
@@ -132,7 +132,7 @@ class MateriaStorage
             INNER JOIN turma ON turma.id = disciplina_por_professor.turma
             WHERE disciplina_por_professor.id=$id
         ");
-        return $disciplinaQuery->fetchObject();
+        return $disciplinaQuery->fetch(PDO::FETCH_OBJ);;
     }
 
     private function throwError($msg)
