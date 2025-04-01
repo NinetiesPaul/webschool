@@ -34,15 +34,14 @@ class AlunoStorage extends DB
 
     public function adicionarAluno($email, $nome, $password, $salt, $turma)
     {
-        $usuarioStorage = new UsuarioStorage();
+        $usuarioStorage = new UsuarioStorage($this->db);
         if ($usuarioStorage->loginTaken($email, Enum::TIPO_ALUNO)) {
             return false;
         }
         
-        $enderecoStorage = new EnderecoStorage();
+        $enderecoStorage = new EnderecoStorage($this->db);
         $idEndereco = $enderecoStorage->inserirEndereco();
         
-        $usuarioStorage = new UsuarioStorage();
         $userId = $usuarioStorage->inserirUsuario([
             'name' => $nome,
             'email' => $email,
@@ -51,9 +50,6 @@ class AlunoStorage extends DB
             'salt' => $salt,
         ]);
 
-        $avatarStorage = new AvatarStorage();
-        $avatarStorage->inserirUsuarioNaAvatar($userId);
-
         $aluno = $this->db->prepare("INSERT INTO aluno (usuario, turma) VALUES (:idUusuario, :idTurma)");
         $aluno->execute([
             'idUusuario' => $userId,
@@ -61,19 +57,22 @@ class AlunoStorage extends DB
         ]);
 
         $lastid = (int) $this->db->lastInsertId();
+
+        $avatarStorage = new AvatarStorage($this->db);
+        $avatarStorage->inserirUsuarioNaAvatar($userId);
         
-        $materiaStorage = new MateriaStorage();
+        $materiaStorage = new MateriaStorage($this->db);
         $disciplinas = $materiaStorage->verMateriaPorProfessorPorTurma($turma);
 
         foreach ($disciplinas as $disciplina) {           
-            $notaStorage = new NotaStorage();
+            $notaStorage = new NotaStorage($this->db);
             $notaStorage->inserirNota([
                 'idAluno' => $lastid,
                 'idDisciplina' => $disciplina->disciplina,
                 'idTurma' => $turma,
             ]);
                         
-            $diarioStorage = new DiarioDeClasseStorage();
+            $diarioStorage = new DiarioDeClasseStorage($this->db);
             $diarioStorage->inserirDiarioDeClasse([
                 'idAluno' => $lastid,
                 'idDisciplina' => $disciplina->disciplina,
