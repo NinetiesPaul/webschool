@@ -89,7 +89,7 @@ class AlunoStorage extends DB
             'idUusuario' => $userId,
         ]);
         
-        $materiaStorage = new MateriaStorage();
+        $materiaStorage = new MateriaStorage($this->db);
         $disciplinas = $materiaStorage->verMateriaPorProfessorPorTurma($turma);
 
         foreach ($disciplinas as $disciplina) {
@@ -101,7 +101,7 @@ class AlunoStorage extends DB
             $checkDisciplina = $checkDisciplinaQuery->fetchAll(PDO::FETCH_OBJ);
             
             if (empty($checkDisciplina)) {
-                $notaStorage = new NotaStorage();
+                $notaStorage = new NotaStorage($this->db);
                 $notaStorage->inserirNota([
                     'idAluno' => $idAluno,
                     'idDisciplina' => $disciplina->disciplina,
@@ -117,7 +117,7 @@ class AlunoStorage extends DB
             $checkDiario = $checkDiarioQuery->fetchAll(PDO::FETCH_OBJ);
 
             if (empty($checkDiario)) {
-                $diarioStorage = new DiarioDeClasseStorage();
+                $diarioStorage = new DiarioDeClasseStorage($this->db);
                 $diarioStorage->inserirDiarioDeClasse([
                     'idAluno' => $idAluno,
                     'idDisciplina' => $disciplina->disciplina,
@@ -130,23 +130,11 @@ class AlunoStorage extends DB
     // todo: refatorar metodo e quebrar cada chamada de deleção para o storage pertinente
     public function removerAluno($aluno, $usuario, $endereco, $footprint)
     {
-        $user = $this->db->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");
+        $enderecoStorage = new EnderecoStorage($this->db);
+        $enderecoStorage->deletarEndereco($usuario, $endereco);
 
-        $user->execute([
-            'id' => $usuario,
-        ]);
-
-        $user = $this->db->prepare("DELETE FROM endereco WHERE id = :endereco;");
-
-        $user->execute([
-            'endereco' => $endereco,
-        ]);
-
-        $user = $this->db->prepare("DELETE FROM fotos_de_avatar WHERE usuario = :id;");
-
-        $user->execute([
-            'id' => $usuario,
-        ]);
+        $avatarStorage = new AvatarStorage($this->db);
+        $avatarStorage->deletarAvatarDoUsuario($usuario);
 
         $user = $this->db->prepare("DELETE FROM arquivos WHERE diario in (SELECT id FROM diario_de_classe WHERE aluno = :aluno AND contexto = 'observacao');");
 
@@ -178,11 +166,8 @@ class AlunoStorage extends DB
             'id' => $usuario,
         ]);
 
-        $user = $this->db->prepare("DELETE FROM usuario WHERE id = :id;");
-
-        $user->execute([
-            'id' => $usuario,
-        ]);
+        $usuarioStorage = new UsuarioStorage($this->db);
+        $usuarioStorage->deletarUsuario($usuario);
         
         $footprintBackup = $this->db->prepare("INSERT INTO usuarios_deletados (tipo, nome, footprint, deletado_em) VALUES ('aluno', :nome, :footprint, NOW())");
         $footprintBackup->execute([
