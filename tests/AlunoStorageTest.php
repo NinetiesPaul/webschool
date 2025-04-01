@@ -65,6 +65,75 @@ class AlunoStorageTest extends TestCase
         $this->assertInstanceOf(stdClass::class, $alunos);
     }
 
+    public function testAdicionarAlunoRetornoValido(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock->method('query')
+            ->willReturn($stmtMock);
+
+        $stmtMock->method('fetch')
+            ->willReturn(false);
+
+        $pdoMock->method('prepare')
+            ->willReturn($stmtMock);
+
+        $stmtMock->method('execute')
+            ->willReturn(true);
+
+        $stmtMock
+            ->method('fetchAll')
+            ->willReturn(
+                [
+                    (object)[ 'disciplina' => 1 ],
+                    (object)[ 'disciplina' => 2 ]
+                ]
+            );
+
+        $alunoMock = $this->getMockBuilder(AlunoStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(AlunoStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+        $dbProperty->setValue($alunoMock, $pdoMock);
+
+        $resultado = $alunoMock->adicionarAluno('email', 'nome', 'password', 'salt', 1);
+
+        $this->assertEquals(null, $resultado);
+    }
+
+    public function testAdicionarAlunoUsuarioJaExiste(): void
+    {
+        $pdoMock = $this->createMock(PDO::class);
+
+        $stmtMock = $this->createMock(PDOStatement::class);
+
+        $pdoMock->method('query')
+            ->willReturn($stmtMock);
+
+        $stmtMock->method('fetch')
+            ->willReturn(true);
+
+        $alunoMock = $this->getMockBuilder(AlunoStorage::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['__construct'])
+            ->getMock();
+
+        $reflection = new ReflectionClass(AlunoStorage::class);
+        $dbProperty = $reflection->getParentClass()->getProperty('db');
+        $dbProperty->setAccessible(true);
+        $dbProperty->setValue($alunoMock, $pdoMock);
+
+        $resultado = $alunoMock->adicionarAluno('email', 'nome', 'password', 'salt', 1);
+
+        $this->assertEquals(false, $resultado);
+    }
+
     public function testDesativarAlunoRetornoValido(): void
     {
         $pdoMock = $this->createMock(PDO::class);
