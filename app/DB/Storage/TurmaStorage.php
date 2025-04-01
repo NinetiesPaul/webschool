@@ -7,6 +7,11 @@ use PDO;
 
 class TurmaStorage extends DB
 {
+    public function __construct(?PDO $db = null)
+    {
+        parent::__construct($db);
+    }
+
     public function verTurmas()
     {
         $turmas = $this->db->query("

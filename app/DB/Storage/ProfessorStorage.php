@@ -126,26 +126,26 @@ class ProfessorStorage extends DB
     
     public function adicionarMateriaPorProfessor($disciplina, $turma, $professor)
     {
-        $user = $this->db->prepare("INSERT INTO disciplina_por_professor (professor, disciplina, turma) VALUES (:idProfessor, :idDisciplina, :idTurma)");
+        $disciplinaPorProfessor = $this->db->prepare("INSERT INTO disciplina_por_professor (professor, disciplina, turma) VALUES (:idProfessor, :idDisciplina, :idTurma)");
 
-        $user->execute([
+        $disciplinaPorProfessor->execute([
             'idProfessor' => $professor,
             'idDisciplina' => $disciplina,
             'idTurma' => $turma,
         ]);
         
-        $turmaStorage = new TurmaStorage();
+        $turmaStorage = new TurmaStorage($this->db);
         $alunos = $turmaStorage->verAlunosDaTurma($turma);
 
         foreach ($alunos as $aluno) {           
-            $notaStorage = new NotaStorage();
+            $notaStorage = new NotaStorage($this->db);
             $notaStorage->inserirNota([
                 'idAluno' => $aluno->id,
                 'idDisciplina' => $disciplina,
                 'idTurma' => $turma,
             ]);
                         
-            $diarioStorage = new DiarioDeClasseStorage();
+            $diarioStorage = new DiarioDeClasseStorage($this->db);
             $diarioStorage->inserirDiarioDeClasse([
                 'idAluno' => $aluno->id,
                 'idDisciplina' => $disciplina,

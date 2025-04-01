@@ -7,6 +7,11 @@ use PDO;
 
 class DiarioDeClasseStorage extends DB
 {
+    public function __construct(?PDO $db = null)
+    {
+        parent::__construct($db);
+    }
+
     public function inserirDiarioDeClasse($diario)
     {
         $save = $this->db->prepare("INSERT INTO diario_de_classe (aluno, disciplina, turma, data, contexto, presenca) VALUES (:idAluno, :idDisciplina, :idTurma, NOW(), 'presenca', 0)");
