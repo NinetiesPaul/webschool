@@ -244,7 +244,6 @@ class GeneralController
             'LOGADO' => $user->nome,
             'ESTADOS' => $estados,
             'ESTADO_ATUAL' => $this->enderecoStorage->pegarEstadoPeloEstado($user->endereco->estado),
-            'ON_PROFILE' => true,
         ];
         
         new Templates('perfil.html', $args);
