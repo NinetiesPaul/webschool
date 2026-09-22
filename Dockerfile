@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:8.2-apache
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
@@ -23,7 +23,7 @@ RUN docker-php-ext-install mysqli pdo_mysql gd
 
 RUN docker-php-ext-enable gd
 
-RUN pecl install xdebug-3.1.5
+RUN pecl install xdebug-3.2.2
 
 RUN docker-php-ext-enable xdebug
 
