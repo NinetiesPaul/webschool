@@ -1,163 +1,119 @@
 <?php declare(strict_types=1);
 
 use App\DB\Storage\EnderecoStorage;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
 class EnderecoStorageTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     public function testInserirNotaRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
+        $pdoMock->shouldReceive('lastInsertId')
+            ->once()
+            ->andReturn('1');
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $pdoMock->expects($this->once())
-            ->method('lastInsertId')
-            ->willReturn(1);
-
-        $enderecoMock = $this->getMockBuilder(EnderecoStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(EnderecoStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($enderecoMock, $pdoMock);
-
-        $result = $enderecoMock->inserirEndereco();
+        $result = $this->createEnderecoStorage($pdoMock)->inserirEndereco();
 
         $this->assertEquals(1, $result);
     }
 
     public function testAdicionarNotaRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
+        $resultado = $this->createEnderecoStorage($pdoMock)->atualizarEndereco(
+            'rua',
+            '1',
+            'bairro',
+            'complemento',
+            'cidade',
+            'cep',
+            'estado',
+            'endereco'
+        );
 
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $enderecoMock = $this->getMockBuilder(EnderecoStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(EnderecoStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($enderecoMock, $pdoMock);
-
-        $result = $enderecoMock->atualizarEndereco('rua', '1', 'bairro', 'complemento', 'cidade', 'cep', 'estado', 'endereco');
-
-        $this->assertEquals(null, $result);
+        $this->assertNull($resultado);
     }
 
     public function testVerEnderecoRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetch')
+            ->once()
+            ->andReturn((object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021]);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetch')
-            ->willReturn(
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                );
-
-        $enderecoMock = $this->getMockBuilder(EnderecoStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(EnderecoStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($enderecoMock, $pdoMock);
-
-        $endereco = $enderecoMock->verEndereco(1);
+        $endereco = $this->createEnderecoStorage($pdoMock)->verEndereco(1);
 
         $this->assertInstanceOf(stdClass::class, $endereco);
     }
 
     public function testPegarEstadoPeloEstadoRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetch')
+            ->once()
+            ->andReturn((object) ['nome' => 'nome', 'sigla' => 'sigla']);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetch')
-            ->willReturn(
-                (object) ['nome' => 'nome', 'sigla' => 'sigla' ],
-                );
-
-        $enderecoMock = $this->getMockBuilder(EnderecoStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(EnderecoStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($enderecoMock, $pdoMock);
-
-        $estado = $enderecoMock->pegarEstadoPeloEstado(1);
+        $estado = $this->createEnderecoStorage($pdoMock)->pegarEstadoPeloEstado(1);
 
         $this->assertEquals('nome, sigla', $estado);
     }
 
     public function testPegarEstadosRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $enderecoMock = $this->getMockBuilder(EnderecoStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(EnderecoStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($enderecoMock, $pdoMock);
-
-        $estados = $enderecoMock->pegarEstados();
+        $estados = $this->createEnderecoStorage($pdoMock)->pegarEstados();
 
         $this->assertIsArray($estados);
+    }
+
+    /**
+     * @param PDO&MockInterface $pdoMock
+     */
+    private function createEnderecoStorage($pdoMock): EnderecoStorage
+    {
+        return new EnderecoStorage($pdoMock);
     }
 }

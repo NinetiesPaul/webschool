@@ -1,143 +1,104 @@
 <?php declare(strict_types=1);
 
 use App\DB\Storage\AvatarStorage;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
 class AvatarStorageTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     public function testInserirUsuarioNaAvatarRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
+        $resultado = $this->createAvatarStorage($pdoMock)->inserirUsuarioNaAvatar(1);
 
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $avatarMock = $this->getMockBuilder(AvatarStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(AvatarStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($avatarMock, $pdoMock);
-
-        $result = $avatarMock->inserirUsuarioNaAvatar(1);
-
-        $this->assertEquals(null, $result);
+        $this->assertNull($resultado);
     }
 
     public function testAtualizarAvatarRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetch')
+            ->once()
+            ->andReturn(false);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
+        $resultado = $this->createAvatarStorage($pdoMock)
+            ->atualizarAvatar('urlFinal', 'urlThumbFinal', 1);
 
-        $stmtMock->expects($this->once())
-            ->method('fetch')
-            ->willReturn(false);
-
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $avatarMock = $this->getMockBuilder(AvatarStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(AvatarStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($avatarMock, $pdoMock);
-
-        $avatar = $avatarMock->atualizarAvatar('urlFinal', 'urlThumbFinal', 1);
-
-        $this->assertEquals(null, $avatar);
+        $this->assertNull($resultado);
     }
 
-    // todo: encontrar um jeito de mocar chamadas
     public function testAtualizarAvatarExcecao(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetch')
+            ->once()
+            ->andReturn((object) [
+                'endereco_thumb' => 'endereco_thumb_mock',
+                'endereco' => 'endereco_mock',
+            ]);
+        $stmtMock->shouldReceive('execute')
+            ->twice()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
+        $pdoMock->shouldReceive('prepare')
+            ->twice()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
+        $resultado = $this->createAvatarStorage($pdoMock)
+            ->atualizarAvatar('endereco_mock', 'endereco_thumb_mock', 1);
 
-        $stmtMock->expects($this->once())
-            ->method('fetch')
-            ->willReturn((object) [ 'endereco_thumb' => 'endereco_thumb_mock', 'endereco' => 'endereco_mock' ]);
-
-        $pdoMock->expects($this->exactly(2))
-            ->method('prepare')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->exactly(2))
-            ->method('execute')
-            ->willReturnOnConsecutiveCalls(true, true);
-
-        $avatarMock = $this->getMockBuilder(AvatarStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(AvatarStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($avatarMock, $pdoMock);
-
-        $avatar = $avatarMock->atualizarAvatar('endereco_mock', 'endereco_thumb_mock', 1);
-
-        $this->assertEquals(null, $avatar);
+        $this->assertNull($resultado);
     }
 
     public function testVerAvatarRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetch')
+            ->once()
+            ->andReturn((object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021]);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetch')
-            ->willReturn(
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                );
-
-        $avatarMock = $this->getMockBuilder(AvatarStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(AvatarStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-
-        $dbProperty->setValue($avatarMock, $pdoMock);
-
-        $avatar = $avatarMock->verAvatar(1);
+        $avatar = $this->createAvatarStorage($pdoMock)->verAvatar(1);
 
         $this->assertInstanceOf(stdClass::class, $avatar);
+    }
+
+    /**
+     * @param PDO&MockInterface $pdoMock
+     */
+    private function createAvatarStorage($pdoMock): AvatarStorage
+    {
+        return new AvatarStorage($pdoMock);
     }
 }

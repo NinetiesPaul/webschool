@@ -1,191 +1,131 @@
 <?php declare(strict_types=1);
 
 use App\DB\Storage\ArquivoStorage;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
 class ArquivoStorageTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     public function testAdicionarArquivoRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
+        $pdoMock->shouldReceive('lastInsertId')
+            ->once()
+            ->andReturn('1');
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
+        $result = $this->createArquivoStorage($pdoMock)
+            ->adicionarArquivo('file_name', 'urlThumbFinal', 'urlFinal', 'dataComentario', 1);
 
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $pdoMock->expects($this->once())
-            ->method('lastInsertId')
-            ->willReturn(1);
-
-        $arquivoMock = $this->getMockBuilder(ArquivoStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(ArquivoStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($arquivoMock, $pdoMock);
-
-        $result = $arquivoMock->adicionarArquivo('file_name', 'urlThumbFinal', 'urlFinal', 'dataComentario', 1);
-
-        $this->assertEquals(1, $result);
+        $this->assertEquals('1', $result);
     }
 
     public function testVerArquivoDoDiarioRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetch')
+            ->once()
+            ->andReturn((object) []);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetch')
-            ->willReturn((object) []);
-
-        $arquivoMock = $this->getMockBuilder(ArquivoStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(ArquivoStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($arquivoMock, $pdoMock);
-
-        $arquivo = $arquivoMock->verArquivoDoDiario(1);
+        $arquivo = $this->createArquivoStorage($pdoMock)->verArquivoDoDiario(1);
 
         $this->assertInstanceOf(stdClass::class, $arquivo);
     }
 
     public function testRemoverArquivoDoComentarioRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
+        $resultado = $this->createArquivoStorage($pdoMock)->removerArquivoDoComentario(1);
 
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $arquivoMock = $this->getMockBuilder(ArquivoStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(ArquivoStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($arquivoMock, $pdoMock);
-
-        $arquivo = $arquivoMock->removerArquivoDoComentario(1);
-
-        $this->assertEquals(null, $arquivo);
+        $this->assertNull($resultado);
     }
 
     public function testVerArquivoPorIdRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetch')
+            ->once()
+            ->andReturn((object) []);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetch')
-            ->willReturn((object) []);
-
-        $arquivoMock = $this->getMockBuilder(ArquivoStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(ArquivoStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($arquivoMock, $pdoMock);
-
-        $arquivo = $arquivoMock->verArquivoPorId(1);
+        $arquivo = $this->createArquivoStorage($pdoMock)->verArquivoPorId(1);
 
         $this->assertInstanceOf(stdClass::class, $arquivo);
     }
 
     public function testVerArquivoPorAlunoRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $enderecoMock = $this->getMockBuilder(ArquivoStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(ArquivoStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($enderecoMock, $pdoMock);
+        $arquivos = $this->createArquivoStorage($pdoMock)->verArquivoPorAluno(1);
 
-        $estados = $enderecoMock->verArquivoPorAluno(1);
-
-        $this->assertIsArray($estados);
+        $this->assertIsArray($arquivos);
     }
 
     public function testVerArquivoPorProfessorRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $enderecoMock = $this->getMockBuilder(ArquivoStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(ArquivoStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($enderecoMock, $pdoMock);
+        $arquivos = $this->createArquivoStorage($pdoMock)->verArquivoPorProfessor(1);
 
-        $estados = $enderecoMock->verArquivoPorProfessor(1);
+        $this->assertIsArray($arquivos);
+    }
 
-        $this->assertIsArray($estados);
+    /**
+     * @param PDO&MockInterface $pdoMock
+     */
+    private function createArquivoStorage($pdoMock): ArquivoStorage
+    {
+        return new ArquivoStorage($pdoMock);
     }
 }

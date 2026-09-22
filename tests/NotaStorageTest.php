@@ -1,231 +1,163 @@
 <?php declare(strict_types=1);
 
 use App\DB\Storage\NotaStorage;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
 class NotaStorageTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     public function testInserirNotaRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
+        $resultado = $this->createNotaStorage($pdoMock)->inserirNota([
+            'idAluno' => 1,
+            'idDisciplina' => 1,
+            'idTurma' => 1,
+        ]);
 
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $notaMock = $this->getMockBuilder(NotaStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(NotaStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($notaMock, $pdoMock);
-
-        $result = $notaMock->inserirNota(1);
-
-        $this->assertEquals(null, $result);
+        $this->assertNull($resultado);
     }
 
     public function testAdicionarNotaRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $notaMock = $this->getMockBuilder(NotaStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(NotaStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($notaMock, $pdoMock);
-
-        $resultado = $notaMock->adicionarNota([
+        $resultado = $this->createNotaStorage($pdoMock)->adicionarNota([
             'aluno' => 1,
             'turma' => 1,
             'disciplina' => 1,
             'tipo' => 'string',
-            'nota' =>1
+            'nota' => 1,
         ]);
 
-        $this->assertEquals(null, $resultado);
+        $this->assertNull($resultado);
     }
 
     public function testVerTurmasComNotaDoAlunoRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $notaMock = $this->getMockBuilder(NotaStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(NotaStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($notaMock, $pdoMock);
-
-        $turmasENotas = $notaMock->verTurmasComNotaDoAluno(1);
+        $turmasENotas = $this->createNotaStorage($pdoMock)->verTurmasComNotaDoAluno(1);
 
         $this->assertIsArray($turmasENotas);
     }
 
     public function testVerNotasPorTrumaRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $notaMock = $this->getMockBuilder(NotaStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(NotaStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($notaMock, $pdoMock);
-
-        $notaPorTurma = $notaMock->verNotasPorTruma(1, 1);
+        $notaPorTurma = $this->createNotaStorage($pdoMock)->verNotasPorTruma(1, 1);
 
         $this->assertIsArray($notaPorTurma);
     }
 
     public function testVerTurmasEMateriasComNotasDoAlunoRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $notaMock = $this->getMockBuilder(NotaStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(NotaStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($notaMock, $pdoMock);
-
-        $turmas = $notaMock->verTurmasEMateriasComNotasDoAluno(1);
+        $turmas = $this->createNotaStorage($pdoMock)->verTurmasEMateriasComNotasDoAluno(1);
 
         $this->assertIsArray($turmas);
     }
 
     public function testVerNotasPorAlunosDaDisciplinaETurmaRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $notaMock = $this->getMockBuilder(NotaStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(NotaStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($notaMock, $pdoMock);
-
-        $turmas = $notaMock->verNotasPorAlunosDaDisciplinaETurma(1, 1);
+        $turmas = $this->createNotaStorage($pdoMock)->verNotasPorAlunosDaDisciplinaETurma(1, 1);
 
         $this->assertIsArray($turmas);
     }
 
     public function testVerNotasPorAlunoRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $notaMock = $this->getMockBuilder(NotaStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(NotaStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($notaMock, $pdoMock);
-
-        $notas = $notaMock->verNotasPorAluno(1);
+        $notas = $this->createNotaStorage($pdoMock)->verNotasPorAluno(1);
 
         $this->assertIsArray($notas);
+    }
+
+    /**
+     * @param PDO&MockInterface $pdoMock
+     */
+    private function createNotaStorage($pdoMock): NotaStorage
+    {
+        return new NotaStorage($pdoMock);
     }
 }

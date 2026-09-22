@@ -1,69 +1,56 @@
 <?php declare(strict_types=1);
 
 use App\DB\Storage\UsuarioStorage;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
 class UsuarioStorageTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     public function testInserirUsuarioRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
+        $pdoMock->shouldReceive('lastInsertId')
+            ->once()
+            ->andReturn('1');
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $pdoMock->expects($this->once())
-            ->method('lastInsertId')
-            ->willReturn(1);
-
-        $usuarioMock = $this->getMockBuilder(UsuarioStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(UsuarioStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($usuarioMock, $pdoMock);
-
-        $result = $usuarioMock->inserirUsuario('file_name', 'urlThumbFinal', 'urlFinal', 'dataComentario', 1);
+        $result = $this->createUsuarioStorage($pdoMock)->inserirUsuario([
+            'name' => 'file_name',
+            'email' => 'urlThumbFinal',
+            'password' => 'urlFinal',
+            'endereco' => 'dataComentario',
+            'salt' => 1,
+        ]);
 
         $this->assertEquals(1, $result);
     }
 
     public function testAlterarUsuarioRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $usuarioMock = $this->getMockBuilder(UsuarioStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct', 'loginTaken'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(UsuarioStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($usuarioMock, $pdoMock);
-
-        $usuarioMock->method('loginTaken')
-            ->willReturn(false);
+        $usuarioMock = Mockery::mock(UsuarioStorage::class, [$pdoMock])->makePartial();
+        $usuarioMock->shouldReceive('loginTaken')
+            ->once()
+            ->andReturn(false);
 
         $resultado = $usuarioMock->alterarUsuario(1, 'nome', 'email', 'password', 'salt', 'tipo', true, true);
 
@@ -72,83 +59,57 @@ class UsuarioStorageTest extends TestCase
 
     public function testAlterarUsuarioRetornoFalso(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $pdoMock = Mockery::mock(PDO::class);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $usuarioMock = $this->getMockBuilder(UsuarioStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct', 'loginTaken'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(UsuarioStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($usuarioMock, $pdoMock);
-
-        $usuarioMock->method('loginTaken')
-            ->willReturn(true);
+        $usuarioMock = Mockery::mock(UsuarioStorage::class, [$pdoMock])->makePartial();
+        $usuarioMock->shouldReceive('loginTaken')
+            ->once()
+            ->andReturn(true);
 
         $resultado = $usuarioMock->alterarUsuario(1, 'nome', 'email', 'password', 'salt', 'tipo', true, true);
 
-        $this->assertIsBool($resultado);
+        $this->assertFalse($resultado);
     }
 
     public function testLoginTakenRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetch')
+            ->once()
+            ->andReturn((object) []);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetch')
-            ->willReturn((object) []);
-
-        $usuarioMock = $this->getMockBuilder(UsuarioStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(UsuarioStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($usuarioMock, $pdoMock);
-
-        $usuario = $usuarioMock->loginTaken('login', 'tipo', true);
+        $usuario = $this->createUsuarioStorage($pdoMock)->loginTaken('login', 'tipo', true);
 
         $this->assertIsBool($usuario);
     }
 
     public function testVerificarUsuarioRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetch')
+            ->once()
+            ->andReturn((object) []);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetch')
-            ->willReturn((object) []);
-
-        $usuarioMock = $this->getMockBuilder(UsuarioStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(UsuarioStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($usuarioMock, $pdoMock);
-
-        $usuario = $usuarioMock->verificarUsuario('alias', 1, 'tipo', 'email');
+        $usuario = $this->createUsuarioStorage($pdoMock)->verificarUsuario('alias', 1, 'tipo', 'email');
 
         $this->assertInstanceOf(stdClass::class, $usuario);
+    }
+
+    /**
+     * @param PDO&MockInterface $pdoMock
+     */
+    private function createUsuarioStorage($pdoMock): UsuarioStorage
+    {
+        return new UsuarioStorage($pdoMock);
     }
 }

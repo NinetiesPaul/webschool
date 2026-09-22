@@ -1,381 +1,256 @@
 <?php declare(strict_types=1);
 
 use App\DB\Storage\DiarioDeClasseStorage;
+use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
 class DiarioDeClasseTest extends TestCase
 {
+    use MockeryPHPUnitIntegration;
+
     public function testInserirDiarioDeClasseRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $diarioDeClasseMock = $this->getMockBuilder(DiarioDeClasseStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(DiarioDeClasseStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($diarioDeClasseMock, $pdoMock);
-
-        $resposta = $diarioDeClasseMock->inserirDiarioDeClasse([
+        $resultado = $this->createDiarioDeClasseStorage($pdoMock)->inserirDiarioDeClasse([
             'idAluno' => 1,
             'idDisciplina' => 1,
             'idTurma' => 1,
         ]);
 
-        $this->assertEquals(null, $resposta);
+        $this->assertNull($resultado);
     }
 
     public function testVerFaltasDoAlunoDaTurmaRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $enderecoMock = $this->getMockBuilder(DiarioDeClasseStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(DiarioDeClasseStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($enderecoMock, $pdoMock);
-
-        $faltas = $enderecoMock->verFaltasDoAlunoDaTurma(1, 1);
+        $faltas = $this->createDiarioDeClasseStorage($pdoMock)->verFaltasDoAlunoDaTurma(1, 1);
 
         $this->assertIsArray($faltas);
     }
 
     public function testVerFaltasDoAlunoDaturmaPorDataRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetch')
+            ->once()
+            ->andReturn((object) []);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetch')
-            ->willReturn((object) []);
-
-        $diarioDeClasseMock = $this->getMockBuilder(DiarioDeClasseStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(DiarioDeClasseStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($diarioDeClasseMock, $pdoMock);
-
-        $falta = $diarioDeClasseMock->verFaltasDoAlunoDaturmaPorData(1, 1, 1, 'data');
+        $falta = $this->createDiarioDeClasseStorage($pdoMock)
+            ->verFaltasDoAlunoDaturmaPorData(1, 1, 1, 'data');
 
         $this->assertInstanceOf(stdClass::class, $falta);
     }
 
     public function testAdicionarFaltaRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
+        $resultado = $this->createDiarioDeClasseStorage($pdoMock)
+            ->adicionarFalta(1, 1, 1, 'data');
 
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $diarioDeClasseMock = $this->getMockBuilder(DiarioDeClasseStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(DiarioDeClasseStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($diarioDeClasseMock, $pdoMock);
-
-        $resposta = $diarioDeClasseMock->adicionarFalta(1, 1, 1, 'data');
-
-        $this->assertEquals(null, $resposta);
+        $this->assertNull($resultado);
     }
 
     public function testAlterarFaltaRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
+        $resultado = $this->createDiarioDeClasseStorage($pdoMock)->alterarFalta(true, 1);
 
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $diarioDeClasseMock = $this->getMockBuilder(DiarioDeClasseStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(DiarioDeClasseStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($diarioDeClasseMock, $pdoMock);
-
-        $resposta = $diarioDeClasseMock->alterarFalta(true, 1);
-
-        $this->assertEquals(null, $resposta);
+        $this->assertNull($resultado);
     }
 
     public function testVerComentariosDoAlunoDaTurmaRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $enderecoMock = $this->getMockBuilder(DiarioDeClasseStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(DiarioDeClasseStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($enderecoMock, $pdoMock);
-
-        $comentarios = $enderecoMock->verComentariosDoAlunoDaTurma(1, 1, 1, 'data', 1);
+        $comentarios = $this->createDiarioDeClasseStorage($pdoMock)
+            ->verComentariosDoAlunoDaTurma(1, 1, 1, 'data', 1);
 
         $this->assertIsArray($comentarios);
     }
 
     public function testAdicionarComentarioRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
+        $pdoMock->shouldReceive('lastInsertId')
+            ->once()
+            ->andReturn('1');
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
+        $result = $this->createDiarioDeClasseStorage($pdoMock)
+            ->adicionarComentario(1, 1, 1, 'mensagem', 'data', 1);
 
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $pdoMock->expects($this->once())
-            ->method('lastInsertId')
-            ->willReturn(1);
-
-        $diarioDeClasseMock = $this->getMockBuilder(DiarioDeClasseStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(DiarioDeClasseStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($diarioDeClasseMock, $pdoMock);
-
-        $result = $diarioDeClasseMock->adicionarComentario(1, 1, 1, 'mensagem', 'data', 1);
-
-        $this->assertEquals(1, $result);
+        $this->assertEquals('1', $result);
     }
 
     public function testRemoverComentarioRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('execute')
+            ->once()
+            ->andReturn(true);
 
-        $stmtMock = $this->createMock(PDOStatement::class);
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('prepare')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $pdoMock->expects($this->once())
-            ->method('prepare')
-            ->willReturn($stmtMock);
+        $resultado = $this->createDiarioDeClasseStorage($pdoMock)->removerComentario(1);
 
-        $stmtMock->expects($this->once())
-            ->method('execute')
-            ->willReturn(true);
-
-        $diarioDeClasseMock = $this->getMockBuilder(DiarioDeClasseStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
-
-        $reflection = new ReflectionClass(DiarioDeClasseStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($diarioDeClasseMock, $pdoMock);
-
-        $resposta = $diarioDeClasseMock->removerComentario(1);
-
-        $this->assertEquals(null, $resposta);
+        $this->assertNull($resultado);
     }
 
     public function testVerDiarioDeClassePorProfessorRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $diarioDeClasseMock = $this->getMockBuilder(DiarioDeClasseStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(DiarioDeClasseStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($diarioDeClasseMock, $pdoMock);
+        $resultado = $this->createDiarioDeClasseStorage($pdoMock)
+            ->verDiarioDeClassePorProfessor(1);
 
-        $resposta = $diarioDeClasseMock->verDiarioDeClassePorProfessor(1);
-
-        $this->assertIsArray($resposta);
+        $this->assertIsArray($resultado);
     }
 
     public function testVerDiarioDeClassePorAlunoRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $diarioDeClasseMock = $this->getMockBuilder(DiarioDeClasseStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(DiarioDeClasseStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($diarioDeClasseMock, $pdoMock);
+        $resultado = $this->createDiarioDeClasseStorage($pdoMock)
+            ->verDiarioDeClassePorAluno(1);
 
-        $resposta = $diarioDeClasseMock->verDiarioDeClassePorAluno(1);
-
-        $this->assertIsArray($resposta);
+        $this->assertIsArray($resultado);
     }
 
     public function testVerFaltasPorAlunoDaMateriaETurmaRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $diarioDeClasseMock = $this->getMockBuilder(DiarioDeClasseStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(DiarioDeClasseStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($diarioDeClasseMock, $pdoMock);
+        $resultado = $this->createDiarioDeClasseStorage($pdoMock)
+            ->verFaltasPorAlunoDaMateriaETurma(1, 1, 1);
 
-        $resposta = $diarioDeClasseMock->verFaltasPorAlunoDaMateriaETurma(1, 1, 1);
-
-        $this->assertIsArray($resposta);
+        $this->assertIsArray($resultado);
     }
 
     public function testVerComentariosPorAlunoDaMateriaETurmaRetornoValido(): void
     {
-        $pdoMock = $this->createMock(PDO::class);
-
-        $stmtMock = $this->createMock(PDOStatement::class);
-
-        $pdoMock->expects($this->once())
-            ->method('query')
-            ->willReturn($stmtMock);
-
-        $stmtMock->expects($this->once())
-            ->method('fetchAll')
-            ->willReturn([
-                (object)['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
-                (object)['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
+        $stmtMock = Mockery::mock(PDOStatement::class);
+        $stmtMock->shouldReceive('fetchAll')
+            ->once()
+            ->andReturn([
+                (object) ['id' => 1, 'nome' => 'Turma A', 'ano' => 2021],
+                (object) ['id' => 2, 'nome' => 'Turma B', 'ano' => 2022],
             ]);
 
-        $diarioDeClasseMock = $this->getMockBuilder(DiarioDeClasseStorage::class)
-            ->disableOriginalConstructor()
-            ->onlyMethods(['__construct'])
-            ->getMock();
+        $pdoMock = Mockery::mock(PDO::class);
+        $pdoMock->shouldReceive('query')
+            ->once()
+            ->andReturn($stmtMock);
 
-        $reflection = new ReflectionClass(DiarioDeClasseStorage::class);
-        $dbProperty = $reflection->getParentClass()->getProperty('db');
-        $dbProperty->setAccessible(true);
-        $dbProperty->setValue($diarioDeClasseMock, $pdoMock);
+        $resultado = $this->createDiarioDeClasseStorage($pdoMock)
+            ->verComentariosPorAlunoDaMateriaETurma(1, 1, 1);
 
-        $resposta = $diarioDeClasseMock->verComentariosPorAlunoDaMateriaETurma(1, 1, 1);
+        $this->assertIsArray($resultado);
+    }
 
-        $this->assertIsArray($resposta);
+    /**
+     * @param PDO&MockInterface $pdoMock
+     */
+    private function createDiarioDeClasseStorage($pdoMock): DiarioDeClasseStorage
+    {
+        return new DiarioDeClasseStorage($pdoMock);
     }
 }
