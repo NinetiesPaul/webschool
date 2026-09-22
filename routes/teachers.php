@@ -11,7 +11,7 @@ SimpleRouter::get('/professor/home', function() {
 SimpleRouter::get('/professor/turmas', function() {
     $professor = new ProfessorController();
     $professor->verTurmas();
-});
+})->name('professor_turmas');
 
 SimpleRouter::get('/professor/turma/{idTurma}', function($idTurma) {
     $professor = new ProfessorController();
