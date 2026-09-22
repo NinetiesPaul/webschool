@@ -5,13 +5,11 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class TurmaStorage
+class TurmaStorage extends DB
 {
-    protected $db;
-    
-    public function __construct()
+    public function __construct(?PDO $db = null)
     {
-        $this->db = new DB();
+        parent::__construct($db);
     }
 
     public function verTurmas()

@@ -5,13 +5,11 @@ namespace App\DB\Storage;
 use App\DB\DB;
 use PDO;
 
-class NotaStorage
+class NotaStorage extends DB
 {
-    protected $db;
-
-    public function __construct()
+    public function __construct(?PDO $db = null)
     {
-        $this->db = new DB();
+        parent::__construct($db);
     }
 
     public function inserirNota($nota)
@@ -20,6 +18,7 @@ class NotaStorage
         $save->execute($nota);
     }
 
+    // todo: renomear pra alterar nota
     public function adicionarNota($data)
     {
         $aluno = $data['aluno'];

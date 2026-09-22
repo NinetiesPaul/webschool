@@ -370,7 +370,7 @@ class ProfessorController
 
         $output = '';
         foreach ($comentarios as $comentario) {
-            $arquivo = $this->arquivoStorage->verArquivosDoDiario($comentario->id);
+            $arquivo = $this->arquivoStorage->verArquivoDoDiario($comentario->id);
 
             $line = '';
             if ($arquivo) {

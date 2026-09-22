@@ -9,3 +9,6 @@ phinx.yml
 .env
 /.idea/*
 composer.lock
+
+.phpunit.cache
+tests/coverage

@@ -19,4 +19,11 @@ class Util
             header("Location: /");
         }
     }
+
+    public function removerArquivo($caminho)
+    {
+        if (file_exists($caminho)) {
+            unlink($caminho);
+        }
+    }
 }

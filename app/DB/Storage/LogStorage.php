@@ -6,16 +6,8 @@ use App\DB\DB;
 use PDO;
 use Pecee\SimpleRouter\SimpleRouter;
 
-class LogStorage
+class LogStorage extends DB
 {
-    protected $db;
-
-    public function __construct()
-    {
-        $this->db = new DB();
-        $this->logRequest();
-    }
-
     public function logRequest()
     {
         session_start();

@@ -4,15 +4,24 @@ namespace App\DB;
 
 use PDO;
 
-class DB extends PDO
+class DB
 {
-    public function __construct()
+    protected $db;
+
+    public function __construct(?PDO $db = null)
     {
-        $localhost_db = getenv('DB_HOST');
-        $dbname_db = getenv('DB_NAME');
-        $user_db = getenv('DB_USER');
-        $password_db = getenv('DB_PASSWORD');
-        parent::__construct("mysql:host=$localhost_db; dbname=$dbname_db", $user_db, $password_db, []);
-        $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        if ($db) {
+            $this->db = $db;
+        } else {
+            $localhost_db = getenv('DB_HOST');
+            $dbname_db = getenv('DB_NAME');
+            $user_db = getenv('DB_USER');
+            $password_db = getenv('DB_PASSWORD');
+
+            $pdo = new PDO("mysql:host=$localhost_db; dbname=$dbname_db", $user_db, $password_db, []);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $this->db = $pdo;
+        }
     }
 }

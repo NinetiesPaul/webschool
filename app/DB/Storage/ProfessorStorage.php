@@ -6,15 +6,8 @@ use App\DB\DB;
 use App\Enum;
 use PDO;
 
-class ProfessorStorage
+class ProfessorStorage extends DB
 {
-    public $db;
-    
-    public function __construct()
-    {
-        $this->db = new DB();
-    }
-    
     public function verProfessores()
     {
         $professorQuery = $this->db->query("
@@ -39,15 +32,14 @@ class ProfessorStorage
 
     public function adicionarProfessor($email, $nome, $password, $salt)
     {
-        $usuarioStorage = new UsuarioStorage();
+        $usuarioStorage = new UsuarioStorage($this->db);
         if ($usuarioStorage->loginTaken($email, Enum::TIPO_PROFESSOR)) {
             return false;
         }
         
-        $enderecoStorage = new EnderecoStorage();
+        $enderecoStorage = new EnderecoStorage($this->db);
         $idEndereco = $enderecoStorage->inserirEndereco();
 
-        $usuarioStorage = new UsuarioStorage();
         $userId = $usuarioStorage->inserirUsuario([
             'name' => $nome,
             'email' => $email,
@@ -56,31 +48,23 @@ class ProfessorStorage
             'endereco' => $idEndereco,
         ]);
 
-        $avatarStorage = new AvatarStorage();
-        $avatarStorage->inserirUsuarioNaAvatar($userId);
-
         $professor = $this->db->prepare("INSERT INTO professor (usuario) VALUES (:idUusuario)");
         $professor->execute([
             'idUusuario' => $userId,
         ]);
+
+        $avatarStorage = new AvatarStorage($this->db);
+        $avatarStorage->inserirUsuarioNaAvatar($userId);
     }
     
+    // todo: refatorar metodo e quebrar cada chamada de deleção para o storage pertinente
     public function removerProfessor($professor, $usuario, $endereco, $footprint)
     {
-        $user = $this->db->prepare("UPDATE usuario SET endereco = NULL WHERE id = :id;");
-        $user->execute([
-            'id' => $usuario,
-        ]);
+        $enderecoStorage = new EnderecoStorage($this->db);
+        $enderecoStorage->deletarEndereco($usuario, $endereco);
 
-        $user = $this->db->prepare("DELETE FROM endereco WHERE id = :endereco;");
-        $user->execute([
-            'endereco' => $endereco,
-        ]);
-
-        $user = $this->db->prepare("DELETE FROM fotos_de_avatar WHERE usuario = :id;");
-        $user->execute([
-            'id' => $usuario,
-        ]);
+        $avatarStorage = new AvatarStorage($this->db);
+        $avatarStorage->deletarAvatarDoUsuario($usuario);
 
         $user = $this->db->prepare("DELETE FROM arquivos WHERE diario in (SELECT id FROM diario_de_classe WHERE professor = :professor AND contexto = 'observacao');");
         $user->execute([
@@ -102,10 +86,8 @@ class ProfessorStorage
             'id' => $usuario,
         ]);
 
-        $user = $this->db->prepare("DELETE FROM usuario WHERE id = :id;");
-        $user->execute([
-            'id' => $usuario,
-        ]);
+        $usuarioStorage = new UsuarioStorage($this->db);
+        $usuarioStorage->deletarUsuario($usuario);
         
         $footprintBackup = $this->db->prepare("INSERT INTO usuarios_deletados (tipo, nome, footprint, deletado_em) VALUES ('professor', :nome, :footprint, NOW())");
         $footprintBackup->execute([
@@ -144,26 +126,26 @@ class ProfessorStorage
     
     public function adicionarMateriaPorProfessor($disciplina, $turma, $professor)
     {
-        $user = $this->db->prepare("INSERT INTO disciplina_por_professor (professor, disciplina, turma) VALUES (:idProfessor, :idDisciplina, :idTurma)");
+        $disciplinaPorProfessor = $this->db->prepare("INSERT INTO disciplina_por_professor (professor, disciplina, turma) VALUES (:idProfessor, :idDisciplina, :idTurma)");
 
-        $user->execute([
+        $disciplinaPorProfessor->execute([
             'idProfessor' => $professor,
             'idDisciplina' => $disciplina,
             'idTurma' => $turma,
         ]);
         
-        $turmaStorage = new TurmaStorage();
+        $turmaStorage = new TurmaStorage($this->db);
         $alunos = $turmaStorage->verAlunosDaTurma($turma);
 
         foreach ($alunos as $aluno) {           
-            $notaStorage = new NotaStorage();
+            $notaStorage = new NotaStorage($this->db);
             $notaStorage->inserirNota([
                 'idAluno' => $aluno->id,
                 'idDisciplina' => $disciplina,
                 'idTurma' => $turma,
             ]);
                         
-            $diarioStorage = new DiarioDeClasseStorage();
+            $diarioStorage = new DiarioDeClasseStorage($this->db);
             $diarioStorage->inserirDiarioDeClasse([
                 'idAluno' => $aluno->id,
                 'idDisciplina' => $disciplina,

@@ -8,7 +8,10 @@ class Templates
     {
         $args['CSS'] = $this->generateCss();
         $args['JS'] = $this->generateJs();
-        $args['LINKS'] = $this->generateLinks($nivel, ($args['ON_PROFILE'] ? true : false));
+        
+        if (count($_SESSION) > 0) {
+            $args['LINKS'] = $this->generateLinks($nivel);
+        }
 
         $template = $this->getTemplate($path);
         echo $this->parseTemplate($template, $args);
@@ -32,25 +35,19 @@ class Templates
             if (strpos($a, 'list')) {
                 $template = str_replace('{'.$a.'}', json_encode($b), $template);
             } else {
-                $template = str_replace('{'.$a.'}', $b, $template);
+                $template = str_replace('{'.$a.'}', (string)$b, $template);
+           
             }
         }
 
         return $template; // retorno o html com conteúdo final
     }
 
-    protected function generateLinks($nivel = '', $perfil = false)
+    protected function generateLinks()
     {
         session_start();
 
-        $tipo = $_SESSION['tipo'];
-        if (!$tipo) {
-            return '';
-        }
-
-        $path = ($perfil) ? $tipo . "/" . $nivel : $nivel;
-
-        switch ($tipo) {
+        switch ($_SESSION['tipo']) {
             case Enum::TIPO_ADMIN:
                 return "
                     <a class='btn btn-light btn-block' href='" . $this->createUrl('admin_turmas') . "'>Turmas</a>
@@ -67,7 +64,7 @@ class Templates
                 break;
             case Enum::TIPO_PROFESSOR:
                 return "
-                    <a class='btn btn-light btn btn-block' href='".$path."turmas'>Turmas</a>
+                    <a class='btn btn-light btn btn-block' href='".$this->createUrl('professor_turmas')."'>Turmas</a>
                 ";
                 break;
             case Enum::TIPO_ALUNO:
